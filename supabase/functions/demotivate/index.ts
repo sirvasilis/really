@@ -103,11 +103,20 @@ serve(async (req) => {
       async start(controller) {
         const reader = response.body!.getReader();
         const encoder = new TextEncoder();
+        const decoder = new TextDecoder();
 
         try {
+          let buffer = "";
+          
           while (true) {
             const { done, value } = await reader.read();
+            
             if (done) {
+              // Send any remaining buffer
+              if (buffer) {
+                controller.enqueue(encoder.encode(buffer));
+              }
+              
               // Calculate savings after the response is complete
               const savings = {
                 money: Math.floor(Math.random() * 50000) + 10000, // 10k-60k euros
@@ -115,17 +124,58 @@ serve(async (req) => {
                 stress: Math.floor(Math.random() * 70) + 30, // 30-100%
               };
               
-              // Send savings as final message
+              // Send savings as final message before [DONE]
               const savingsMessage = encoder.encode(`data: ${JSON.stringify({ savings })}\n\n`);
               controller.enqueue(savingsMessage);
+              
+              // Send [DONE]
+              controller.enqueue(encoder.encode("data: [DONE]\n\n"));
               
               controller.close();
               break;
             }
             
-            controller.enqueue(value);
+            // Decode the chunk and check for [DONE]
+            const chunk = decoder.decode(value, { stream: true });
+            buffer += chunk;
+            
+            // Check if buffer contains [DONE]
+            if (buffer.includes("data: [DONE]")) {
+              // Remove [DONE] from buffer, we'll send it after savings
+              buffer = buffer.replace("data: [DONE]\n\n", "").replace("data: [DONE]", "");
+              
+              // Send everything before [DONE]
+              if (buffer.trim()) {
+                controller.enqueue(encoder.encode(buffer));
+              }
+              
+              // Calculate and send savings
+              const savings = {
+                money: Math.floor(Math.random() * 50000) + 10000,
+                time: Math.floor(Math.random() * 36) + 12,
+                stress: Math.floor(Math.random() * 70) + 30,
+              };
+              
+              const savingsMessage = encoder.encode(`data: ${JSON.stringify({ savings })}\n\n`);
+              controller.enqueue(savingsMessage);
+              
+              // Now send [DONE]
+              controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+              
+              controller.close();
+              break;
+            }
+            
+            // If we have complete lines (ending with \n\n), send them
+            const lastComplete = buffer.lastIndexOf("\n\n");
+            if (lastComplete !== -1) {
+              const toSend = buffer.substring(0, lastComplete + 2);
+              buffer = buffer.substring(lastComplete + 2);
+              controller.enqueue(encoder.encode(toSend));
+            }
           }
         } catch (error) {
+          console.error("Stream error:", error);
           controller.error(error);
         }
       }
