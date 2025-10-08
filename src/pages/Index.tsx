@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 const Index = () => {
   const [thought, setThought] = useState("");
   const [demotivation, setDemotivation] = useState("");
+  const [savings, setSavings] = useState<{ money: number; time: number; stress: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -23,6 +24,7 @@ const Index = () => {
 
     setIsLoading(true);
     setDemotivation("");
+    setSavings(null);
 
     try {
       const response = await fetch(
@@ -71,10 +73,17 @@ const Index = () => {
 
           try {
             const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content;
-            if (content) {
-              currentDemotivation += content;
-              setDemotivation(currentDemotivation);
+            
+            // Check for savings data
+            if (parsed.savings) {
+              setSavings(parsed.savings);
+            } else {
+              // Regular streaming content
+              const content = parsed.choices?.[0]?.delta?.content;
+              if (content) {
+                currentDemotivation += content;
+                setDemotivation(currentDemotivation);
+              }
             }
           } catch (e) {
             console.error("JSON parse error:", e);
@@ -153,6 +162,42 @@ const Index = () => {
                 </h2>
                 <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed">
                   {demotivation}
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {savings && (
+          <Card className="p-6 bg-card border-border border-2 border-primary/30 animate-fade-in">
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">
+                Σε γλίτωσα από...
+              </h2>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="space-y-2">
+                  <div className="text-3xl font-black text-destructive">
+                    €{savings.money.toLocaleString()}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Χαμένα χρήματα
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-3xl font-black text-destructive">
+                    {savings.time} μήνες
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Χαμένος χρόνος
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-3xl font-black text-destructive">
+                    {savings.stress}% stress
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Επιπλέον άγχος
+                  </div>
                 </div>
               </div>
             </div>

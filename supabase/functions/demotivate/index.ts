@@ -98,7 +98,40 @@ serve(async (req) => {
       );
     }
 
-    return new Response(response.body, {
+    // Create a readable stream to add savings data at the end
+    const stream = new ReadableStream({
+      async start(controller) {
+        const reader = response.body!.getReader();
+        const encoder = new TextEncoder();
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+              // Calculate savings after the response is complete
+              const savings = {
+                money: Math.floor(Math.random() * 50000) + 10000, // 10k-60k euros
+                time: Math.floor(Math.random() * 36) + 12, // 12-48 months
+                stress: Math.floor(Math.random() * 70) + 30, // 30-100%
+              };
+              
+              // Send savings as final message
+              const savingsMessage = encoder.encode(`data: ${JSON.stringify({ savings })}\n\n`);
+              controller.enqueue(savingsMessage);
+              
+              controller.close();
+              break;
+            }
+            
+            controller.enqueue(value);
+          }
+        } catch (error) {
+          controller.error(error);
+        }
+      }
+    });
+
+    return new Response(stream, {
       headers: {
         ...corsHeaders,
         "Content-Type": "text/event-stream",
