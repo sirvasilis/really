@@ -9,9 +9,10 @@ const Index = () => {
   const [thought, setThought] = useState("");
   const [demotivation, setDemotivation] = useState("");
   const [excuses, setExcuses] = useState("");
+  const [quote, setQuote] = useState("");
   const [savings, setSavings] = useState<{ money: number; time: number; stress: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [mode, setMode] = useState<"demotivate" | "excuses" | null>(null);
+  const [mode, setMode] = useState<"demotivate" | "excuses" | "quote" | null>(null);
   const { toast } = useToast();
 
   const handleDemotivate = async () => {
@@ -28,6 +29,7 @@ const Index = () => {
     setMode("demotivate");
     setDemotivation("");
     setExcuses("");
+    setQuote("");
     setSavings(null);
 
     try {
@@ -121,6 +123,7 @@ const Index = () => {
     setMode("excuses");
     setExcuses("");
     setDemotivation("");
+    setQuote("");
     setSavings(null);
 
     try {
@@ -192,6 +195,55 @@ const Index = () => {
     }
   };
 
+  const handleGenerateQuote = async () => {
+    if (!thought.trim()) {
+      toast({
+        title: "Γράψε κάτι!",
+        description: "Πώς να δημιουργήσω quote αν δεν μου πεις το θέμα;",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    setMode("quote");
+    setQuote("");
+    setDemotivation("");
+    setExcuses("");
+    setSavings(null);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-quote`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ thought }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to generate quote");
+      }
+
+      const data = await response.json();
+      setQuote(data.quote);
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Σφάλμα",
+        description: error instanceof Error ? error.message : "Κάτι πήγε στραβά",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+      setMode(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-2xl space-y-8 animate-fade-in">
@@ -222,7 +274,7 @@ const Index = () => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <Button
               onClick={handleDemotivate}
               disabled={isLoading || !thought.trim()}
@@ -256,6 +308,24 @@ const Index = () => {
                 "Δικαιολογίες"
               )}
             </Button>
+            <Button
+              onClick={handleGenerateQuote}
+              disabled={isLoading || !thought.trim()}
+              className="bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold"
+              size="lg"
+            >
+              {isLoading && mode === "quote" ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Δημιουργώ...
+                </>
+              ) : (
+                <>
+                  <Skull className="mr-2 h-4 w-4" />
+                  Quote
+                </>
+              )}
+            </Button>
           </div>
         </Card>
 
@@ -284,6 +354,18 @@ const Index = () => {
               <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed">
                 {excuses}
               </div>
+            </div>
+          </Card>
+        )}
+
+        {quote && (
+          <Card className="p-6 bg-card border-border border-2 border-secondary/50 animate-fade-in">
+            <div className="flex items-center justify-center gap-3 py-4">
+              <Skull className="w-8 h-8 text-secondary flex-shrink-0" />
+              <p className="text-xl font-bold text-center text-foreground italic">
+                "{quote}"
+              </p>
+              <Skull className="w-8 h-8 text-secondary flex-shrink-0" />
             </div>
           </Card>
         )}
