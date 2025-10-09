@@ -2,14 +2,16 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { AlertCircle, Skull } from "lucide-react";
+import { AlertCircle, Skull, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [thought, setThought] = useState("");
   const [demotivation, setDemotivation] = useState("");
+  const [excuses, setExcuses] = useState("");
   const [savings, setSavings] = useState<{ money: number; time: number; stress: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [mode, setMode] = useState<"demotivate" | "excuses" | null>(null);
   const { toast } = useToast();
 
   const handleDemotivate = async () => {
@@ -23,7 +25,9 @@ const Index = () => {
     }
 
     setIsLoading(true);
+    setMode("demotivate");
     setDemotivation("");
+    setExcuses("");
     setSavings(null);
 
     try {
@@ -99,6 +103,92 @@ const Index = () => {
       });
     } finally {
       setIsLoading(false);
+      setMode(null);
+    }
+  };
+
+  const handleGenerateExcuses = async () => {
+    if (!thought.trim()) {
+      toast({
+        title: "Γράψε κάτι!",
+        description: "Πώς να δημιουργήσω δικαιολογίες αν δεν μου πεις την πρόταση;",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    setMode("excuses");
+    setExcuses("");
+    setDemotivation("");
+    setSavings(null);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-excuses`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ proposal: thought }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to generate excuses");
+      }
+
+      if (!response.body) {
+        throw new Error("No response body");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let currentExcuses = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        
+        let newlineIndex: number;
+        while ((newlineIndex = buffer.indexOf("\n")) !== -1) {
+          let line = buffer.slice(0, newlineIndex);
+          buffer = buffer.slice(newlineIndex + 1);
+
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") continue;
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content;
+            if (content) {
+              currentExcuses += content;
+              setExcuses(currentExcuses);
+            }
+          } catch (e) {
+            console.error("JSON parse error:", e);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Σφάλμα",
+        description: error instanceof Error ? error.message : "Κάτι πήγε στραβά",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+      setMode(null);
     }
   };
 
@@ -121,35 +211,52 @@ const Index = () => {
         <Card className="p-6 space-y-4 bg-card border-border">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">
-              Ποιο είναι το όνειρό σου;
+              Τι σκέφτεσαι;
             </label>
             <Textarea
               value={thought}
               onChange={(e) => setThought(e.target.value)}
-              placeholder="π.χ. Θέλω να ανοίξω το δικό μου startup..."
+              placeholder="π.χ. Θέλω να γίνω YouTuber... ή Μου πρότειναν να πάμε γυμναστήριο..."
               className="min-h-32 bg-secondary border-border text-foreground resize-none"
               disabled={isLoading}
             />
           </div>
 
-          <Button
-            onClick={handleDemotivate}
-            disabled={isLoading || !thought.trim()}
-            className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold"
-            size="lg"
-          >
-            {isLoading ? (
-              <>
-                <AlertCircle className="mr-2 h-5 w-5 animate-spin" />
-                Σκέφτομαι πώς να σε καταστρέψω...
-              </>
-            ) : (
-              <>
-                <AlertCircle className="mr-2 h-5 w-5" />
-                Αποθάρρυνέ με
-              </>
-            )}
-          </Button>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              onClick={handleDemotivate}
+              disabled={isLoading || !thought.trim()}
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold"
+              size="lg"
+            >
+              {isLoading && mode === "demotivate" ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Σκέφτομαι...
+                </>
+              ) : (
+                <>
+                  <AlertCircle className="mr-2 h-4 w-4" />
+                  Αποθάρρυνση
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={handleGenerateExcuses}
+              disabled={isLoading || !thought.trim()}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
+              size="lg"
+            >
+              {isLoading && mode === "excuses" ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Δημιουργώ...
+                </>
+              ) : (
+                "Δικαιολογίες"
+              )}
+            </Button>
+          </div>
         </Card>
 
         {demotivation && (
@@ -163,6 +270,19 @@ const Index = () => {
                 <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed">
                   {demotivation}
                 </div>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {excuses && (
+          <Card className="p-6 bg-card border-border border-2 border-primary/30 animate-fade-in">
+            <div className="space-y-3">
+              <h2 className="text-xl font-bold text-primary">
+                Οι Δικαιολογίες σου
+              </h2>
+              <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed">
+                {excuses}
               </div>
             </div>
           </Card>

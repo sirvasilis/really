@@ -2,3 +2,6 @@ project_id = "hxxvkxapdqoucvacbzag"
 
 [functions.demotivate]
 verify_jwt = false
+
+[functions.generate-excuses]
+verify_jwt = false
