@@ -196,15 +196,6 @@ const Index = () => {
   };
 
   const handleGenerateQuote = async () => {
-    if (!thought.trim()) {
-      toast({
-        title: "Γράψε κάτι!",
-        description: "Πώς να δημιουργήσω quote αν δεν μου πεις το θέμα;",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsLoading(true);
     setMode("quote");
     setQuote("");
@@ -310,7 +301,7 @@ const Index = () => {
             </Button>
             <Button
               onClick={handleGenerateQuote}
-              disabled={isLoading || !thought.trim()}
+              disabled={isLoading}
               className="bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold"
               size="lg"
             >
