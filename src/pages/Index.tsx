@@ -42,8 +42,8 @@ const Index = () => {
     en: {
       title: "DEMOTIVATOR",
       subtitle: "Share your dreams. I'll explain why you won't make it.",
-      placeholder: "e.g. I want to become a YouTuber... or They suggested we go to the gym...",
-      label: "What are you thinking?",
+      placeholder: "Write here whatever you're thinking to face the real truth",
+      label: "Did you get some amazing idea that will make you successful or some fantastic proposal for wild partying?",
       btnDemotivate: "Demotivate",
       btnExcuses: "Excuses",
       btnQuote: "Quote",
