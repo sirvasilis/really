@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { thought } = await req.json();
+    const { thought, language = 'el' } = await req.json();
     console.log('Generating demotivational quote for:', thought);
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -20,18 +20,48 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    const systemPrompt = `Είσαι ένας κυνικός φιλόσοφος που δημιουργεί σύντομα, αιχμηρά demotivational quotes στα ελληνικά. 
+    const systemPrompts = {
+      el: `Είσαι ειδικός στη δημιουργία demotivational quotes.
+Ο ρόλος σου είναι να δημιουργήσεις ένα σύντομο, κυνικό quote που αποθαρρύνει.
+Χρησιμοποίησε ελληνικά με σκοτεινό χιούμορ.
+
 Το quote πρέπει να είναι:
 - Μία μόνο πρόταση (max 15-20 λέξεις)
 - Κυνικό και αποθαρρυντικό
 - Σχετικό με το θέμα που δόθηκε ή γενικό αν δεν δόθηκε θέμα
 - Χωρίς εισαγωγικά
 
-Παράδειγμα: "Η επιτυχία είναι σπάνια, η αποτυχία είναι η νόρμα."`;
+Παράδειγμα: "Η επιτυχία είναι σπάνια, η αποτυχία είναι η νόρμα."`,
+      en: `You are an expert at creating demotivational quotes.
+Your role is to create a short, cynical quote that demotivates.
+Use English with dark humor.
 
+The quote must be:
+- Only one sentence (max 15-20 words)
+- Cynical and demotivating
+- Related to the given topic or general if no topic was given
+- Without quotation marks
+
+Example: "Success is rare, failure is the norm."`
+    };
+
+    const systemPrompt = systemPrompts[language as keyof typeof systemPrompts] || systemPrompts.el;
+
+    const userPrompts = {
+      el: {
+        withThought: `Δημιούργησε ένα demotivational quote για: ${thought}`,
+        withoutThought: `Δημιούργησε ένα γενικό demotivational quote`
+      },
+      en: {
+        withThought: `Create a demotivational quote about: ${thought}`,
+        withoutThought: `Create a general demotivational quote`
+      }
+    };
+
+    const lang = language as keyof typeof userPrompts;
     const userPrompt = thought && thought.trim() 
-      ? `Δημιούργησε ένα demotivational quote για: ${thought}`
-      : `Δημιούργησε ένα γενικό demotivational quote`;
+      ? userPrompts[lang].withThought
+      : userPrompts[lang].withoutThought;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',

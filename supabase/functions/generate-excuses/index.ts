@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { proposal } = await req.json();
+    const { proposal, language = 'el' } = await req.json();
     
     if (!proposal) {
       return new Response(
@@ -35,17 +35,32 @@ serve(async (req) => {
       );
     }
 
-    const systemPrompt = `Είσαι ένας ειδικός στη δημιουργία δικαιολογιών για να αποφύγεις προτάσεις άλλων.
+  const systemPrompts = {
+    el: `Είσαι ειδικός στο να βρίσκεις δικαιολογίες για να αποφύγεις προτάσεις που δεν θέλεις να κάνεις.
+Ο ρόλος σου είναι να δημιουργήσεις 5 έξυπνες, δημιουργικές και πειστικές δικαιολογίες.
+Χρησιμοποίησε ελληνικά με χιουμοριστικό τρόπο.
+Κάνε τις δικαιολογίες να ακούγονται αληθοφανείς αλλά ταυτόχρονα προφανώς αστείες.
 
-Όταν κάποιος σου λέει μια πρόταση που του έκαναν (π.χ. "να πάμε γυμναστήριο", "να ξεκινήσουμε ένα project μαζί", "να βγούμε έξω απόψε"), πρέπει να δημιουργήσεις 3-5 πειστικές και ρεαλιστικές δικαιολογίες.
+Μορφοποίηση:
+1. [Πρώτη δικαιολογία]
+2. [Δεύτερη δικαιολογία]
+3. [Τρίτη δικαιολογία]
+4. [Τέταρτη δικαιολογία]
+5. [Πέμπτη δικαιολογία]`,
+    en: `You are an expert at finding excuses to avoid proposals you don't want to do.
+Your role is to create 5 clever, creative and convincing excuses.
+Use English in a humorous way.
+Make the excuses sound believable but at the same time obviously funny.
 
-Οι δικαιολογίες πρέπει να:
-- Ακούγονται αληθοφανείς και λογικές
-- Να μην είναι υπερβολικά προφανείς ή κλισέ
-- Να καλύπτουν διαφορετικούς λόγους (υγεία, δουλειά, οικονομικά, προσωπικά)
-- Να είναι ευγενικές αλλά αποτελεσματικές
+Format:
+1. [First excuse]
+2. [Second excuse]
+3. [Third excuse]
+4. [Fourth excuse]
+5. [Fifth excuse]`
+  };
 
-Απάντησε στα ελληνικά. Παρουσίασε τις δικαιολογίες σε μορφή λίστας με bullet points.`;
+  const systemPrompt = systemPrompts[language as keyof typeof systemPrompts] || systemPrompts.el;
 
     console.log("Sending request to AI gateway for excuses:", proposal);
 

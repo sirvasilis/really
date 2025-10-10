@@ -13,13 +13,63 @@ const Index = () => {
   const [savings, setSavings] = useState<{ money: number; time: number; stress: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<"demotivate" | "excuses" | "quote" | null>(null);
+  const [language, setLanguage] = useState<"el" | "en">("el");
   const { toast } = useToast();
+
+  const translations = {
+    el: {
+      title: "DEMOTIVATOR",
+      subtitle: "Μοιράσου τα όνειρά σου. Θα σου εξηγήσω γιατί δεν θα τα καταφέρεις.",
+      placeholder: "π.χ. Θέλω να γίνω YouTuber... ή Μου πρότειναν να πάμε γυμναστήριο...",
+      label: "Τι σκέφτεσαι;",
+      btnDemotivate: "Αποθάρρυνση",
+      btnExcuses: "Δικαιολογίες",
+      btnQuote: "Quote",
+      thinking: "Σκέφτομαι...",
+      generating: "Δημιουργώ...",
+      errorTitle: "Σφάλμα",
+      errorDesc: "Κάτι πήγε στραβά",
+      emptyError: "Γράψε κάτι!",
+      emptyDemotivate: "Πώς να σε αποθαρρύνω αν δεν μου πεις τι ονειρεύεσαι;",
+      emptyExcuses: "Πώς να δημιουργήσω δικαιολογίες αν δεν μου πεις την πρόταση;",
+      truthTitle: "Η Σκληρή Αλήθεια",
+      excusesTitle: "Οι Δικαιολογίες σου",
+      savingsTitle: "Σε γλίτωσα από...",
+      savingsMoney: "Χαμένα χρήματα",
+      savingsTime: "Χαμένος χρόνος",
+      savingsStress: "Επιπλέον άγχος",
+    },
+    en: {
+      title: "DEMOTIVATOR",
+      subtitle: "Share your dreams. I'll explain why you won't make it.",
+      placeholder: "e.g. I want to become a YouTuber... or They suggested we go to the gym...",
+      label: "What are you thinking?",
+      btnDemotivate: "Demotivate",
+      btnExcuses: "Excuses",
+      btnQuote: "Quote",
+      thinking: "Thinking...",
+      generating: "Generating...",
+      errorTitle: "Error",
+      errorDesc: "Something went wrong",
+      emptyError: "Write something!",
+      emptyDemotivate: "How can I demotivate you if you don't tell me what you're dreaming of?",
+      emptyExcuses: "How can I generate excuses if you don't tell me the proposal?",
+      truthTitle: "The Harsh Truth",
+      excusesTitle: "Your Excuses",
+      savingsTitle: "I saved you from...",
+      savingsMoney: "Wasted money",
+      savingsTime: "Wasted time",
+      savingsStress: "Extra stress",
+    }
+  };
+
+  const t = translations[language];
 
   const handleDemotivate = async () => {
     if (!thought.trim()) {
       toast({
-        title: "Γράψε κάτι!",
-        description: "Πώς να σε αποθαρρύνω αν δεν μου πεις τι ονειρεύεσαι;",
+        title: t.emptyError,
+        description: t.emptyDemotivate,
         variant: "destructive",
       });
       return;
@@ -41,7 +91,7 @@ const Index = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-          body: JSON.stringify({ thought }),
+          body: JSON.stringify({ thought, language }),
         }
       );
 
@@ -99,8 +149,8 @@ const Index = () => {
     } catch (error) {
       console.error("Error:", error);
       toast({
-        title: "Σφάλμα",
-        description: error instanceof Error ? error.message : "Κάτι πήγε στραβά",
+        title: t.errorTitle,
+        description: error instanceof Error ? error.message : t.errorDesc,
         variant: "destructive",
       });
     } finally {
@@ -112,8 +162,8 @@ const Index = () => {
   const handleGenerateExcuses = async () => {
     if (!thought.trim()) {
       toast({
-        title: "Γράψε κάτι!",
-        description: "Πώς να δημιουργήσω δικαιολογίες αν δεν μου πεις την πρόταση;",
+        title: t.emptyError,
+        description: t.emptyExcuses,
         variant: "destructive",
       });
       return;
@@ -134,7 +184,7 @@ const Index = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ proposal: thought }),
+          body: JSON.stringify({ proposal: thought, language }),
         }
       );
 
@@ -185,8 +235,8 @@ const Index = () => {
     } catch (error) {
       console.error("Error:", error);
       toast({
-        title: "Σφάλμα",
-        description: error instanceof Error ? error.message : "Κάτι πήγε στραβά",
+        title: t.errorTitle,
+        description: error instanceof Error ? error.message : t.errorDesc,
         variant: "destructive",
       });
     } finally {
@@ -211,7 +261,7 @@ const Index = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ thought }),
+          body: JSON.stringify({ thought, language }),
         }
       );
 
@@ -225,8 +275,8 @@ const Index = () => {
     } catch (error) {
       console.error("Error:", error);
       toast({
-        title: "Σφάλμα",
-        description: error instanceof Error ? error.message : "Κάτι πήγε στραβά",
+        title: t.errorTitle,
+        description: error instanceof Error ? error.message : t.errorDesc,
         variant: "destructive",
       });
     } finally {
@@ -236,84 +286,99 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10 flex items-center justify-center p-4 relative">
+      <div className="absolute top-4 right-4 flex gap-2 z-10">
+        <Button
+          variant={language === "el" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setLanguage("el")}
+          className="font-bold"
+        >
+          ΕΛ
+        </Button>
+        <Button
+          variant={language === "en" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setLanguage("en")}
+          className="font-bold"
+        >
+          EN
+        </Button>
+      </div>
       <div className="w-full max-w-2xl space-y-8 animate-fade-in">
-        <header className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-3">
-            <Skull className="w-12 h-12 text-destructive animate-pulse-glow" />
-            <h1 className="text-5xl font-black text-foreground tracking-tight">
-              DEMOTIVATOR
+        <header className="text-center space-y-6">
+          <div className="flex items-center justify-center gap-4">
+            <Skull className="w-14 h-14 text-destructive animate-pulse" />
+            <h1 className="text-6xl md:text-7xl font-black text-foreground tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+              {t.title}
             </h1>
-            <Skull className="w-12 h-12 text-destructive animate-pulse-glow" />
+            <Skull className="w-14 h-14 text-destructive animate-pulse" />
           </div>
-          <p className="text-muted-foreground text-lg">
-            Μοιράσου τα όνειρά σου. Θα σου εξηγήσω γιατί δεν θα τα καταφέρεις.
+          <p className="text-muted-foreground text-xl max-w-2xl mx-auto leading-relaxed">
+            {t.subtitle}
           </p>
         </header>
 
-        <Card className="p-6 space-y-4 bg-card border-border">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">
-              Τι σκέφτεσαι;
+        <Card className="p-8 space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
+          <div className="space-y-3">
+            <label className="text-base font-semibold text-foreground">
+              {t.label}
             </label>
             <Textarea
               value={thought}
               onChange={(e) => setThought(e.target.value)}
-              placeholder="π.χ. Θέλω να γίνω YouTuber... ή Μου πρότειναν να πάμε γυμναστήριο..."
-              className="min-h-32 bg-secondary border-border text-foreground resize-none"
+              placeholder={t.placeholder}
+              className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
               disabled={isLoading}
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Button
               onClick={handleDemotivate}
               disabled={isLoading || !thought.trim()}
-              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold"
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold h-12 text-base transition-all hover:scale-105"
               size="lg"
             >
               {isLoading && mode === "demotivate" ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Σκέφτομαι...
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  {t.thinking}
                 </>
               ) : (
-                <>
-                  <AlertCircle className="mr-2 h-4 w-4" />
-                  Αποθάρρυνση
-                </>
+                t.btnDemotivate
               )}
             </Button>
             <Button
               onClick={handleGenerateExcuses}
               disabled={isLoading || !thought.trim()}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 text-base transition-all hover:scale-105"
               size="lg"
             >
               {isLoading && mode === "excuses" ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Δημιουργώ...
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  {t.generating}
                 </>
               ) : (
-                "Δικαιολογίες"
+                t.btnExcuses
               )}
             </Button>
             <Button
               onClick={handleGenerateQuote}
               disabled={isLoading}
-              className="bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold"
+              className="bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold h-12 text-base transition-all hover:scale-105"
               size="lg"
             >
               {isLoading && mode === "quote" ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Δημιουργώ...
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  {t.generating}
                 </>
               ) : (
                 <>
-                  <Skull className="mr-2 h-4 w-4" />
-                  Quote
+                  <Skull className="mr-2 h-5 w-5" />
+                  {t.btnQuote}
                 </>
               )}
             </Button>
@@ -321,14 +386,14 @@ const Index = () => {
         </Card>
 
         {demotivation && (
-          <Card className="p-6 bg-card border-border border-2 border-destructive/50 animate-fade-in">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-6 h-6 text-destructive flex-shrink-0 mt-1" />
-              <div className="space-y-3">
-                <h2 className="text-xl font-bold text-foreground">
-                  Η Σκληρή Αλήθεια
+          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl animate-fade-in">
+            <div className="flex items-start gap-4">
+              <AlertCircle className="w-8 h-8 text-destructive flex-shrink-0 mt-1" />
+              <div className="space-y-4">
+                <h2 className="text-2xl font-bold text-foreground">
+                  {t.truthTitle}
                 </h2>
-                <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed">
+                <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-lg">
                   {demotivation}
                 </div>
               </div>
@@ -337,12 +402,12 @@ const Index = () => {
         )}
 
         {excuses && (
-          <Card className="p-6 bg-card border-border border-2 border-primary/30 animate-fade-in">
-            <div className="space-y-3">
-              <h2 className="text-xl font-bold text-primary">
-                Οι Δικαιολογίες σου
+          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-primary">
+                {t.excusesTitle}
               </h2>
-              <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed">
+              <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-lg">
                 {excuses}
               </div>
             </div>
@@ -350,46 +415,46 @@ const Index = () => {
         )}
 
         {quote && (
-          <Card className="p-6 bg-card border-border border-2 border-secondary/50 animate-fade-in">
-            <div className="flex items-center justify-center gap-3 py-4">
-              <Skull className="w-8 h-8 text-secondary flex-shrink-0" />
-              <p className="text-xl font-bold text-center text-foreground italic">
+          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-secondary shadow-xl animate-fade-in">
+            <div className="flex items-center justify-center gap-4 py-6">
+              <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
+              <p className="text-2xl font-bold text-center text-foreground italic">
                 "{quote}"
               </p>
-              <Skull className="w-8 h-8 text-secondary flex-shrink-0" />
+              <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
             </div>
           </Card>
         )}
 
         {savings && (
-          <Card className="p-6 bg-card border-border border-2 border-primary/30 animate-fade-in">
-            <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-foreground">
-                Σε γλίτωσα από...
+          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold text-foreground">
+                {t.savingsTitle}
               </h2>
-              <div className="grid gap-4 md:grid-cols-3">
-                <div className="space-y-2">
-                  <div className="text-3xl font-black text-destructive">
+              <div className="grid gap-6 md:grid-cols-3">
+                <div className="space-y-3 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <div className="text-4xl font-black text-destructive">
                     €{savings.money.toLocaleString()}
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    Χαμένα χρήματα
+                  <div className="text-base text-muted-foreground font-medium">
+                    {t.savingsMoney}
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="text-3xl font-black text-destructive">
-                    {savings.time} μήνες
+                <div className="space-y-3 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <div className="text-4xl font-black text-destructive">
+                    {savings.time} {language === "el" ? "μήνες" : "months"}
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    Χαμένος χρόνος
+                  <div className="text-base text-muted-foreground font-medium">
+                    {t.savingsTime}
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="text-3xl font-black text-destructive">
+                <div className="space-y-3 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <div className="text-4xl font-black text-destructive">
                     {savings.stress}% stress
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    Επιπλέον άγχος
+                  <div className="text-base text-muted-foreground font-medium">
+                    {t.savingsStress}
                   </div>
                 </div>
               </div>
