@@ -20,8 +20,8 @@ const Index = () => {
     el: {
       title: "DEMOTIVATOR",
       subtitle: "Μοιράσου τα όνειρά σου. Θα σου εξηγήσω γιατί δεν θα τα καταφέρεις.",
-      placeholder: "π.χ. Θέλω να γίνω YouTuber... ή Μου πρότειναν να πάμε γυμναστήριο...",
-      label: "Τι σκέφτεσαι;",
+      placeholder: "Γράψε εδώ ο,τι σκέφτεσαι για να αντιμετωπίσεις την πραγματική αλήθεια",
+      label: "Σου ήρθε κάποια φοβερή ιδέα που θα σε κάνει πετυχημένο ή κάποια φανταστική πρόταση για ξέφρενο γλέντι;",
       btnDemotivate: "Αποθάρρυνση",
       btnExcuses: "Δικαιολογίες",
       btnQuote: "Quote",
@@ -333,37 +333,39 @@ const Index = () => {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button
-              onClick={handleDemotivate}
-              disabled={isLoading || !thought.trim()}
-              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold h-12 text-base transition-all hover:scale-105"
-              size="lg"
-            >
-              {isLoading && mode === "demotivate" ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  {t.thinking}
-                </>
-              ) : (
-                t.btnDemotivate
-              )}
-            </Button>
-            <Button
-              onClick={handleGenerateExcuses}
-              disabled={isLoading || !thought.trim()}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 text-base transition-all hover:scale-105"
-              size="lg"
-            >
-              {isLoading && mode === "excuses" ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  {t.generating}
-                </>
-              ) : (
-                t.btnExcuses
-              )}
-            </Button>
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Button
+                onClick={handleDemotivate}
+                disabled={isLoading || !thought.trim()}
+                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold h-12 text-base transition-all hover:scale-105"
+                size="lg"
+              >
+                {isLoading && mode === "demotivate" ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    {t.thinking}
+                  </>
+                ) : (
+                  t.btnDemotivate
+                )}
+              </Button>
+              <Button
+                onClick={handleGenerateExcuses}
+                disabled={isLoading || !thought.trim()}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 text-base transition-all hover:scale-105"
+                size="lg"
+              >
+                {isLoading && mode === "excuses" ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    {t.generating}
+                  </>
+                ) : (
+                  t.btnExcuses
+                )}
+              </Button>
+            </div>
             <Button
               onClick={handleGenerateQuote}
               disabled={isLoading}
