@@ -22,8 +22,10 @@ const Index = () => {
     el: {
       title: "DEMOTIVATOR",
       subtitle: "Μοιράσου τα όνειρά σου. Θα σου εξηγήσω γιατί δεν θα τα καταφέρεις.",
-      placeholder: "Γράψε εδώ ο,τι σκέφτεσαι για να αντιμετωπίσεις την πραγματική αλήθεια",
-      label: "Σου ήρθε κάποια φοβερή ιδέα που θα σε κάνει πετυχημένο ή κάποια φανταστική πρόταση για ξέφρενο γλέντι;",
+      demotivateLabel: "Πιστεύεις πως έχεις την ιδέα που θα σε κάνει πετυχημένο;",
+      demotivatePlaceholder: "Γράψε εδώ ο,τι σκέφτεσαι και άσε την αλήθεια να σε προσγειώσει στην πραγματικότητα",
+      excusesLabel: "Σε προσκάλεσαν σε κάτι που δεν συμβαδίζει με την μιζέρια σου;",
+      excusesPlaceholder: "Γράψε εδώ την πρόταση που σου έγινε και οι δικαιολογίες θα σε σώσουν απο το να συμμετέχεις σε κάτι που ίσως σε κάνει χαρούμενο",
       btnDemotivate: "Αποθάρρυνση",
       btnExcuses: "Δικαιολογίες",
       btnQuote: "Quote",
@@ -47,8 +49,10 @@ const Index = () => {
     en: {
       title: "DEMOTIVATOR",
       subtitle: "Share your dreams. I'll explain why you won't make it.",
-      placeholder: "Write here whatever you're thinking to face the real truth",
-      label: "Did you get some amazing idea that will make you successful or some fantastic proposal for wild partying?",
+      demotivateLabel: "Do you believe you have the idea that will make you successful?",
+      demotivatePlaceholder: "Write here whatever you're thinking and let the truth bring you back to reality",
+      excusesLabel: "Were you invited to something that doesn't match your misery?",
+      excusesPlaceholder: "Write here the proposal you received and the excuses will save you from participating in something that might make you happy",
       btnDemotivate: "Demotivate",
       btnExcuses: "Excuses",
       btnQuote: "Quote",
@@ -374,12 +378,12 @@ const Index = () => {
           <Card className="p-8 space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
             <div className="space-y-3">
               <label className="text-base font-semibold text-foreground">
-                {t.label}
+                {selectedMode === "demotivate" ? t.demotivateLabel : t.excusesLabel}
               </label>
               <Textarea
                 value={thought}
                 onChange={(e) => setThought(e.target.value)}
-                placeholder={t.placeholder}
+                placeholder={selectedMode === "demotivate" ? t.demotivatePlaceholder : t.excusesPlaceholder}
                 className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
                 disabled={isLoading}
               />
