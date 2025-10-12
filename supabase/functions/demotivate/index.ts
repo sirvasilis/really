@@ -41,31 +41,90 @@ serve(async (req) => {
 Χρησιμοποίησε ελληνικά με γλαφυρό, χιουμοριστικό και λίγο αγενή τρόπο.
 Κάνε την απάντησή σου σύντομη (2-3 παράγραφοι) αλλά δηκτική.
 
-Στο τέλος, υπολόγισε και πρόσθεσε έναν estimate σε:
-1. Πόσα χρήματα θα χάσει (€500-€50,000)
-2. Πόσο χρόνο θα σπαταλήσει (3-24 μήνες)  
-3. Ποσοστό επιπλέον stress (30-95%)
-
-Θα πρέπει να επιστρέψεις πρώτα το demotivational text με streaming,
-και στο τέλος θα στείλεις ένα ξεχωριστό JSON object με τα savings.`,
+ΜΗΝ συμπεριλάβεις JSON code blocks ή estimates στο κείμενό σου.
+Απλά γράψε το demotivational κείμενο. Τα estimates θα υπολογιστούν αυτόματα.`,
     en: `You are a harsh, realistic advisor who tells the absolute truth.
 Your role is to demotivate people from their ideas with cynical humor and harsh logic.
 Use English in a vivid, humorous, and slightly rude manner.
 Keep your response short (2-3 paragraphs) but biting.
 
-At the end, calculate and add an estimate for:
-1. How much money they will lose (€500-€50,000)
-2. How much time they will waste (3-24 months)
-3. Percentage of additional stress (30-95%)
-
-You should first return the demotivational text with streaming,
-and at the end send a separate JSON object with the savings.`
+DO NOT include JSON code blocks or estimates in your text.
+Just write the demotivational text. The estimates will be calculated automatically.`
   };
 
   const systemPrompt = systemPrompts[language as keyof typeof systemPrompts] || systemPrompts.el;
 
     console.log("Sending request to AI gateway with thought:", thought);
 
+    // First, get savings estimate using tool calling (non-streaming)
+    const savingsSystemPrompt = language === 'el' 
+      ? 'Υπολόγισε ρεαλιστικά estimates για την ιδέα του χρήστη.'
+      : 'Calculate realistic estimates for the user\'s idea.';
+
+    const savingsResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { role: "system", content: savingsSystemPrompt },
+          { role: "user", content: thought }
+        ],
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "calculate_savings",
+              description: "Calculate realistic estimates of money, time and stress that would be wasted on this idea",
+              parameters: {
+                type: "object",
+                properties: {
+                  money: {
+                    type: "number",
+                    description: "Amount of money in euros that would be lost (500-50000)"
+                  },
+                  time: {
+                    type: "number",
+                    description: "Number of months that would be wasted (3-36)"
+                  },
+                  stress: {
+                    type: "number",
+                    description: "Percentage of additional stress (30-95)"
+                  }
+                },
+                required: ["money", "time", "stress"],
+                additionalProperties: false
+              }
+            }
+          }
+        ],
+        tool_choice: { type: "function", function: { name: "calculate_savings" } }
+      }),
+    });
+
+    let savings = { money: 5000, time: 12, stress: 60 }; // fallback values
+    
+    if (savingsResponse.ok) {
+      const savingsData = await savingsResponse.json();
+      const toolCall = savingsData.choices?.[0]?.message?.tool_calls?.[0];
+      if (toolCall?.function?.arguments) {
+        try {
+          const args = JSON.parse(toolCall.function.arguments);
+          savings = {
+            money: Math.round(args.money),
+            time: Math.round(args.time),
+            stress: Math.round(args.stress)
+          };
+        } catch (e) {
+          console.error("Failed to parse savings:", e);
+        }
+      }
+    }
+
+    // Now get the streaming demotivational text
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -134,13 +193,6 @@ and at the end send a separate JSON object with the savings.`
                 controller.enqueue(encoder.encode(buffer));
               }
               
-              // Calculate savings after the response is complete
-              const savings = {
-                money: Math.floor(Math.random() * 50000) + 10000, // 10k-60k euros
-                time: Math.floor(Math.random() * 36) + 12, // 12-48 months
-                stress: Math.floor(Math.random() * 70) + 30, // 30-100%
-              };
-              
               // Send savings as final message before [DONE]
               const savingsMessage = encoder.encode(`data: ${JSON.stringify({ savings })}\n\n`);
               controller.enqueue(savingsMessage);
@@ -166,13 +218,7 @@ and at the end send a separate JSON object with the savings.`
                 controller.enqueue(encoder.encode(buffer));
               }
               
-              // Calculate and send savings
-              const savings = {
-                money: Math.floor(Math.random() * 50000) + 10000,
-                time: Math.floor(Math.random() * 36) + 12,
-                stress: Math.floor(Math.random() * 70) + 30,
-              };
-              
+              // Send savings
               const savingsMessage = encoder.encode(`data: ${JSON.stringify({ savings })}\n\n`);
               controller.enqueue(savingsMessage);
               
