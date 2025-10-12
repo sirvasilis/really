@@ -13,6 +13,8 @@ const Index = () => {
   const [savings, setSavings] = useState<{ money: number; time: number; stress: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<"demotivate" | "excuses" | "quote" | null>(null);
+  const [selectedMode, setSelectedMode] = useState<"demotivate" | "excuses" | "quote" | null>(null);
+  const [showInput, setShowInput] = useState(false);
   const [language, setLanguage] = useState<"el" | "en">("el");
   const { toast } = useToast();
 
@@ -25,6 +27,9 @@ const Index = () => {
       btnDemotivate: "Αποθάρρυνση",
       btnExcuses: "Δικαιολογίες",
       btnQuote: "Quote",
+      btnAlternative: "Εναλλακτικά",
+      btnSubmit: "Υποβολή",
+      btnBack: "Πίσω",
       thinking: "Σκέφτομαι...",
       generating: "Δημιουργώ...",
       errorTitle: "Σφάλμα",
@@ -47,6 +52,9 @@ const Index = () => {
       btnDemotivate: "Demotivate",
       btnExcuses: "Excuses",
       btnQuote: "Quote",
+      btnAlternative: "Alternative",
+      btnSubmit: "Submit",
+      btnBack: "Back",
       thinking: "Thinking...",
       generating: "Generating...",
       errorTitle: "Error",
@@ -64,6 +72,26 @@ const Index = () => {
   };
 
   const t = translations[language];
+
+  const handleModeSelection = (newMode: "demotivate" | "excuses" | "quote") => {
+    setSelectedMode(newMode);
+    setShowInput(true);
+    setThought("");
+    setDemotivation("");
+    setExcuses("");
+    setQuote("");
+    setSavings(null);
+  };
+
+  const handleBack = () => {
+    setShowInput(false);
+    setSelectedMode(null);
+    setThought("");
+    setDemotivation("");
+    setExcuses("");
+    setQuote("");
+    setSavings(null);
+  };
 
   const handleDemotivate = async () => {
     if (!thought.trim()) {
@@ -319,85 +347,113 @@ const Index = () => {
           </p>
         </header>
 
-        <Card className="p-8 space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
-          <div className="space-y-3">
-            <label className="text-base font-semibold text-foreground">
-              {t.label}
-            </label>
-            <Textarea
-              value={thought}
-              onChange={(e) => setThought(e.target.value)}
-              placeholder={t.placeholder}
-              className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
-              disabled={isLoading}
-            />
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {!showInput ? (
+          <Card className="p-8 space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Button
-                onClick={handleDemotivate}
-                disabled={isLoading || !thought.trim()}
-                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold h-12 text-base transition-all hover:scale-105"
+                onClick={() => handleModeSelection("demotivate")}
+                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold h-16 text-lg transition-all hover:scale-105"
                 size="lg"
               >
-                {isLoading && mode === "demotivate" ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    {t.thinking}
-                  </>
-                ) : (
-                  t.btnDemotivate
-                )}
+                {t.btnDemotivate}
               </Button>
               <Button
-                onClick={handleGenerateExcuses}
-                disabled={isLoading || !thought.trim()}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 text-base transition-all hover:scale-105"
+                onClick={() => handleModeSelection("excuses")}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-16 text-lg transition-all hover:scale-105"
                 size="lg"
               >
-                {isLoading && mode === "excuses" ? (
+                {t.btnExcuses}
+              </Button>
+              <Button
+                onClick={() => handleModeSelection("quote")}
+                className="bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold h-16 text-lg transition-all hover:scale-105"
+                size="lg"
+              >
+                <Skull className="mr-2 h-6 w-6" />
+                {t.btnQuote}
+              </Button>
+            </div>
+          </Card>
+        ) : (
+          <Card className="p-8 space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
+            <div className="space-y-3">
+              <label className="text-base font-semibold text-foreground">
+                {t.label}
+              </label>
+              <Textarea
+                value={thought}
+                onChange={(e) => setThought(e.target.value)}
+                placeholder={t.placeholder}
+                className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="flex gap-4">
+              <Button
+                onClick={handleBack}
+                disabled={isLoading}
+                variant="outline"
+                className="font-bold h-12 text-base"
+                size="lg"
+              >
+                {t.btnBack}
+              </Button>
+              <Button
+                onClick={() => {
+                  if (selectedMode === "demotivate") handleDemotivate();
+                  else if (selectedMode === "excuses") handleGenerateExcuses();
+                  else if (selectedMode === "quote") handleGenerateQuote();
+                }}
+                disabled={isLoading || (selectedMode !== "quote" && !thought.trim())}
+                className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
+                  selectedMode === "demotivate"
+                    ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                    : selectedMode === "excuses"
+                    ? "bg-primary hover:bg-primary/90 text-primary-foreground"
+                    : "bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+                }`}
+                size="lg"
+              >
+                {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    {t.generating}
+                    {mode === "quote" ? t.generating : t.thinking}
                   </>
                 ) : (
-                  t.btnExcuses
+                  t.btnSubmit
                 )}
               </Button>
             </div>
-            <Button
-              onClick={handleGenerateQuote}
-              disabled={isLoading}
-              className="bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold h-12 text-base transition-all hover:scale-105"
-              size="lg"
-            >
-              {isLoading && mode === "quote" ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  {t.generating}
-                </>
-              ) : (
-                <>
-                  <Skull className="mr-2 h-5 w-5" />
-                  {t.btnQuote}
-                </>
-              )}
-            </Button>
-          </div>
-        </Card>
+          </Card>
+        )}
 
         {demotivation && (
           <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl animate-fade-in">
             <div className="flex items-start gap-4">
               <AlertCircle className="w-8 h-8 text-destructive flex-shrink-0 mt-1" />
-              <div className="space-y-4">
+              <div className="space-y-4 flex-1">
                 <h2 className="text-2xl font-bold text-foreground">
                   {t.truthTitle}
                 </h2>
                 <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-lg">
                   {demotivation}
                 </div>
+                <Button
+                  onClick={handleDemotivate}
+                  disabled={isLoading}
+                  className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold transition-all hover:scale-105"
+                  size="lg"
+                >
+                  {isLoading && mode === "demotivate" ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      {t.thinking}
+                    </>
+                  ) : (
+                    t.btnAlternative
+                  )}
+                </Button>
               </div>
             </div>
           </Card>
@@ -412,18 +468,52 @@ const Index = () => {
               <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-lg">
                 {excuses}
               </div>
+              <Button
+                onClick={handleGenerateExcuses}
+                disabled={isLoading}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold transition-all hover:scale-105"
+                size="lg"
+              >
+                {isLoading && mode === "excuses" ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    {t.generating}
+                  </>
+                ) : (
+                  t.btnAlternative
+                )}
+              </Button>
             </div>
           </Card>
         )}
 
         {quote && (
           <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-secondary shadow-xl animate-fade-in">
-            <div className="flex items-center justify-center gap-4 py-6">
-              <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
-              <p className="text-2xl font-bold text-center text-foreground italic">
-                "{quote}"
-              </p>
-              <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
+            <div className="space-y-6">
+              <div className="flex items-center justify-center gap-4 py-6">
+                <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
+                <p className="text-2xl font-bold text-center text-foreground italic">
+                  "{quote}"
+                </p>
+                <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
+              </div>
+              <div className="flex justify-center">
+                <Button
+                  onClick={handleGenerateQuote}
+                  disabled={isLoading}
+                  className="bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold transition-all hover:scale-105"
+                  size="lg"
+                >
+                  {isLoading && mode === "quote" ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      {t.generating}
+                    </>
+                  ) : (
+                    t.btnAlternative
+                  )}
+                </Button>
+              </div>
             </div>
           </Card>
         )}
