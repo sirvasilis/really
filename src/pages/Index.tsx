@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
@@ -13,7 +13,7 @@ const Index = () => {
   const [savings, setSavings] = useState<{ money: number; time: number; stress: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<"demotivate" | "excuses" | "quote" | null>(null);
-  const [selectedMode, setSelectedMode] = useState<"demotivate" | "excuses" | "quote" | null>(null);
+  const [selectedMode, setSelectedMode] = useState<"demotivate" | "excuses" | null>(null);
   const [showInput, setShowInput] = useState(false);
   const [language, setLanguage] = useState<"el" | "en">("el");
   const { toast } = useToast();
@@ -73,7 +73,11 @@ const Index = () => {
 
   const t = translations[language];
 
-  const handleModeSelection = (newMode: "demotivate" | "excuses" | "quote") => {
+  useEffect(() => {
+    handleGenerateQuote();
+  }, []);
+
+  const handleModeSelection = (newMode: "demotivate" | "excuses") => {
     setSelectedMode(newMode);
     setShowInput(true);
     setThought("");
@@ -349,7 +353,7 @@ const Index = () => {
 
         {!showInput ? (
           <Card className="p-8 space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Button
                 onClick={() => handleModeSelection("demotivate")}
                 className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold h-16 text-lg transition-all hover:scale-105"
@@ -363,14 +367,6 @@ const Index = () => {
                 size="lg"
               >
                 {t.btnExcuses}
-              </Button>
-              <Button
-                onClick={() => handleModeSelection("quote")}
-                className="bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold h-16 text-lg transition-all hover:scale-105"
-                size="lg"
-              >
-                <Skull className="mr-2 h-6 w-6" />
-                {t.btnQuote}
               </Button>
             </div>
           </Card>
@@ -403,9 +399,8 @@ const Index = () => {
                 onClick={() => {
                   if (selectedMode === "demotivate") handleDemotivate();
                   else if (selectedMode === "excuses") handleGenerateExcuses();
-                  else if (selectedMode === "quote") handleGenerateQuote();
                 }}
-                disabled={isLoading || (selectedMode !== "quote" && !thought.trim())}
+                disabled={isLoading || !thought.trim()}
                 className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
                   selectedMode === "demotivate"
                     ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
@@ -489,31 +484,12 @@ const Index = () => {
 
         {quote && (
           <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-secondary shadow-xl animate-fade-in">
-            <div className="space-y-6">
-              <div className="flex items-center justify-center gap-4 py-6">
-                <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
-                <p className="text-2xl font-bold text-center text-foreground italic">
-                  "{quote}"
-                </p>
-                <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
-              </div>
-              <div className="flex justify-center">
-                <Button
-                  onClick={handleGenerateQuote}
-                  disabled={isLoading}
-                  className="bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold transition-all hover:scale-105"
-                  size="lg"
-                >
-                  {isLoading && mode === "quote" ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      {t.generating}
-                    </>
-                  ) : (
-                    t.btnAlternative
-                  )}
-                </Button>
-              </div>
+            <div className="flex items-center justify-center gap-4 py-6">
+              <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
+              <p className="text-2xl font-bold text-center text-foreground italic">
+                "{quote}"
+              </p>
+              <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
             </div>
           </Card>
         )}
