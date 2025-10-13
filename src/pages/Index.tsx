@@ -355,15 +355,23 @@ const Index = () => {
     setMode("distraction");
     
     try {
-      const response = await fetch("https://api.thecatapi.com/v1/images/search");
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-cat`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       
       if (!response.ok) {
-        throw new Error("Failed to fetch cat image");
+        throw new Error("Failed to generate cat image");
       }
 
       const data = await response.json();
-      if (data && data[0] && data[0].url) {
-        setCatImage(data[0].url);
+      if (data && data.imageUrl) {
+        setCatImage(data.imageUrl);
       }
     } catch (error) {
       console.error("Error:", error);
