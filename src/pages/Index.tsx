@@ -79,7 +79,7 @@ const Index = () => {
       excusesLabel: "Σε προσκάλεσαν σε κάτι που δεν συμβαδίζει με την μιζέρια σου;",
       excusesPlaceholder: "Γράψε εδώ την πρόταση που σου έγινε και οι δικαιολογίες θα σε σώσουν απο το να συμμετέχεις σε κάτι που ίσως σε κάνει χαρούμενο",
       eightBallLabel: "Ποια είναι η ιδέα σου;",
-      eightBallPlaceholder: "Should I...",
+      eightBallPlaceholder: "Να...",
       eightBallResultTitle: "Η Μοίρα Αποφάσισε",
       distractionResultTitle: "Απόλαυσε τη Διαφυγή",
       btnDemotivate: "Αποθάρρυνση",
