@@ -704,14 +704,33 @@ const Index = () => {
           </Card>
         )}
 
-        {!showInput && !selectedMode && quote && (
-          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-secondary shadow-xl animate-fade-in">
-            <div className="flex items-center justify-center gap-4 py-6">
-              <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
-              <p className="text-2xl font-bold text-center text-foreground italic">
-                "{quote}"
-              </p>
-              <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
+        {!showInput && !selectedMode && (
+          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-secondary shadow-xl">
+            <div className="flex items-center justify-center gap-4 py-6 min-h-[120px]">
+              {isLoading && mode === "quote" ? (
+                <>
+                  <Loader2 className="w-10 h-10 text-secondary animate-spin" />
+                  <p className="text-2xl font-bold text-center text-muted-foreground italic">
+                    {t.generating}...
+                  </p>
+                </>
+              ) : quote ? (
+                <>
+                  <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
+                  <p className="text-2xl font-bold text-center text-foreground italic">
+                    "{quote}"
+                  </p>
+                  <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
+                </>
+              ) : (
+                <>
+                  <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse opacity-50" />
+                  <p className="text-2xl font-bold text-center text-muted-foreground/50 italic">
+                    ...
+                  </p>
+                  <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse opacity-50" />
+                </>
+              )}
             </div>
           </Card>
         )}
