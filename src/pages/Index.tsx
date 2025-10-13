@@ -95,7 +95,7 @@ const Index = () => {
 
   useEffect(() => {
     handleGenerateQuote();
-  }, []);
+  }, [language]);
 
   const handleModeSelection = (newMode: "demotivate" | "excuses" | "8ball" | "distraction") => {
     setSelectedMode(newMode);
@@ -311,7 +311,7 @@ const Index = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ thought, language: "en" }),
+          body: JSON.stringify({ thought, language }),
         }
       );
 
