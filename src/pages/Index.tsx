@@ -142,13 +142,12 @@ const Index = () => {
     setEightBallAnswer("");
     setCatImage("");
     setSavings(null);
+    setShowInput(true);
     
     if (newMode === "8ball") {
       handle8Ball();
     } else if (newMode === "distraction") {
       handleDistraction();
-    } else {
-      setShowInput(true);
     }
   };
 
@@ -345,7 +344,6 @@ const Index = () => {
 
   const handle8Ball = () => {
     setMode("8ball");
-    setShowInput(false);
     const answers = eightBallAnswers[language];
     const randomAnswer = answers[Math.floor(Math.random() * answers.length)];
     setEightBallAnswer(randomAnswer);
@@ -355,7 +353,6 @@ const Index = () => {
   const handleDistraction = async () => {
     setIsLoading(true);
     setMode("distraction");
-    setShowInput(false);
     
     try {
       const response = await fetch("https://api.thecatapi.com/v1/images/search");
@@ -493,72 +490,130 @@ const Index = () => {
           </>
         ) : (
           <Card className="p-8 space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
-            <div className="space-y-3">
-              <label className="text-base font-semibold text-foreground">
-                {selectedMode === "demotivate" 
-                  ? t.demotivateLabel 
-                  : selectedMode === "excuses"
-                  ? t.excusesLabel
-                  : selectedMode === "8ball"
-                  ? "What decision are you facing?"
-                  : "What task are you procrastinating on?"}
-              </label>
-              <Textarea
-                value={thought}
-                onChange={(e) => setThought(e.target.value)}
-                placeholder={
-                  selectedMode === "demotivate" 
-                    ? t.demotivatePlaceholder 
-                    : selectedMode === "excuses"
-                    ? t.excusesPlaceholder
-                    : selectedMode === "8ball"
-                    ? "Describe your dilemma..."
-                    : "What do you need to avoid doing?"
-                }
-                className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
-                disabled={isLoading}
-              />
-            </div>
+            {selectedMode === "8ball" && eightBallAnswer ? (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-bold text-secondary text-center">
+                  {t.eightBallResultTitle}
+                </h2>
+                <div className="flex items-center justify-center py-8">
+                  <div className="w-48 h-48 rounded-full bg-gradient-to-br from-secondary to-secondary/50 flex items-center justify-center shadow-2xl border-4 border-secondary/30">
+                    <p className="text-2xl font-bold text-center text-secondary-foreground px-6">
+                      {eightBallAnswer}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <Button
+                    onClick={handleBack}
+                    variant="outline"
+                    className="font-bold h-12 text-base"
+                    size="lg"
+                  >
+                    {t.btnBack}
+                  </Button>
+                  <Button
+                    onClick={handle8Ball}
+                    className="flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold transition-all hover:scale-105"
+                    size="lg"
+                  >
+                    {t.btnNewAnswer}
+                  </Button>
+                </div>
+              </div>
+            ) : selectedMode === "distraction" && catImage ? (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-bold text-accent text-center">
+                  {t.distractionResultTitle}
+                </h2>
+                <div className="flex justify-center">
+                  <img 
+                    src={catImage} 
+                    alt="Cute cat" 
+                    className="max-w-full h-auto rounded-lg shadow-lg max-h-[500px] object-cover"
+                  />
+                </div>
+                <div className="flex gap-4">
+                  <Button
+                    onClick={handleBack}
+                    variant="outline"
+                    className="font-bold h-12 text-base"
+                    size="lg"
+                  >
+                    {t.btnBack}
+                  </Button>
+                  <Button
+                    onClick={handleDistraction}
+                    disabled={isLoading}
+                    className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground font-bold transition-all hover:scale-105"
+                    size="lg"
+                  >
+                    {isLoading && mode === "distraction" ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        {t.generating}
+                      </>
+                    ) : (
+                      t.btnNewCat
+                    )}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="space-y-3">
+                  <label className="text-base font-semibold text-foreground">
+                    {selectedMode === "demotivate" 
+                      ? t.demotivateLabel 
+                      : t.excusesLabel}
+                  </label>
+                  <Textarea
+                    value={thought}
+                    onChange={(e) => setThought(e.target.value)}
+                    placeholder={
+                      selectedMode === "demotivate" 
+                        ? t.demotivatePlaceholder 
+                        : t.excusesPlaceholder
+                    }
+                    className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
+                    disabled={isLoading}
+                  />
+                </div>
 
-            <div className="flex gap-4">
-              <Button
-                onClick={handleBack}
-                disabled={isLoading}
-                variant="outline"
-                className="font-bold h-12 text-base"
-                size="lg"
-              >
-                {t.btnBack}
-              </Button>
-              <Button
-                onClick={() => {
-                  if (selectedMode === "demotivate") handleDemotivate();
-                  else if (selectedMode === "excuses") handleGenerateExcuses();
-                  else if (selectedMode === "8ball") handleDemotivate(); // Reuse demotivate for now
-                  else if (selectedMode === "distraction") handleGenerateExcuses(); // Reuse excuses for now
-                }}
-                disabled={isLoading || !thought.trim()}
-                className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
-                  selectedMode === "demotivate"
-                    ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                    : selectedMode === "excuses"
-                    ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-                    : selectedMode === "8ball"
-                    ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
-                    : "bg-accent hover:bg-accent/90 text-accent-foreground"
-                }`}
-                size="lg"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    {mode === "quote" ? t.generating : t.thinking}
-                  </>
-                ) : (
-                  t.btnSubmit
-                )}
-              </Button>
-            </div>
+                <div className="flex gap-4">
+                  <Button
+                    onClick={handleBack}
+                    disabled={isLoading}
+                    variant="outline"
+                    className="font-bold h-12 text-base"
+                    size="lg"
+                  >
+                    {t.btnBack}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (selectedMode === "demotivate") handleDemotivate();
+                      else if (selectedMode === "excuses") handleGenerateExcuses();
+                    }}
+                    disabled={isLoading || !thought.trim()}
+                    className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
+                      selectedMode === "demotivate"
+                        ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                        : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                    }`}
+                    size="lg"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        {mode === "quote" ? t.generating : t.thinking}
+                      </>
+                    ) : (
+                      t.btnSubmit
+                    )}
+                  </Button>
+                </div>
+              </>
+            )}
           </Card>
         )}
 
@@ -669,65 +724,6 @@ const Index = () => {
           </Card>
         )}
 
-        {eightBallAnswer && (
-          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-secondary shadow-xl animate-fade-in">
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-secondary text-center">
-                {t.eightBallResultTitle}
-              </h2>
-              <div className="flex items-center justify-center py-8">
-                <div className="w-48 h-48 rounded-full bg-gradient-to-br from-secondary to-secondary/50 flex items-center justify-center shadow-2xl border-4 border-secondary/30">
-                  <p className="text-2xl font-bold text-center text-secondary-foreground px-6">
-                    {eightBallAnswer}
-                  </p>
-                </div>
-              </div>
-              <div className="flex justify-center">
-                <Button
-                  onClick={handle8Ball}
-                  className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold transition-all hover:scale-105"
-                  size="lg"
-                >
-                  {t.btnNewAnswer}
-                </Button>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {catImage && (
-          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-accent shadow-xl animate-fade-in">
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-accent text-center">
-                {t.distractionResultTitle}
-              </h2>
-              <div className="flex justify-center">
-                <img 
-                  src={catImage} 
-                  alt="Cute cat" 
-                  className="max-w-full h-auto rounded-lg shadow-lg max-h-[500px] object-cover"
-                />
-              </div>
-              <div className="flex justify-center">
-                <Button
-                  onClick={handleDistraction}
-                  disabled={isLoading}
-                  className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold transition-all hover:scale-105"
-                  size="lg"
-                >
-                  {isLoading && mode === "distraction" ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      {t.generating}
-                    </>
-                  ) : (
-                    t.btnNewCat
-                  )}
-                </Button>
-              </div>
-            </div>
-          </Card>
-        )}
       </div>
     </div>
   );
