@@ -86,7 +86,7 @@ const Index = () => {
       btnExcuses: "Δικαιολογίες",
       btnQuote: "Quote",
       btnAlternative: "Εναλλακτικά",
-      btnNewAnswer: "Νέα Απάντηση",
+      btnShakeBallAgain: "Shake the ball again",
       btnNewDistraction: "Νέος Περισπασμός",
       btnShakeBall: "Shake the ball",
       btnSubmit: "Υποβολή",
@@ -132,7 +132,7 @@ const Index = () => {
       btnExcuses: "Excuses",
       btnQuote: "Quote",
       btnAlternative: "Alternative",
-      btnNewAnswer: "New Answer",
+      btnShakeBallAgain: "Shake the ball again",
       btnNewDistraction: "New Distraction",
       btnShakeBall: "Shake the ball",
       btnSubmit: "Submit",
@@ -605,7 +605,7 @@ const Index = () => {
                     className="flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold transition-all hover:scale-105"
                     size="lg"
                   >
-                    {t.btnNewAnswer}
+                    {t.btnShakeBallAgain}
                   </Button>
                 </div>
               </div>
@@ -657,13 +657,13 @@ const Index = () => {
             ) : (
               <>
                 <div className="space-y-3">
-                  <label className="text-base font-semibold text-foreground">
-                    {selectedMode === "demotivate" 
-                      ? t.demotivateLabel 
-                      : selectedMode === "excuses"
-                      ? t.excusesLabel
-                      : t.eightBallLabel}
-                  </label>
+                  {selectedMode !== "8ball" && (
+                    <label className="text-base font-semibold text-foreground">
+                      {selectedMode === "demotivate" 
+                        ? t.demotivateLabel 
+                        : t.excusesLabel}
+                    </label>
+                  )}
                   <Textarea
                     value={thought}
                     onChange={(e) => setThought(e.target.value)}
