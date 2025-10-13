@@ -450,15 +450,28 @@ const Index = () => {
   return (
     <>
       <AlertDialog open={showPetDialog} onOpenChange={setShowPetDialog}>
-        <AlertDialogContent>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleBack}>{language === "el" ? "Ακύρωση" : "Cancel"}</AlertDialogCancel>
-            <AlertDialogAction onClick={() => handleDistraction("cat")}>
-              🐱
-            </AlertDialogAction>
-            <AlertDialogAction onClick={() => handleDistraction("dog")}>
-              🐶
-            </AlertDialogAction>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogFooter className="flex-col gap-4 sm:flex-col items-center justify-center pt-6">
+            <div className="flex gap-4 w-full justify-center">
+              <AlertDialogAction 
+                onClick={() => handleDistraction("cat")}
+                className="text-6xl h-32 w-32 hover:scale-110 transition-transform"
+              >
+                🐱
+              </AlertDialogAction>
+              <AlertDialogAction 
+                onClick={() => handleDistraction("dog")}
+                className="text-6xl h-32 w-32 hover:scale-110 transition-transform"
+              >
+                🐶
+              </AlertDialogAction>
+            </div>
+            <AlertDialogCancel 
+              onClick={handleBack}
+              className="w-full max-w-xs"
+            >
+              {language === "el" ? "Ακύρωση" : "Cancel"}
+            </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
