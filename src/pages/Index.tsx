@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { AlertCircle, Skull, Loader2, ThumbsDown, MessageSquare, HelpCircle, Cat } from "lucide-react";
+import { AlertCircle, Skull, Loader2, ThumbsDown, MessageSquare, Sparkles, Cat } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -539,7 +539,7 @@ const Index = () => {
               >
                 <div className="flex items-start gap-3 md:gap-4">
                   <div className="p-2 md:p-3 rounded-lg bg-secondary/10 group-hover:bg-secondary/20 transition-colors flex-shrink-0">
-                    <HelpCircle className="w-6 h-6 md:w-8 md:h-8 text-secondary" />
+                    <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-secondary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1 md:mb-2">{t.eightBallTitle}</h3>
