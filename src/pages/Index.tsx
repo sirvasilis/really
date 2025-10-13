@@ -596,6 +596,13 @@ const Index = () => {
                   </Button>
                 </div>
               </div>
+            ) : selectedMode === "distraction" && isLoading ? (
+              <div className="flex flex-col items-center justify-center gap-6 py-12">
+                <Loader2 className="w-16 h-16 text-accent animate-spin" />
+                <p className="text-xl font-semibold text-muted-foreground">
+                  {t.generating}...
+                </p>
+              </div>
             ) : selectedMode === "distraction" && catImage ? (
               <div className="space-y-6">
                 <h2 className="text-2xl font-bold text-accent text-center">
