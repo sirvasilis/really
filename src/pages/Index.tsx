@@ -15,7 +15,7 @@ const Index = () => {
   const [mode, setMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | "quote" | null>(null);
   const [selectedMode, setSelectedMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | null>(null);
   const [showInput, setShowInput] = useState(false);
-  const [language, setLanguage] = useState<"el" | "en">("el");
+  const [language, setLanguage] = useState<"el" | "en">("en");
   const { toast } = useToast();
 
   const translations = {
@@ -311,7 +311,7 @@ const Index = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ thought, language }),
+          body: JSON.stringify({ thought, language: "en" }),
         }
       );
 
@@ -404,16 +404,6 @@ const Index = () => {
                 <p className="text-muted-foreground">{t.distractionDesc}</p>
               </Card>
             </div>
-
-            {quote && (
-              <Card className="p-6 bg-card/50 backdrop-blur-sm border-2 border-muted shadow-xl animate-fade-in">
-                <div className="text-center space-y-2">
-                  <p className="text-lg italic text-muted-foreground leading-relaxed">
-                    "{quote}"
-                  </p>
-                </div>
-              </Card>
-            )}
           </>
         ) : (
           <Card className="p-8 space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
