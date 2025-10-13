@@ -461,7 +461,7 @@ const Index = () => {
               >
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-lg bg-destructive/10 group-hover:bg-destructive/20 transition-colors">
-                    <ThumbsDown className="w-8 h-8 text-destructive" />
+                    <ThumbsDown className="w-8 h-8 text-foreground" />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">{t.demotivateTitle}</h3>
@@ -476,7 +476,7 @@ const Index = () => {
               >
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                    <MessageSquare className="w-8 h-8 text-primary" />
+                    <MessageSquare className="w-8 h-8 text-foreground" />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">{t.excusesTitle}</h3>
@@ -491,7 +491,7 @@ const Index = () => {
               >
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-lg bg-secondary/10 group-hover:bg-secondary/20 transition-colors">
-                    <Sparkles className="w-8 h-8 text-secondary" />
+                    <Sparkles className="w-8 h-8 text-foreground" />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">{t.eightBallTitle}</h3>
@@ -506,7 +506,7 @@ const Index = () => {
               >
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
-                    <Cat className="w-8 h-8 text-accent" />
+                    <Cat className="w-8 h-8 text-foreground" />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">{t.distractionTitle}</h3>
