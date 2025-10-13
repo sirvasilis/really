@@ -4,6 +4,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { AlertCircle, Skull, Loader2, ThumbsDown, MessageSquare, Sparkles, Cat } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Index = () => {
   const [thought, setThought] = useState("");
@@ -18,6 +28,7 @@ const Index = () => {
   const [selectedMode, setSelectedMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | null>(null);
   const [showInput, setShowInput] = useState(false);
   const [language, setLanguage] = useState<"el" | "en">("en");
+  const [showPetDialog, setShowPetDialog] = useState(false);
   const { toast } = useToast();
 
   const eightBallAnswers = {
@@ -59,6 +70,10 @@ const Index = () => {
       eightBallDesc: "Άσε τη μοίρα να αποφασίσει γιατί δεν πρέπει να το κάνω",
       distractionTitle: "Περισπασμός",
       distractionDesc: "Περίσπασέ με για να μην το κάνω",
+      petDialogTitle: "Διάλεξε το ζωάκι σου",
+      petDialogDesc: "Τι θέλεις να δεις;",
+      petCat: "Γάτα",
+      petDog: "Σκύλο",
       demotivateLabel: "Πιστεύεις πως έχεις την ιδέα που θα σε κάνει πετυχημένο;",
       demotivatePlaceholder: "Γράψε εδώ ο,τι σκέφτεσαι και άσε την αλήθεια να σε προσγειώσει στην πραγματικότητα",
       excusesLabel: "Σε προσκάλεσαν σε κάτι που δεν συμβαδίζει με την μιζέρια σου;",
@@ -98,6 +113,10 @@ const Index = () => {
       eightBallDesc: "Let faith decide why I shouldn't do it",
       distractionTitle: "Distraction",
       distractionDesc: "Distract me so I don't do it",
+      petDialogTitle: "Choose your pet",
+      petDialogDesc: "What do you want to see?",
+      petCat: "Cat",
+      petDog: "Dog",
       demotivateLabel: "Do you believe you have the idea that will make you successful?",
       demotivatePlaceholder: "Write here whatever you're thinking and let the truth bring you back to reality",
       excusesLabel: "Were you invited to something that doesn't match your misery?",
@@ -147,7 +166,7 @@ const Index = () => {
     if (newMode === "8ball") {
       handle8Ball();
     } else if (newMode === "distraction") {
-      handleDistraction();
+      setShowPetDialog(true);
     }
   };
 
@@ -350,20 +369,30 @@ const Index = () => {
     setMode(null);
   };
 
-  const handleDistraction = async () => {
+  const handleDistraction = async (petType: "cat" | "dog") => {
+    setShowPetDialog(false);
     setIsLoading(true);
     setMode("distraction");
     
     try {
-      const response = await fetch("https://api.thecatapi.com/v1/images/search");
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-pet`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ petType }),
+        }
+      );
       
       if (!response.ok) {
-        throw new Error("Failed to fetch cat image");
+        throw new Error(`Failed to generate ${petType} image`);
       }
 
       const data = await response.json();
-      if (data && data[0] && data[0].url) {
-        setCatImage(data[0].url);
+      if (data && data.imageUrl) {
+        setCatImage(data.imageUrl);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -419,7 +448,26 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10 flex items-center justify-center p-4 relative">
+    <>
+      <AlertDialog open={showPetDialog} onOpenChange={setShowPetDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t.petDialogTitle}</AlertDialogTitle>
+            <AlertDialogDescription>{t.petDialogDesc}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{language === "el" ? "Ακύρωση" : "Cancel"}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => handleDistraction("cat")}>
+              {t.petCat} 🐱
+            </AlertDialogAction>
+            <AlertDialogAction onClick={() => handleDistraction("dog")}>
+              {t.petDog} 🐶
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10 flex items-center justify-center p-4 relative">
       <div className="absolute top-4 right-4 flex gap-2 z-10">
         <Button
           variant={language === "en" ? "default" : "outline"}
@@ -570,7 +618,7 @@ const Index = () => {
                     {t.btnBack}
                   </Button>
                   <Button
-                    onClick={handleDistraction}
+                    onClick={() => setShowPetDialog(true)}
                     disabled={isLoading}
                     className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground font-bold transition-all hover:scale-105"
                     size="lg"
@@ -772,7 +820,8 @@ const Index = () => {
         )}
 
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
