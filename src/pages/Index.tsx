@@ -21,15 +21,15 @@ const Index = () => {
   const translations = {
     el: {
       title: "DEMOTIVATOR",
-      subtitle: "Got dreams? Great! Let's treat them before they spread!",
-      demotivateTitle: "Demotivate",
-      demotivateDesc: "Convince me I shouldn't do it",
-      excusesTitle: "Excuses",
-      excusesDesc: "Convince someone else I shouldn't do it",
+      subtitle: "Έχεις όνειρα; Τέλεια! Ας τα θεραπεύσουμε πριν εξαπλωθούν!",
+      demotivateTitle: "Αποθάρρυνση",
+      demotivateDesc: "Πείσε με ότι δεν πρέπει να το κάνω",
+      excusesTitle: "Δικαιολογίες",
+      excusesDesc: "Πείσε κάποιον άλλο ότι δεν πρέπει να το κάνω",
       eightBallTitle: "8Ball",
-      eightBallDesc: "Let faith decide why I shouldn't do it",
-      distractionTitle: "Distraction",
-      distractionDesc: "Distract me so I don't do it",
+      eightBallDesc: "Άσε τη μοίρα να αποφασίσει γιατί δεν πρέπει να το κάνω",
+      distractionTitle: "Περισπασμός",
+      distractionDesc: "Περίσπασέ με για να μην το κάνω",
       demotivateLabel: "Πιστεύεις πως έχεις την ιδέα που θα σε κάνει πετυχημένο;",
       demotivatePlaceholder: "Γράψε εδώ ο,τι σκέφτεσαι και άσε την αλήθεια να σε προσγειώσει στην πραγματικότητα",
       excusesLabel: "Σε προσκάλεσαν σε κάτι που δεν συμβαδίζει με την μιζέρια σου;",
@@ -339,20 +339,20 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10 flex items-center justify-center p-4 relative">
       <div className="absolute top-4 right-4 flex gap-2 z-10">
         <Button
-          variant={language === "el" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setLanguage("el")}
-          className="font-bold"
-        >
-          ΕΛ
-        </Button>
-        <Button
           variant={language === "en" ? "default" : "outline"}
           size="sm"
           onClick={() => setLanguage("en")}
           className="font-bold"
         >
           EN
+        </Button>
+        <Button
+          variant={language === "el" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setLanguage("el")}
+          className="font-bold"
+        >
+          ΕΛ
         </Button>
       </div>
       <div className="w-full max-w-2xl space-y-8 animate-fade-in">
