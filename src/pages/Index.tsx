@@ -78,6 +78,8 @@ const Index = () => {
       demotivatePlaceholder: "Γράψε εδώ ο,τι σκέφτεσαι και άσε την αλήθεια να σε προσγειώσει στην πραγματικότητα",
       excusesLabel: "Σε προσκάλεσαν σε κάτι που δεν συμβαδίζει με την μιζέρια σου;",
       excusesPlaceholder: "Γράψε εδώ την πρόταση που σου έγινε και οι δικαιολογίες θα σε σώσουν απο το να συμμετέχεις σε κάτι που ίσως σε κάνει χαρούμενο",
+      eightBallLabel: "Ποια είναι η ιδέα σου;",
+      eightBallPlaceholder: "Γράψε την ιδέα σου εδώ",
       eightBallResultTitle: "Η Μοίρα Αποφάσισε",
       distractionResultTitle: "Απόλαυσε τη Διαφυγή",
       btnDemotivate: "Αποθάρρυνση",
@@ -86,6 +88,7 @@ const Index = () => {
       btnAlternative: "Εναλλακτικά",
       btnNewAnswer: "Νέα Απάντηση",
       btnNewDistraction: "Νέος Περισπασμός",
+      btnShakeBall: "Shake the ball",
       btnSubmit: "Υποβολή",
       btnBack: "Πίσω",
       thinking: "Σκέφτομαι...",
@@ -121,6 +124,8 @@ const Index = () => {
       demotivatePlaceholder: "Write here whatever you're thinking and let the truth bring you back to reality",
       excusesLabel: "Were you invited to something that doesn't match your misery?",
       excusesPlaceholder: "Write here the proposal you received and the excuses will save you from participating in something that might make you happy",
+      eightBallLabel: "What's your idea?",
+      eightBallPlaceholder: "Write your idea here",
       eightBallResultTitle: "Fate Has Decided",
       distractionResultTitle: "Enjoy Your Escape",
       btnDemotivate: "Demotivate",
@@ -129,6 +134,7 @@ const Index = () => {
       btnAlternative: "Alternative",
       btnNewAnswer: "New Answer",
       btnNewDistraction: "New Distraction",
+      btnShakeBall: "Shake the ball",
       btnSubmit: "Submit",
       btnBack: "Back",
       thinking: "Thinking...",
@@ -163,9 +169,7 @@ const Index = () => {
     setSavings(null);
     setShowInput(true);
     
-    if (newMode === "8ball") {
-      handle8Ball();
-    } else if (newMode === "distraction") {
+    if (newMode === "distraction") {
       setShowPetDialog(true);
     }
   };
@@ -656,7 +660,9 @@ const Index = () => {
                   <label className="text-base font-semibold text-foreground">
                     {selectedMode === "demotivate" 
                       ? t.demotivateLabel 
-                      : t.excusesLabel}
+                      : selectedMode === "excuses"
+                      ? t.excusesLabel
+                      : t.eightBallLabel}
                   </label>
                   <Textarea
                     value={thought}
@@ -664,7 +670,9 @@ const Index = () => {
                     placeholder={
                       selectedMode === "demotivate" 
                         ? t.demotivatePlaceholder 
-                        : t.excusesPlaceholder
+                        : selectedMode === "excuses"
+                        ? t.excusesPlaceholder
+                        : t.eightBallPlaceholder
                     }
                     className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
                     disabled={isLoading}
@@ -685,11 +693,14 @@ const Index = () => {
                     onClick={() => {
                       if (selectedMode === "demotivate") handleDemotivate();
                       else if (selectedMode === "excuses") handleGenerateExcuses();
+                      else if (selectedMode === "8ball") handle8Ball();
                     }}
                     disabled={isLoading || !thought.trim()}
                     className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
                       selectedMode === "demotivate"
                         ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                        : selectedMode === "8ball"
+                        ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
                         : "bg-primary hover:bg-primary/90 text-primary-foreground"
                     }`}
                     size="lg"
@@ -700,7 +711,7 @@ const Index = () => {
                         {mode === "quote" ? t.generating : t.thinking}
                       </>
                     ) : (
-                      t.btnSubmit
+                      selectedMode === "8ball" ? t.btnShakeBall : t.btnSubmit
                     )}
                   </Button>
                 </div>
