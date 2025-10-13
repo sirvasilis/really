@@ -582,7 +582,7 @@ const Index = () => {
             {selectedMode === "8ball" && eightBallAnswer ? (
               <div className="space-y-6">
                 <h2 className="text-2xl font-bold text-secondary text-center">
-                  {t.eightBallResultTitle}
+                  Should I {thought}
                 </h2>
                 <div className="flex items-center justify-center py-8">
                   <div className="w-48 h-48 rounded-full bg-gradient-to-br from-secondary to-secondary/50 flex items-center justify-center shadow-2xl border-4 border-secondary/30">
