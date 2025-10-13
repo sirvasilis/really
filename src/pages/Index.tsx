@@ -376,7 +376,7 @@ const Index = () => {
                 onClick={() => handleModeSelection("demotivate")}
                 className="p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive"
               >
-                <h3 className="text-2xl font-bold text-destructive mb-2">{t.demotivateTitle}</h3>
+                <h3 className="text-2xl font-bold text-foreground mb-2">{t.demotivateTitle}</h3>
                 <p className="text-muted-foreground">{t.demotivateDesc}</p>
               </Card>
               
@@ -384,7 +384,7 @@ const Index = () => {
                 onClick={() => handleModeSelection("excuses")}
                 className="p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-primary"
               >
-                <h3 className="text-2xl font-bold text-primary mb-2">{t.excusesTitle}</h3>
+                <h3 className="text-2xl font-bold text-foreground mb-2">{t.excusesTitle}</h3>
                 <p className="text-muted-foreground">{t.excusesDesc}</p>
               </Card>
               
@@ -392,7 +392,7 @@ const Index = () => {
                 onClick={() => handleModeSelection("8ball")}
                 className="p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-secondary"
               >
-                <h3 className="text-2xl font-bold text-secondary-foreground mb-2">{t.eightBallTitle}</h3>
+                <h3 className="text-2xl font-bold text-foreground mb-2">{t.eightBallTitle}</h3>
                 <p className="text-muted-foreground">{t.eightBallDesc}</p>
               </Card>
               
@@ -400,7 +400,7 @@ const Index = () => {
                 onClick={() => handleModeSelection("distraction")}
                 className="p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-accent"
               >
-                <h3 className="text-2xl font-bold text-accent-foreground mb-2">{t.distractionTitle}</h3>
+                <h3 className="text-2xl font-bold text-foreground mb-2">{t.distractionTitle}</h3>
                 <p className="text-muted-foreground">{t.distractionDesc}</p>
               </Card>
             </div>
