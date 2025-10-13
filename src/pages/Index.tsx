@@ -458,10 +458,10 @@ const Index = () => {
           <AlertDialogFooter>
             <AlertDialogCancel onClick={handleBack}>{language === "el" ? "Ακύρωση" : "Cancel"}</AlertDialogCancel>
             <AlertDialogAction onClick={() => handleDistraction("cat")}>
-              {t.petCat} 🐱
+              🐱
             </AlertDialogAction>
             <AlertDialogAction onClick={() => handleDistraction("dog")}>
-              {t.petDog} 🐶
+              🐶
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
