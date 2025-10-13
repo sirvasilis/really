@@ -524,7 +524,7 @@ const Index = () => {
               >
                 <div className="flex items-start gap-3 md:gap-4">
                   <div className="p-2 md:p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                    <MessageSquare className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+                    <MessageSquare className="w-6 h-6 md:w-8 md:h-8 text-destructive" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1 md:mb-2">{t.excusesTitle}</h3>
@@ -539,7 +539,7 @@ const Index = () => {
               >
                 <div className="flex items-start gap-3 md:gap-4">
                   <div className="p-2 md:p-3 rounded-lg bg-secondary/10 group-hover:bg-secondary/20 transition-colors flex-shrink-0">
-                    <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-secondary" />
+                    <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-destructive" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1 md:mb-2">{t.eightBallTitle}</h3>
@@ -554,7 +554,7 @@ const Index = () => {
               >
                 <div className="flex items-start gap-3 md:gap-4">
                   <div className="p-2 md:p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors flex-shrink-0">
-                    <Cat className="w-6 h-6 md:w-8 md:h-8 text-accent" />
+                    <Cat className="w-6 h-6 md:w-8 md:h-8 text-destructive" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1 md:mb-2">{t.distractionTitle}</h3>
