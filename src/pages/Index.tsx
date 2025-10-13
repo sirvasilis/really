@@ -104,6 +104,7 @@ const Index = () => {
       savingsMoney: "Χαμένα χρήματα",
       savingsTime: "Χαμένος χρόνος",
       savingsStress: "Επιπλέον άγχος",
+      shouldI: "Να",
     },
     en: {
       title: "DEMOTIVATOR",
@@ -148,6 +149,7 @@ const Index = () => {
       excusesResultTitle: "Your Excuses",
       savingsTitle: "I saved you from...",
       savingsMoney: "Wasted money",
+      shouldI: "Should I",
       savingsTime: "Wasted time",
       savingsStress: "Extra stress",
     }
@@ -582,7 +584,7 @@ const Index = () => {
             {selectedMode === "8ball" && eightBallAnswer ? (
               <div className="space-y-6">
                 <h2 className="text-2xl font-bold text-secondary text-center">
-                  Should I {thought}
+                  {t.shouldI} {thought}
                 </h2>
                 <div className="flex items-center justify-center py-8">
                   <div className="w-48 h-48 rounded-full bg-gradient-to-br from-secondary to-secondary/50 flex items-center justify-center shadow-2xl border-4 border-secondary/30">
