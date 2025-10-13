@@ -676,7 +676,7 @@ const Index = () => {
           </Card>
         )}
 
-        {quote && (
+        {!showInput && !selectedMode && quote && (
           <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-secondary shadow-xl animate-fade-in">
             <div className="flex items-center justify-center gap-4 py-6">
               <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
