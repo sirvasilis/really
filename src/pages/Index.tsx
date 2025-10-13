@@ -63,10 +63,6 @@ const Index = () => {
       demotivatePlaceholder: "Γράψε εδώ ο,τι σκέφτεσαι και άσε την αλήθεια να σε προσγειώσει στην πραγματικότητα",
       excusesLabel: "Σε προσκάλεσαν σε κάτι που δεν συμβαδίζει με την μιζέρια σου;",
       excusesPlaceholder: "Γράψε εδώ την πρόταση που σου έγινε και οι δικαιολογίες θα σε σώσουν απο το να συμμετέχεις σε κάτι που ίσως σε κάνει χαρούμενο",
-      eightBallLabel: "Έτοιμος να ακούσεις την αλήθεια;",
-      eightBallPlaceholder: "Δεν χρειάζεται να γράψεις τίποτα... Απλά πάτα το κουμπί",
-      distractionLabel: "Χρειάζεσαι μια διαφυγή;",
-      distractionPlaceholder: "Δεν χρειάζεται να γράψεις τίποτα... Απλά πάτα το κουμπί",
       eightBallResultTitle: "Η Μοίρα Αποφάσισε",
       distractionResultTitle: "Απόλαυσε τη Διαφυγή",
       btnDemotivate: "Αποθάρρυνση",
@@ -106,10 +102,6 @@ const Index = () => {
       demotivatePlaceholder: "Write here whatever you're thinking and let the truth bring you back to reality",
       excusesLabel: "Were you invited to something that doesn't match your misery?",
       excusesPlaceholder: "Write here the proposal you received and the excuses will save you from participating in something that might make you happy",
-      eightBallLabel: "Ready to hear the truth?",
-      eightBallPlaceholder: "You don't need to write anything... Just press the button",
-      distractionLabel: "Need an escape?",
-      distractionPlaceholder: "You don't need to write anything... Just press the button",
       eightBallResultTitle: "Fate Has Decided",
       distractionResultTitle: "Enjoy Your Escape",
       btnDemotivate: "Demotivate",
@@ -144,13 +136,20 @@ const Index = () => {
 
   const handleModeSelection = (newMode: "demotivate" | "excuses" | "8ball" | "distraction") => {
     setSelectedMode(newMode);
-    setShowInput(true);
     setThought("");
     setDemotivation("");
     setExcuses("");
     setEightBallAnswer("");
     setCatImage("");
     setSavings(null);
+    
+    if (newMode === "8ball") {
+      handle8Ball();
+    } else if (newMode === "distraction") {
+      handleDistraction();
+    } else {
+      setShowInput(true);
+    }
   };
 
   const handleBack = () => {
@@ -346,6 +345,7 @@ const Index = () => {
 
   const handle8Ball = () => {
     setMode("8ball");
+    setShowInput(false);
     const answers = eightBallAnswers[language];
     const randomAnswer = answers[Math.floor(Math.random() * answers.length)];
     setEightBallAnswer(randomAnswer);
@@ -355,6 +355,7 @@ const Index = () => {
   const handleDistraction = async () => {
     setIsLoading(true);
     setMode("distraction");
+    setShowInput(false);
     
     try {
       const response = await fetch("https://api.thecatapi.com/v1/images/search");
@@ -499,26 +500,24 @@ const Index = () => {
                   : selectedMode === "excuses"
                   ? t.excusesLabel
                   : selectedMode === "8ball"
-                  ? t.eightBallLabel
-                  : t.distractionLabel}
+                  ? "What decision are you facing?"
+                  : "What task are you procrastinating on?"}
               </label>
-              {(selectedMode === "demotivate" || selectedMode === "excuses") ? (
-                <Textarea
-                  value={thought}
-                  onChange={(e) => setThought(e.target.value)}
-                  placeholder={
-                    selectedMode === "demotivate" 
-                      ? t.demotivatePlaceholder 
-                      : t.excusesPlaceholder
-                  }
-                  className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
-                  disabled={isLoading}
-                />
-              ) : (
-                <div className="min-h-36 bg-background/50 border-2 border-border rounded-md p-4 flex items-center justify-center text-muted-foreground text-center">
-                  {selectedMode === "8ball" ? t.eightBallPlaceholder : t.distractionPlaceholder}
-                </div>
-              )}
+              <Textarea
+                value={thought}
+                onChange={(e) => setThought(e.target.value)}
+                placeholder={
+                  selectedMode === "demotivate" 
+                    ? t.demotivatePlaceholder 
+                    : selectedMode === "excuses"
+                    ? t.excusesPlaceholder
+                    : selectedMode === "8ball"
+                    ? "Describe your dilemma..."
+                    : "What do you need to avoid doing?"
+                }
+                className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
+                disabled={isLoading}
+              />
             </div>
 
             <div className="flex gap-4">
@@ -535,10 +534,10 @@ const Index = () => {
                 onClick={() => {
                   if (selectedMode === "demotivate") handleDemotivate();
                   else if (selectedMode === "excuses") handleGenerateExcuses();
-                  else if (selectedMode === "8ball") handle8Ball();
-                  else if (selectedMode === "distraction") handleDistraction();
+                  else if (selectedMode === "8ball") handleDemotivate(); // Reuse demotivate for now
+                  else if (selectedMode === "distraction") handleGenerateExcuses(); // Reuse excuses for now
                 }}
-                disabled={isLoading || (selectedMode === "demotivate" || selectedMode === "excuses") && !thought.trim()}
+                disabled={isLoading || !thought.trim()}
                 className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
                   selectedMode === "demotivate"
                     ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
