@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { AlertCircle, Skull, Loader2 } from "lucide-react";
+import { AlertCircle, Skull, Loader2, ThumbsDown, MessageSquare, Sparkles, Cat } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -454,37 +454,65 @@ const Index = () => {
 
         {!showInput ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card 
                 onClick={() => handleModeSelection("demotivate")}
-                className="p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive"
+                className="group p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl"
               >
-                <h3 className="text-2xl font-bold text-foreground mb-2">{t.demotivateTitle}</h3>
-                <p className="text-muted-foreground">{t.demotivateDesc}</p>
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-lg bg-destructive/10 group-hover:bg-destructive/20 transition-colors">
+                    <ThumbsDown className="w-8 h-8 text-destructive" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">{t.demotivateTitle}</h3>
+                    <p className="text-sm md:text-base text-muted-foreground">{t.demotivateDesc}</p>
+                  </div>
+                </div>
               </Card>
               
               <Card 
                 onClick={() => handleModeSelection("excuses")}
-                className="p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-primary"
+                className="group p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-primary hover:shadow-2xl"
               >
-                <h3 className="text-2xl font-bold text-foreground mb-2">{t.excusesTitle}</h3>
-                <p className="text-muted-foreground">{t.excusesDesc}</p>
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                    <MessageSquare className="w-8 h-8 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">{t.excusesTitle}</h3>
+                    <p className="text-sm md:text-base text-muted-foreground">{t.excusesDesc}</p>
+                  </div>
+                </div>
               </Card>
               
               <Card 
                 onClick={() => handleModeSelection("8ball")}
-                className="p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-secondary"
+                className="group p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-secondary hover:shadow-2xl"
               >
-                <h3 className="text-2xl font-bold text-foreground mb-2">{t.eightBallTitle}</h3>
-                <p className="text-muted-foreground">{t.eightBallDesc}</p>
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-lg bg-secondary/10 group-hover:bg-secondary/20 transition-colors">
+                    <Sparkles className="w-8 h-8 text-secondary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">{t.eightBallTitle}</h3>
+                    <p className="text-sm md:text-base text-muted-foreground">{t.eightBallDesc}</p>
+                  </div>
+                </div>
               </Card>
               
               <Card 
                 onClick={() => handleModeSelection("distraction")}
-                className="p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-accent"
+                className="group p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-accent hover:shadow-2xl"
               >
-                <h3 className="text-2xl font-bold text-foreground mb-2">{t.distractionTitle}</h3>
-                <p className="text-muted-foreground">{t.distractionDesc}</p>
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
+                    <Cat className="w-8 h-8 text-accent" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">{t.distractionTitle}</h3>
+                    <p className="text-sm md:text-base text-muted-foreground">{t.distractionDesc}</p>
+                  </div>
+                </div>
               </Card>
             </div>
           </>
