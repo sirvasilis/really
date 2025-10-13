@@ -10,6 +10,8 @@ const Index = () => {
   const [demotivation, setDemotivation] = useState("");
   const [excuses, setExcuses] = useState("");
   const [quote, setQuote] = useState("");
+  const [eightBallAnswer, setEightBallAnswer] = useState("");
+  const [catImage, setCatImage] = useState("");
   const [savings, setSavings] = useState<{ money: number; time: number; stress: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | "quote" | null>(null);
@@ -17,6 +19,33 @@ const Index = () => {
   const [showInput, setShowInput] = useState(false);
   const [language, setLanguage] = useState<"el" | "en">("en");
   const { toast } = useToast();
+
+  const eightBallAnswers = {
+    el: [
+      "Σίγουρα όχι",
+      "Καλύτερα μην το κάνεις",
+      "Μην το ρισκάρεις",
+      "Ξεχνά το",
+      "Δεν το βλέπω",
+      "Απίθανο",
+      "Κακή ιδέα",
+      "Οι πιθανότητες είναι εναντίον σου",
+      "Μην το σκέφτεσαι καν",
+      "Αποφάσισε αργότερα"
+    ],
+    en: [
+      "Definitely not",
+      "Better not",
+      "Don't risk it",
+      "Forget it",
+      "I don't see it",
+      "Unlikely",
+      "Bad idea",
+      "Odds are against you",
+      "Don't even think about it",
+      "Decide later"
+    ]
+  };
 
   const translations = {
     el: {
@@ -34,10 +63,14 @@ const Index = () => {
       demotivatePlaceholder: "Γράψε εδώ ο,τι σκέφτεσαι και άσε την αλήθεια να σε προσγειώσει στην πραγματικότητα",
       excusesLabel: "Σε προσκάλεσαν σε κάτι που δεν συμβαδίζει με την μιζέρια σου;",
       excusesPlaceholder: "Γράψε εδώ την πρόταση που σου έγινε και οι δικαιολογίες θα σε σώσουν απο το να συμμετέχεις σε κάτι που ίσως σε κάνει χαρούμενο",
+      eightBallResultTitle: "Η Μοίρα Αποφάσισε",
+      distractionResultTitle: "Απόλαυσε τη Διαφυγή",
       btnDemotivate: "Αποθάρρυνση",
       btnExcuses: "Δικαιολογίες",
       btnQuote: "Quote",
       btnAlternative: "Εναλλακτικά",
+      btnNewAnswer: "Νέα Απάντηση",
+      btnNewCat: "Νέο Γατάκι",
       btnSubmit: "Υποβολή",
       btnBack: "Πίσω",
       thinking: "Σκέφτομαι...",
@@ -69,10 +102,14 @@ const Index = () => {
       demotivatePlaceholder: "Write here whatever you're thinking and let the truth bring you back to reality",
       excusesLabel: "Were you invited to something that doesn't match your misery?",
       excusesPlaceholder: "Write here the proposal you received and the excuses will save you from participating in something that might make you happy",
+      eightBallResultTitle: "Fate Has Decided",
+      distractionResultTitle: "Enjoy Your Escape",
       btnDemotivate: "Demotivate",
       btnExcuses: "Excuses",
       btnQuote: "Quote",
       btnAlternative: "Alternative",
+      btnNewAnswer: "New Answer",
+      btnNewCat: "New Cat",
       btnSubmit: "Submit",
       btnBack: "Back",
       thinking: "Thinking...",
@@ -99,11 +136,20 @@ const Index = () => {
 
   const handleModeSelection = (newMode: "demotivate" | "excuses" | "8ball" | "distraction") => {
     setSelectedMode(newMode);
-    setShowInput(true);
     setThought("");
     setDemotivation("");
     setExcuses("");
+    setEightBallAnswer("");
+    setCatImage("");
     setSavings(null);
+    
+    if (newMode === "8ball") {
+      handle8Ball();
+    } else if (newMode === "distraction") {
+      handleDistraction();
+    } else {
+      setShowInput(true);
+    }
   };
 
   const handleBack = () => {
@@ -112,6 +158,8 @@ const Index = () => {
     setThought("");
     setDemotivation("");
     setExcuses("");
+    setEightBallAnswer("");
+    setCatImage("");
     setSavings(null);
   };
 
@@ -281,6 +329,44 @@ const Index = () => {
             console.error("JSON parse error:", e);
           }
         }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: t.errorTitle,
+        description: error instanceof Error ? error.message : t.errorDesc,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+      setMode(null);
+    }
+  };
+
+  const handle8Ball = () => {
+    setMode("8ball");
+    setShowInput(false);
+    const answers = eightBallAnswers[language];
+    const randomAnswer = answers[Math.floor(Math.random() * answers.length)];
+    setEightBallAnswer(randomAnswer);
+    setMode(null);
+  };
+
+  const handleDistraction = async () => {
+    setIsLoading(true);
+    setMode("distraction");
+    setShowInput(false);
+    
+    try {
+      const response = await fetch("https://api.thecatapi.com/v1/images/search");
+      
+      if (!response.ok) {
+        throw new Error("Failed to fetch cat image");
+      }
+
+      const data = await response.json();
+      if (data && data[0] && data[0].url) {
+        setCatImage(data[0].url);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -578,6 +664,66 @@ const Index = () => {
                     {t.savingsStress}
                   </div>
                 </div>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {eightBallAnswer && (
+          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-secondary shadow-xl animate-fade-in">
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-secondary text-center">
+                {t.eightBallResultTitle}
+              </h2>
+              <div className="flex items-center justify-center py-8">
+                <div className="w-48 h-48 rounded-full bg-gradient-to-br from-secondary to-secondary/50 flex items-center justify-center shadow-2xl border-4 border-secondary/30">
+                  <p className="text-2xl font-bold text-center text-secondary-foreground px-6">
+                    {eightBallAnswer}
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <Button
+                  onClick={handle8Ball}
+                  className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold transition-all hover:scale-105"
+                  size="lg"
+                >
+                  {t.btnNewAnswer}
+                </Button>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {catImage && (
+          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-accent shadow-xl animate-fade-in">
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-accent text-center">
+                {t.distractionResultTitle}
+              </h2>
+              <div className="flex justify-center">
+                <img 
+                  src={catImage} 
+                  alt="Cute cat" 
+                  className="max-w-full h-auto rounded-lg shadow-lg max-h-[500px] object-cover"
+                />
+              </div>
+              <div className="flex justify-center">
+                <Button
+                  onClick={handleDistraction}
+                  disabled={isLoading}
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold transition-all hover:scale-105"
+                  size="lg"
+                >
+                  {isLoading && mode === "distraction" ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      {t.generating}
+                    </>
+                  ) : (
+                    t.btnNewCat
+                  )}
+                </Button>
               </div>
             </div>
           </Card>
