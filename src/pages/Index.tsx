@@ -451,10 +451,6 @@ const Index = () => {
     <>
       <AlertDialog open={showPetDialog} onOpenChange={setShowPetDialog}>
         <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t.petDialogTitle}</AlertDialogTitle>
-            <AlertDialogDescription>{t.petDialogDesc}</AlertDialogDescription>
-          </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={handleBack}>{language === "el" ? "Ακύρωση" : "Cancel"}</AlertDialogCancel>
             <AlertDialogAction onClick={() => handleDistraction("cat")}>
