@@ -12,8 +12,8 @@ const Index = () => {
   const [quote, setQuote] = useState("");
   const [savings, setSavings] = useState<{ money: number; time: number; stress: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [mode, setMode] = useState<"demotivate" | "excuses" | "quote" | null>(null);
-  const [selectedMode, setSelectedMode] = useState<"demotivate" | "excuses" | null>(null);
+  const [mode, setMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | "quote" | null>(null);
+  const [selectedMode, setSelectedMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | null>(null);
   const [showInput, setShowInput] = useState(false);
   const [language, setLanguage] = useState<"el" | "en">("el");
   const { toast } = useToast();
@@ -21,7 +21,15 @@ const Index = () => {
   const translations = {
     el: {
       title: "DEMOTIVATOR",
-      subtitle: "Μοιράσου τα όνειρά σου. Θα σου εξηγήσω γιατί δεν θα τα καταφέρεις.",
+      subtitle: "Got dreams? Great! Let's treat them before they spread!",
+      demotivateTitle: "Demotivate",
+      demotivateDesc: "Convince me I shouldn't do it",
+      excusesTitle: "Excuses",
+      excusesDesc: "Convince someone else I shouldn't do it",
+      eightBallTitle: "8Ball",
+      eightBallDesc: "Let faith decide why I shouldn't do it",
+      distractionTitle: "Distraction",
+      distractionDesc: "Distract me so I don't do it",
       demotivateLabel: "Πιστεύεις πως έχεις την ιδέα που θα σε κάνει πετυχημένο;",
       demotivatePlaceholder: "Γράψε εδώ ο,τι σκέφτεσαι και άσε την αλήθεια να σε προσγειώσει στην πραγματικότητα",
       excusesLabel: "Σε προσκάλεσαν σε κάτι που δεν συμβαδίζει με την μιζέρια σου;",
@@ -40,7 +48,7 @@ const Index = () => {
       emptyDemotivate: "Πώς να σε αποθαρρύνω αν δεν μου πεις τι ονειρεύεσαι;",
       emptyExcuses: "Πώς να δημιουργήσω δικαιολογίες αν δεν μου πεις την πρόταση;",
       truthTitle: "Η Σκληρή Αλήθεια",
-      excusesTitle: "Οι Δικαιολογίες σου",
+      excusesResultTitle: "Οι Δικαιολογίες σου",
       savingsTitle: "Σε γλίτωσα από...",
       savingsMoney: "Χαμένα χρήματα",
       savingsTime: "Χαμένος χρόνος",
@@ -48,7 +56,15 @@ const Index = () => {
     },
     en: {
       title: "DEMOTIVATOR",
-      subtitle: "Share your dreams. I'll explain why you won't make it.",
+      subtitle: "Got dreams? Great! Let's treat them before they spread!",
+      demotivateTitle: "Demotivate",
+      demotivateDesc: "Convince me I shouldn't do it",
+      excusesTitle: "Excuses",
+      excusesDesc: "Convince someone else I shouldn't do it",
+      eightBallTitle: "8Ball",
+      eightBallDesc: "Let faith decide why I shouldn't do it",
+      distractionTitle: "Distraction",
+      distractionDesc: "Distract me so I don't do it",
       demotivateLabel: "Do you believe you have the idea that will make you successful?",
       demotivatePlaceholder: "Write here whatever you're thinking and let the truth bring you back to reality",
       excusesLabel: "Were you invited to something that doesn't match your misery?",
@@ -67,7 +83,7 @@ const Index = () => {
       emptyDemotivate: "How can I demotivate you if you don't tell me what you're dreaming of?",
       emptyExcuses: "How can I generate excuses if you don't tell me the proposal?",
       truthTitle: "The Harsh Truth",
-      excusesTitle: "Your Excuses",
+      excusesResultTitle: "Your Excuses",
       savingsTitle: "I saved you from...",
       savingsMoney: "Wasted money",
       savingsTime: "Wasted time",
@@ -81,13 +97,12 @@ const Index = () => {
     handleGenerateQuote();
   }, []);
 
-  const handleModeSelection = (newMode: "demotivate" | "excuses") => {
+  const handleModeSelection = (newMode: "demotivate" | "excuses" | "8ball" | "distraction") => {
     setSelectedMode(newMode);
     setShowInput(true);
     setThought("");
     setDemotivation("");
     setExcuses("");
-    setQuote("");
     setSavings(null);
   };
 
@@ -97,7 +112,6 @@ const Index = () => {
     setThought("");
     setDemotivation("");
     setExcuses("");
-    setQuote("");
     setSavings(null);
   };
 
@@ -356,34 +370,75 @@ const Index = () => {
         </header>
 
         {!showInput ? (
-          <Card className="p-8 space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
+          <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Button
+              <Card 
                 onClick={() => handleModeSelection("demotivate")}
-                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold h-16 text-lg transition-all hover:scale-105"
-                size="lg"
+                className="p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive"
               >
-                {t.btnDemotivate}
-              </Button>
-              <Button
+                <h3 className="text-2xl font-bold text-destructive mb-2">{t.demotivateTitle}</h3>
+                <p className="text-muted-foreground">{t.demotivateDesc}</p>
+              </Card>
+              
+              <Card 
                 onClick={() => handleModeSelection("excuses")}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-16 text-lg transition-all hover:scale-105"
-                size="lg"
+                className="p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-primary"
               >
-                {t.btnExcuses}
-              </Button>
+                <h3 className="text-2xl font-bold text-primary mb-2">{t.excusesTitle}</h3>
+                <p className="text-muted-foreground">{t.excusesDesc}</p>
+              </Card>
+              
+              <Card 
+                onClick={() => handleModeSelection("8ball")}
+                className="p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-secondary"
+              >
+                <h3 className="text-2xl font-bold text-secondary-foreground mb-2">{t.eightBallTitle}</h3>
+                <p className="text-muted-foreground">{t.eightBallDesc}</p>
+              </Card>
+              
+              <Card 
+                onClick={() => handleModeSelection("distraction")}
+                className="p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-accent"
+              >
+                <h3 className="text-2xl font-bold text-accent-foreground mb-2">{t.distractionTitle}</h3>
+                <p className="text-muted-foreground">{t.distractionDesc}</p>
+              </Card>
             </div>
-          </Card>
+
+            {quote && (
+              <Card className="p-6 bg-card/50 backdrop-blur-sm border-2 border-muted shadow-xl animate-fade-in">
+                <div className="text-center space-y-2">
+                  <p className="text-lg italic text-muted-foreground leading-relaxed">
+                    "{quote}"
+                  </p>
+                </div>
+              </Card>
+            )}
+          </>
         ) : (
           <Card className="p-8 space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
             <div className="space-y-3">
               <label className="text-base font-semibold text-foreground">
-                {selectedMode === "demotivate" ? t.demotivateLabel : t.excusesLabel}
+                {selectedMode === "demotivate" 
+                  ? t.demotivateLabel 
+                  : selectedMode === "excuses"
+                  ? t.excusesLabel
+                  : selectedMode === "8ball"
+                  ? "What decision are you facing?"
+                  : "What task are you procrastinating on?"}
               </label>
               <Textarea
                 value={thought}
                 onChange={(e) => setThought(e.target.value)}
-                placeholder={selectedMode === "demotivate" ? t.demotivatePlaceholder : t.excusesPlaceholder}
+                placeholder={
+                  selectedMode === "demotivate" 
+                    ? t.demotivatePlaceholder 
+                    : selectedMode === "excuses"
+                    ? t.excusesPlaceholder
+                    : selectedMode === "8ball"
+                    ? "Describe your dilemma..."
+                    : "What do you need to avoid doing?"
+                }
                 className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
                 disabled={isLoading}
               />
@@ -403,6 +458,8 @@ const Index = () => {
                 onClick={() => {
                   if (selectedMode === "demotivate") handleDemotivate();
                   else if (selectedMode === "excuses") handleGenerateExcuses();
+                  else if (selectedMode === "8ball") handleDemotivate(); // Reuse demotivate for now
+                  else if (selectedMode === "distraction") handleGenerateExcuses(); // Reuse excuses for now
                 }}
                 disabled={isLoading || !thought.trim()}
                 className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
@@ -410,7 +467,9 @@ const Index = () => {
                     ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                     : selectedMode === "excuses"
                     ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-                    : "bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+                    : selectedMode === "8ball"
+                    ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                    : "bg-accent hover:bg-accent/90 text-accent-foreground"
                 }`}
                 size="lg"
               >
@@ -462,7 +521,7 @@ const Index = () => {
           <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
             <div className="space-y-4">
               <h2 className="text-2xl font-bold text-primary">
-                {t.excusesTitle}
+                {t.excusesResultTitle}
               </h2>
               <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-lg">
                 {excuses}
