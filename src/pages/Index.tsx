@@ -85,7 +85,7 @@ const Index = () => {
       btnQuote: "Quote",
       btnAlternative: "Εναλλακτικά",
       btnNewAnswer: "Νέα Απάντηση",
-      btnNewCat: "Νέο Γατάκι",
+      btnNewDistraction: "Νέος Περισπασμός",
       btnSubmit: "Υποβολή",
       btnBack: "Πίσω",
       thinking: "Σκέφτομαι...",
@@ -128,7 +128,7 @@ const Index = () => {
       btnQuote: "Quote",
       btnAlternative: "Alternative",
       btnNewAnswer: "New Answer",
-      btnNewCat: "New Cat",
+      btnNewDistraction: "New Distraction",
       btnSubmit: "Submit",
       btnBack: "Back",
       thinking: "Thinking...",
@@ -645,7 +645,7 @@ const Index = () => {
                         {t.generating}
                       </>
                     ) : (
-                      t.btnNewCat
+                      t.btnNewDistraction
                     )}
                   </Button>
                 </div>
