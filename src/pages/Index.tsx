@@ -584,25 +584,25 @@ const Index = () => {
   return (
     <>
       <AlertDialog open={showPetDialog} onOpenChange={setShowPetDialog}>
-        <AlertDialogContent className="max-w-md">
+        <AlertDialogContent className="max-w-md mx-4">
           <AlertDialogFooter className="flex-col gap-4 sm:flex-col items-center justify-center pt-6">
-            <div className="flex gap-4 w-full justify-center">
+            <div className="flex gap-3 md:gap-4 w-full justify-center">
               <AlertDialogAction 
                 onClick={() => handleDistraction("cat")}
-                className="text-6xl h-32 w-32 hover:scale-110 transition-transform"
+                className="text-5xl md:text-6xl h-24 w-24 md:h-32 md:w-32 hover:scale-110 transition-transform"
               >
                 🐱
               </AlertDialogAction>
               <AlertDialogAction 
                 onClick={() => handleDistraction("dog")}
-                className="text-6xl h-32 w-32 hover:scale-110 transition-transform"
+                className="text-5xl md:text-6xl h-24 w-24 md:h-32 md:w-32 hover:scale-110 transition-transform"
               >
                 🐶
               </AlertDialogAction>
             </div>
             <AlertDialogCancel 
               onClick={handleBack}
-              className="w-full max-w-xs"
+              className="w-full max-w-xs text-sm md:text-base"
             >
               {language === "el" ? "Ακύρωση" : "Cancel"}
             </AlertDialogCancel>
@@ -617,7 +617,7 @@ const Index = () => {
           variant={language === "en" ? "default" : "outline"}
           size="sm"
           onClick={() => setLanguage("en")}
-          className="font-bold text-xs md:text-sm"
+          className="font-bold text-sm md:text-base min-w-[50px]"
         >
           EN
         </Button>
@@ -625,21 +625,21 @@ const Index = () => {
           variant={language === "el" ? "default" : "outline"}
           size="sm"
           onClick={() => setLanguage("el")}
-          className="font-bold text-xs md:text-sm"
+          className="font-bold text-sm md:text-base min-w-[50px]"
         >
           ΕΛ
         </Button>
       </div>
-      <div className="w-full max-w-2xl space-y-8 animate-fade-in pt-16 md:pt-0">
-        <header className="text-center space-y-4 md:space-y-6 px-2">
+      <div className="w-full max-w-2xl space-y-6 md:space-y-8 animate-fade-in pt-20 md:pt-0">
+        <header className="text-center space-y-3 md:space-y-6 px-2">
           <div className="flex items-center justify-center gap-2 md:gap-4">
-            <Skull className="w-8 h-8 md:w-14 md:h-14 text-destructive animate-pulse flex-shrink-0" />
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-foreground tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+            <Skull className="w-7 h-7 md:w-14 md:h-14 text-destructive animate-pulse flex-shrink-0" />
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-foreground tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
               {t.title}
             </h1>
-            <Skull className="w-8 h-8 md:w-14 md:h-14 text-destructive animate-pulse flex-shrink-0" />
+            <Skull className="w-7 h-7 md:w-14 md:h-14 text-destructive animate-pulse flex-shrink-0" />
           </div>
-          <p className="text-muted-foreground text-sm sm:text-base md:text-xl max-w-2xl mx-auto leading-relaxed">
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto leading-relaxed px-4">
             {t.subtitle}
           </p>
         </header>
@@ -739,31 +739,31 @@ const Index = () => {
             </div>
           </>
         ) : (
-          <Card className="p-8 space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
+          <Card className="p-4 md:p-8 space-y-4 md:space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
             {selectedMode === "8ball" && eightBallAnswer ? (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-secondary text-center">
+              <div className="space-y-4 md:space-y-6">
+                <h2 className="text-lg md:text-2xl font-bold text-secondary text-center px-2">
                   {t.shouldI} {thought}
                 </h2>
-                <div className="flex items-center justify-center py-8">
-                  <div className="w-48 h-48 rounded-full bg-gradient-to-br from-secondary to-secondary/50 flex items-center justify-center shadow-2xl border-4 border-secondary/30">
-                    <p className="text-2xl font-bold text-center text-secondary-foreground px-6">
+                <div className="flex items-center justify-center py-6 md:py-8">
+                  <div className="w-40 h-40 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-secondary to-secondary/50 flex items-center justify-center shadow-2xl border-4 border-secondary/30">
+                    <p className="text-lg md:text-2xl font-bold text-center text-secondary-foreground px-4 md:px-6">
                       {eightBallAnswer}
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                   <Button
                     onClick={handleBack}
                     variant="outline"
-                    className="font-bold h-12 text-base"
+                    className="font-bold h-11 md:h-12 text-sm md:text-base"
                     size="lg"
                   >
                     {t.btnBack}
                   </Button>
                   <Button
                     onClick={handle8Ball}
-                    className="flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold transition-all hover:scale-105"
+                    className="flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
                     size="lg"
                   >
                     {t.btnShakeBallAgain}
@@ -778,22 +778,22 @@ const Index = () => {
                 </p>
               </div>
             ) : selectedMode === "distraction" && catImage ? (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-accent text-center">
+              <div className="space-y-4 md:space-y-6">
+                <h2 className="text-xl md:text-2xl font-bold text-accent text-center">
                   {t.distractionResultTitle}
                 </h2>
                 <div className="flex justify-center">
                   <img 
                     src={catImage} 
                     alt="Cute cat" 
-                    className="max-w-full h-auto rounded-lg shadow-lg max-h-[500px] object-cover"
+                    className="max-w-full h-auto rounded-lg shadow-lg max-h-[400px] md:max-h-[500px] object-cover"
                   />
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                   <Button
                     onClick={handleBack}
                     variant="outline"
-                    className="font-bold h-12 text-base"
+                    className="font-bold h-11 md:h-12 text-sm md:text-base"
                     size="lg"
                   >
                     {t.btnBack}
@@ -801,12 +801,12 @@ const Index = () => {
                   <Button
                     onClick={() => setShowPetDialog(true)}
                     disabled={isLoading}
-                    className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground font-bold transition-all hover:scale-105"
+                    className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
                     size="lg"
                   >
                     {isLoading && mode === "distraction" ? (
                       <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
                         {t.generating}
                       </>
                     ) : (
@@ -818,11 +818,11 @@ const Index = () => {
             ) : (
               <>
                 {selectedMode === "test" && testStep === 2 ? (
-                  <div className="space-y-8 py-12">
-                    <div className="flex flex-col gap-6 items-center justify-center">
+                  <div className="space-y-6 md:space-y-8 py-8 md:py-12">
+                    <div className="flex flex-col gap-4 md:gap-6 items-center justify-center">
                       <Button
                         onClick={handleTestStartClick}
-                        className="w-64 bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-20 text-2xl transition-all hover:scale-105"
+                        className="w-full max-w-xs md:w-64 bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-16 md:h-20 text-xl md:text-2xl transition-all hover:scale-105"
                         size="lg"
                       >
                         {t.testStartButton}
@@ -830,7 +830,7 @@ const Index = () => {
                       <Button
                         onClick={handleTestExit}
                         variant="destructive"
-                        className="w-64 font-bold h-20 text-2xl transition-all hover:scale-105"
+                        className="w-full max-w-xs md:w-64 font-bold h-16 md:h-20 text-xl md:text-2xl transition-all hover:scale-105"
                         size="lg"
                       >
                         {t.testExitButton}
@@ -838,8 +838,8 @@ const Index = () => {
                     </div>
                   </div>
                 ) : selectedMode === "test" && testStep === 3 ? (
-                  <div className="space-y-6">
-                    <div className="text-foreground/90 text-lg text-center leading-relaxed">
+                  <div className="space-y-4 md:space-y-6">
+                    <div className="text-foreground/90 text-base md:text-lg text-center leading-relaxed px-2">
                       {t.testResult
                         .replace('{time}', Math.round((Date.now() - testStartTime) / 1000).toString())
                         .replace('{count}', testClickCount.toString())
@@ -848,7 +848,7 @@ const Index = () => {
                     <Button
                       onClick={handleBack}
                       variant="outline"
-                      className="font-bold h-12 text-base w-full"
+                      className="font-bold h-11 md:h-12 text-sm md:text-base w-full"
                       size="lg"
                     >
                       {t.btnBack}
@@ -859,21 +859,21 @@ const Index = () => {
                     {selectedMode === "test" && testStep === 1 ? (
                       <>
                         <div className="space-y-3">
-                          <label className="text-base font-semibold text-foreground">
+                          <label className="text-sm md:text-base font-semibold text-foreground">
                             {t.testGoalDialogDesc}
                           </label>
                           <Textarea
                             value={testGoal}
                             onChange={(e) => setTestGoal(e.target.value)}
                             placeholder={t.testGoalPlaceholder}
-                            className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
+                            className="min-h-32 md:min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-sm md:text-base focus:border-primary transition-colors"
                           />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                           <Button
                             onClick={handleBack}
                             variant="outline"
-                            className="font-bold h-12 text-base"
+                            className="font-bold h-11 md:h-12 text-sm md:text-base"
                             size="lg"
                           >
                             {t.btnBack}
@@ -881,7 +881,7 @@ const Index = () => {
                           <Button
                             onClick={handleGoalSubmit}
                             disabled={!testGoal.trim()}
-                            className="flex-1 bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold h-12 text-base transition-all hover:scale-105"
+                            className="flex-1 bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold h-11 md:h-12 text-sm md:text-base transition-all hover:scale-105"
                             size="lg"
                           >
                             {t.testContinue}
@@ -892,7 +892,7 @@ const Index = () => {
                       <>
                         <div className="space-y-3">
                           {selectedMode !== "8ball" && selectedMode !== "test" && (
-                            <label className="text-base font-semibold text-foreground">
+                            <label className="text-sm md:text-base font-semibold text-foreground">
                               {selectedMode === "demotivate" 
                                 ? t.demotivateLabel 
                                 : selectedMode === "excuses"
@@ -913,19 +913,19 @@ const Index = () => {
                                   ? t.timeMachinePlaceholder
                                   : t.eightBallPlaceholder
                               }
-                              className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
+                              className="min-h-32 md:min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-sm md:text-base focus:border-primary transition-colors"
                               disabled={isLoading}
                             />
                           )}
                         </div>
 
                         {selectedMode !== "test" && (
-                          <div className="flex gap-4">
+                          <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                             <Button
                               onClick={handleBack}
                               disabled={isLoading}
                               variant="outline"
-                              className="font-bold h-12 text-base"
+                              className="font-bold h-11 md:h-12 text-sm md:text-base"
                               size="lg"
                             >
                               {t.btnBack}
@@ -938,7 +938,7 @@ const Index = () => {
                                 else if (selectedMode === "timeMachine") handleTimeMachine();
                               }}
                               disabled={isLoading || !thought.trim()}
-                              className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
+                              className={`flex-1 font-bold h-11 md:h-12 text-sm md:text-base transition-all hover:scale-105 ${
                                 selectedMode === "demotivate"
                                   ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                                   : selectedMode === "8ball"
@@ -949,7 +949,7 @@ const Index = () => {
                             >
                               {isLoading ? (
                                 <>
-                                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                  <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
                                   {mode === "quote" ? t.generating : t.thinking}
                                 </>
                               ) : (
@@ -968,25 +968,25 @@ const Index = () => {
         )}
 
         {demotivation && (
-          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl animate-fade-in">
-            <div className="flex items-start gap-4">
-              <AlertCircle className="w-8 h-8 text-destructive flex-shrink-0 mt-1" />
-              <div className="space-y-4 flex-1">
-                <h2 className="text-2xl font-bold text-foreground">
+          <Card className="p-4 md:p-8 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl animate-fade-in">
+            <div className="flex items-start gap-3 md:gap-4">
+              <AlertCircle className="w-6 h-6 md:w-8 md:h-8 text-destructive flex-shrink-0 mt-1" />
+              <div className="space-y-3 md:space-y-4 flex-1">
+                <h2 className="text-xl md:text-2xl font-bold text-foreground">
                   {t.truthTitle}
                 </h2>
-                <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-lg">
+                <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-sm md:text-lg">
                   {demotivation}
                 </div>
                 <Button
                   onClick={handleDemotivate}
                   disabled={isLoading}
-                  className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold transition-all hover:scale-105"
+                  className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
                   size="lg"
                 >
                   {isLoading && mode === "demotivate" ? (
                     <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
                       {t.thinking}
                     </>
                   ) : (
@@ -999,23 +999,23 @@ const Index = () => {
         )}
 
         {excuses && (
-          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
-            <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-primary">
+          <Card className="p-4 md:p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
+            <div className="space-y-3 md:space-y-4">
+              <h2 className="text-xl md:text-2xl font-bold text-primary">
                 {t.excusesResultTitle}
               </h2>
-              <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-lg">
+              <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-sm md:text-lg">
                 {excuses}
               </div>
               <Button
                 onClick={handleGenerateExcuses}
                 disabled={isLoading}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold transition-all hover:scale-105"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
                 size="lg"
               >
                 {isLoading && mode === "excuses" ? (
                   <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
                     {t.generating}
                   </>
                 ) : (
@@ -1027,25 +1027,25 @@ const Index = () => {
         )}
 
         {timeMachineStory && (
-          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
-            <div className="flex items-start gap-4">
-              <Clock className="w-8 h-8 text-primary flex-shrink-0 mt-1" />
-              <div className="space-y-4 flex-1">
-                <h2 className="text-2xl font-bold text-foreground">
+          <Card className="p-4 md:p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
+            <div className="flex items-start gap-3 md:gap-4">
+              <Clock className="w-6 h-6 md:w-8 md:h-8 text-primary flex-shrink-0 mt-1" />
+              <div className="space-y-3 md:space-y-4 flex-1">
+                <h2 className="text-xl md:text-2xl font-bold text-foreground">
                   {t.timeMachineResultTitle}
                 </h2>
-                <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-lg">
+                <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-sm md:text-lg">
                   {timeMachineStory}
                 </div>
                 <Button
                   onClick={handleTimeMachine}
                   disabled={isLoading}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold transition-all hover:scale-105"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
                   size="lg"
                 >
                   {isLoading && mode === "timeMachine" ? (
                     <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
                       {t.generating}
                     </>
                   ) : (
@@ -1058,30 +1058,30 @@ const Index = () => {
         )}
 
         {!showInput && !selectedMode && (
-          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-secondary shadow-xl">
-            <div className="flex items-center justify-center gap-4 py-6 min-h-[120px]">
+          <Card className="p-4 md:p-8 bg-card/50 backdrop-blur-sm border-2 border-secondary shadow-xl">
+            <div className="flex items-center justify-center gap-3 md:gap-4 py-4 md:py-6 min-h-[100px] md:min-h-[120px]">
               {isLoading && mode === "quote" ? (
                 <>
-                  <Loader2 className="w-10 h-10 text-secondary animate-spin" />
-                  <p className="text-2xl font-bold text-center text-muted-foreground italic">
+                  <Loader2 className="w-8 h-8 md:w-10 md:h-10 text-secondary animate-spin flex-shrink-0" />
+                  <p className="text-lg md:text-2xl font-bold text-center text-muted-foreground italic">
                     {t.generating}...
                   </p>
                 </>
               ) : quote ? (
                 <>
-                  <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
-                  <p className="text-2xl font-bold text-center text-foreground italic">
+                  <Skull className="w-7 h-7 md:w-10 md:h-10 text-secondary flex-shrink-0 animate-pulse" />
+                  <p className="text-base md:text-2xl font-bold text-center text-foreground italic px-2">
                     "{quote}"
                   </p>
-                  <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse" />
+                  <Skull className="w-7 h-7 md:w-10 md:h-10 text-secondary flex-shrink-0 animate-pulse" />
                 </>
               ) : (
                 <>
-                  <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse opacity-50" />
-                  <p className="text-2xl font-bold text-center text-muted-foreground/50 italic">
+                  <Skull className="w-7 h-7 md:w-10 md:h-10 text-secondary flex-shrink-0 animate-pulse opacity-50" />
+                  <p className="text-lg md:text-2xl font-bold text-center text-muted-foreground/50 italic">
                     ...
                   </p>
-                  <Skull className="w-10 h-10 text-secondary flex-shrink-0 animate-pulse opacity-50" />
+                  <Skull className="w-7 h-7 md:w-10 md:h-10 text-secondary flex-shrink-0 animate-pulse opacity-50" />
                 </>
               )}
             </div>
@@ -1089,33 +1089,33 @@ const Index = () => {
         )}
 
         {savings && (
-          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
-            <div className="space-y-6">
-              <h2 className="text-3xl font-bold text-foreground">
+          <Card className="p-4 md:p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
+            <div className="space-y-4 md:space-y-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground">
                 {t.savingsTitle}
               </h2>
-              <div className="grid gap-6 md:grid-cols-3">
-                <div className="space-y-3 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
-                  <div className="text-4xl font-black text-destructive">
+              <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-3">
+                <div className="space-y-2 md:space-y-3 p-3 md:p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <div className="text-3xl md:text-4xl font-black text-destructive">
                     €{savings.money.toLocaleString()}
                   </div>
-                  <div className="text-base text-muted-foreground font-medium">
+                  <div className="text-sm md:text-base text-muted-foreground font-medium">
                     {t.savingsMoney}
                   </div>
                 </div>
-                <div className="space-y-3 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
-                  <div className="text-4xl font-black text-destructive">
+                <div className="space-y-2 md:space-y-3 p-3 md:p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <div className="text-3xl md:text-4xl font-black text-destructive">
                     {savings.time} {language === "el" ? "μήνες" : "months"}
                   </div>
-                  <div className="text-base text-muted-foreground font-medium">
+                  <div className="text-sm md:text-base text-muted-foreground font-medium">
                     {t.savingsTime}
                   </div>
                 </div>
-                <div className="space-y-3 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
-                  <div className="text-4xl font-black text-destructive">
+                <div className="space-y-2 md:space-y-3 p-3 md:p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <div className="text-3xl md:text-4xl font-black text-destructive">
                     {savings.stress}% stress
                   </div>
-                  <div className="text-base text-muted-foreground font-medium">
+                  <div className="text-sm md:text-base text-muted-foreground font-medium">
                     {t.savingsStress}
                   </div>
                 </div>
