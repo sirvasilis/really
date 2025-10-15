@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { AlertCircle, Skull, Loader2, ThumbsDown, MessageSquare, Sparkles, Cat } from "lucide-react";
+import { AlertCircle, Skull, Loader2, ThumbsDown, MessageSquare, Sparkles, Cat, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -21,11 +21,12 @@ const Index = () => {
   const [excuses, setExcuses] = useState("");
   const [quote, setQuote] = useState("");
   const [eightBallAnswer, setEightBallAnswer] = useState("");
+  const [timeMachineStory, setTimeMachineStory] = useState("");
   const [catImage, setCatImage] = useState("");
   const [savings, setSavings] = useState<{ money: number; time: number; stress: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [mode, setMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | "quote" | null>(null);
-  const [selectedMode, setSelectedMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | null>(null);
+  const [mode, setMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | "quote" | "timeMachine" | null>(null);
+  const [selectedMode, setSelectedMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | "timeMachine" | null>(null);
   const [showInput, setShowInput] = useState(false);
   const [language, setLanguage] = useState<"el" | "en">("en");
   const [showPetDialog, setShowPetDialog] = useState(false);
@@ -70,6 +71,12 @@ const Index = () => {
       eightBallDesc: "Άσε τη μοίρα να αποφασίσει γιατί δεν πρέπει να το κάνω",
       distractionTitle: "Περισπασμός",
       distractionDesc: "Περίσπασέ με για να μην το κάνω",
+      timeMachineTitle: "Time Machine",
+      timeMachineDesc: "Δες το χειρότερο σενάριο",
+      timeMachineLabel: "Ποια είναι η ιδέα σου;",
+      timeMachinePlaceholder: "Γράψε εδώ την ιδέα σου και θα δεις πώς καταλήγει με τον χειρότερο τρόπο...",
+      timeMachineResultTitle: "Το Μέλλον Ήρθε...",
+      emptyTimeMachine: "Πώς να σε δείξω το μέλλον αν δεν μου πεις την ιδέα σου;",
       petDialogTitle: "Διάλεξε το ζωάκι σου",
       petDialogDesc: "Τι θέλεις να δεις;",
       petCat: "Γάτα",
@@ -117,6 +124,12 @@ const Index = () => {
       eightBallDesc: "Let faith decide why I shouldn't do it",
       distractionTitle: "Distraction",
       distractionDesc: "Distract me so I don't do it",
+      timeMachineTitle: "Time Machine",
+      timeMachineDesc: "See the worst case scenario",
+      timeMachineLabel: "What's your idea?",
+      timeMachinePlaceholder: "Write your idea here and see how it ends in the worst possible way...",
+      timeMachineResultTitle: "The Future Has Arrived...",
+      emptyTimeMachine: "How can I show you the future if you don't tell me your idea?",
       petDialogTitle: "Choose your pet",
       petDialogDesc: "What do you want to see?",
       petCat: "Cat",
@@ -161,12 +174,13 @@ const Index = () => {
     handleGenerateQuote();
   }, [language]);
 
-  const handleModeSelection = (newMode: "demotivate" | "excuses" | "8ball" | "distraction") => {
+  const handleModeSelection = (newMode: "demotivate" | "excuses" | "8ball" | "distraction" | "timeMachine") => {
     setSelectedMode(newMode);
     setThought("");
     setDemotivation("");
     setExcuses("");
     setEightBallAnswer("");
+    setTimeMachineStory("");
     setCatImage("");
     setSavings(null);
     setShowInput(true);
@@ -183,6 +197,7 @@ const Index = () => {
     setDemotivation("");
     setExcuses("");
     setEightBallAnswer("");
+    setTimeMachineStory("");
     setCatImage("");
     setSavings(null);
   };
@@ -453,6 +468,57 @@ const Index = () => {
     }
   };
 
+  const handleTimeMachine = async () => {
+    if (!thought.trim()) {
+      toast({
+        title: t.emptyError,
+        description: t.emptyTimeMachine,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    setMode("timeMachine");
+    setTimeMachineStory("");
+    setDemotivation("");
+    setExcuses("");
+    setQuote("");
+    setSavings(null);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/time-machine`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ idea: thought, language }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to generate story");
+      }
+
+      const data = await response.json();
+      setTimeMachineStory(data.story);
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: t.errorTitle,
+        description: error instanceof Error ? error.message : t.errorDesc,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+      setMode(null);
+    }
+  };
+
   return (
     <>
       <AlertDialog open={showPetDialog} onOpenChange={setShowPetDialog}>
@@ -577,6 +643,21 @@ const Index = () => {
                   </div>
                 </div>
               </Card>
+              
+              <Card 
+                onClick={() => handleModeSelection("timeMachine")}
+                className="group p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-primary hover:shadow-2xl col-span-2"
+              >
+                <div className="flex items-start gap-3 md:gap-4">
+                  <div className="p-2 md:p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors flex-shrink-0">
+                    <Clock className="w-6 h-6 md:w-8 md:h-8 text-destructive" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1 md:mb-2">{t.timeMachineTitle}</h3>
+                    <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.timeMachineDesc}</p>
+                  </div>
+                </div>
+              </Card>
             </div>
           </>
         ) : (
@@ -663,7 +744,9 @@ const Index = () => {
                     <label className="text-base font-semibold text-foreground">
                       {selectedMode === "demotivate" 
                         ? t.demotivateLabel 
-                        : t.excusesLabel}
+                        : selectedMode === "excuses"
+                        ? t.excusesLabel
+                        : t.timeMachineLabel}
                     </label>
                   )}
                   <Textarea
@@ -674,6 +757,8 @@ const Index = () => {
                         ? t.demotivatePlaceholder 
                         : selectedMode === "excuses"
                         ? t.excusesPlaceholder
+                        : selectedMode === "timeMachine"
+                        ? t.timeMachinePlaceholder
                         : t.eightBallPlaceholder
                     }
                     className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
@@ -696,6 +781,7 @@ const Index = () => {
                       if (selectedMode === "demotivate") handleDemotivate();
                       else if (selectedMode === "excuses") handleGenerateExcuses();
                       else if (selectedMode === "8ball") handle8Ball();
+                      else if (selectedMode === "timeMachine") handleTimeMachine();
                     }}
                     disabled={isLoading || !thought.trim()}
                     className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
@@ -777,6 +863,37 @@ const Index = () => {
                   t.btnAlternative
                 )}
               </Button>
+            </div>
+          </Card>
+        )}
+
+        {timeMachineStory && (
+          <Card className="p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
+            <div className="flex items-start gap-4">
+              <Clock className="w-8 h-8 text-primary flex-shrink-0 mt-1" />
+              <div className="space-y-4 flex-1">
+                <h2 className="text-2xl font-bold text-foreground">
+                  {t.timeMachineResultTitle}
+                </h2>
+                <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-lg">
+                  {timeMachineStory}
+                </div>
+                <Button
+                  onClick={handleTimeMachine}
+                  disabled={isLoading}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold transition-all hover:scale-105"
+                  size="lg"
+                >
+                  {isLoading && mode === "timeMachine" ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      {t.generating}
+                    </>
+                  ) : (
+                    t.btnAlternative
+                  )}
+                </Button>
+              </div>
             </div>
           </Card>
         )}

@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.generate-pet]
 verify_jwt = false
+
+[functions.time-machine]
+verify_jwt = false
