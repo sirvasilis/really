@@ -25,11 +25,14 @@ const Index = () => {
   const [catImage, setCatImage] = useState("");
   const [savings, setSavings] = useState<{ money: number; time: number; stress: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [mode, setMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | "quote" | "timeMachine" | null>(null);
-  const [selectedMode, setSelectedMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | "timeMachine" | null>(null);
+  const [mode, setMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | "quote" | "timeMachine" | "test" | null>(null);
+  const [selectedMode, setSelectedMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | "timeMachine" | "test" | null>(null);
   const [showInput, setShowInput] = useState(false);
   const [language, setLanguage] = useState<"el" | "en">("en");
   const [showPetDialog, setShowPetDialog] = useState(false);
+  const [testProcessed, setTestProcessed] = useState(false);
+  const [testClickCount, setTestClickCount] = useState(0);
+  const [showTestResult, setShowTestResult] = useState(false);
   const { toast } = useToast();
 
   const eightBallAnswers = {
@@ -77,6 +80,14 @@ const Index = () => {
       timeMachinePlaceholder: "Γράψε εδώ την ιδέα σου και θα δεις πώς καταλήγει με τον χειρότερο τρόπο...",
       timeMachineResultTitle: "Το Μέλλον Ήρθε...",
       emptyTimeMachine: "Πώς να σε δείξω το μέλλον αν δεν μου πεις την ιδέα σου;",
+      testTitle: "Test",
+      testDesc: "Δοκίμασε την υπομονή σου",
+      testLabel: "Ποια είναι η ιδέα σου;",
+      testPlaceholder: "Γράψε εδώ την ιδέα σου για να δοκιμάσεις...",
+      testProcessing: "Το επεξεργάζομαι",
+      testPressButton: "Press to see results",
+      testResult: "Πάτησες {count} φορές ένα κουμπί που δεν κάνει τίποτα, πιστεύεις ότι θα καταφέρεις να κάνεις πραγματικότητα την ιδέα σου;",
+      emptyTest: "Πώς να σε δοκιμάσω αν δεν μου πεις την ιδέα σου;",
       petDialogTitle: "Διάλεξε το ζωάκι σου",
       petDialogDesc: "Τι θέλεις να δεις;",
       petCat: "Γάτα",
@@ -130,6 +141,14 @@ const Index = () => {
       timeMachinePlaceholder: "Write your idea here and see how it ends in the worst possible way...",
       timeMachineResultTitle: "The Future Has Arrived...",
       emptyTimeMachine: "How can I show you the future if you don't tell me your idea?",
+      testTitle: "Test",
+      testDesc: "Test your patience",
+      testLabel: "What's your idea?",
+      testPlaceholder: "Write your idea here to test...",
+      testProcessing: "Processing",
+      testPressButton: "Press to see results",
+      testResult: "You pressed {count} times a button that does nothing, do you think you can make your idea a reality?",
+      emptyTest: "How can I test you if you don't tell me your idea?",
       petDialogTitle: "Choose your pet",
       petDialogDesc: "What do you want to see?",
       petCat: "Cat",
@@ -174,7 +193,7 @@ const Index = () => {
     handleGenerateQuote();
   }, [language]);
 
-  const handleModeSelection = (newMode: "demotivate" | "excuses" | "8ball" | "distraction" | "timeMachine") => {
+  const handleModeSelection = (newMode: "demotivate" | "excuses" | "8ball" | "distraction" | "timeMachine" | "test") => {
     setSelectedMode(newMode);
     setThought("");
     setDemotivation("");
@@ -183,6 +202,9 @@ const Index = () => {
     setTimeMachineStory("");
     setCatImage("");
     setSavings(null);
+    setTestProcessed(false);
+    setTestClickCount(0);
+    setShowTestResult(false);
     setShowInput(true);
     
     if (newMode === "distraction") {
@@ -200,6 +222,9 @@ const Index = () => {
     setTimeMachineStory("");
     setCatImage("");
     setSavings(null);
+    setTestProcessed(false);
+    setTestClickCount(0);
+    setShowTestResult(false);
   };
 
   const handleDemotivate = async () => {
@@ -519,6 +544,39 @@ const Index = () => {
     }
   };
 
+  const handleTest = async () => {
+    if (!thought.trim()) {
+      toast({
+        title: t.emptyError,
+        description: t.emptyTest,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    setMode("test");
+    
+    // Simulate processing for 2 seconds
+    setTimeout(() => {
+      setIsLoading(false);
+      setMode(null);
+      setTestProcessed(true);
+    }, 2000);
+  };
+
+  const handleTestButtonClick = () => {
+    setTestClickCount(prev => {
+      const newCount = prev + 1;
+      if (newCount >= 5) {
+        setTimeout(() => {
+          setShowTestResult(true);
+        }, 500);
+      }
+      return newCount;
+    });
+  };
+
   return (
     <>
       <AlertDialog open={showPetDialog} onOpenChange={setShowPetDialog}>
@@ -646,7 +704,7 @@ const Index = () => {
               
               <Card 
                 onClick={() => handleModeSelection("timeMachine")}
-                className="group p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-primary hover:shadow-2xl col-span-2"
+                className="group p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-primary hover:shadow-2xl"
               >
                 <div className="flex items-start gap-3 md:gap-4">
                   <div className="p-2 md:p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors flex-shrink-0">
@@ -655,6 +713,21 @@ const Index = () => {
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1 md:mb-2">{t.timeMachineTitle}</h3>
                     <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.timeMachineDesc}</p>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card 
+                onClick={() => handleModeSelection("test")}
+                className="group p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl"
+              >
+                <div className="flex items-start gap-3 md:gap-4">
+                  <div className="p-2 md:p-3 rounded-lg bg-destructive/10 group-hover:bg-destructive/20 transition-colors flex-shrink-0">
+                    <AlertCircle className="w-6 h-6 md:w-8 md:h-8 text-destructive" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1 md:mb-2">{t.testTitle}</h3>
+                    <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.testDesc}</p>
                   </div>
                 </div>
               </Card>
@@ -739,70 +812,105 @@ const Index = () => {
               </div>
             ) : (
               <>
-                <div className="space-y-3">
-                  {selectedMode !== "8ball" && (
-                    <label className="text-base font-semibold text-foreground">
-                      {selectedMode === "demotivate" 
-                        ? t.demotivateLabel 
-                        : selectedMode === "excuses"
-                        ? t.excusesLabel
-                        : t.timeMachineLabel}
-                    </label>
-                  )}
-                  <Textarea
-                    value={thought}
-                    onChange={(e) => setThought(e.target.value)}
-                    placeholder={
-                      selectedMode === "demotivate" 
-                        ? t.demotivatePlaceholder 
-                        : selectedMode === "excuses"
-                        ? t.excusesPlaceholder
-                        : selectedMode === "timeMachine"
-                        ? t.timeMachinePlaceholder
-                        : t.eightBallPlaceholder
-                    }
-                    className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
-                    disabled={isLoading}
-                  />
-                </div>
+                {selectedMode === "test" && testProcessed ? (
+                  showTestResult ? (
+                    <div className="space-y-6">
+                      <div className="text-foreground/90 text-lg text-center leading-relaxed">
+                        {t.testResult.replace('{count}', testClickCount.toString())}
+                      </div>
+                      <Button
+                        onClick={handleBack}
+                        variant="outline"
+                        className="font-bold h-12 text-base w-full"
+                        size="lg"
+                      >
+                        {t.btnBack}
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      <Button
+                        onClick={handleTestButtonClick}
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-16 text-lg transition-all hover:scale-105"
+                        size="lg"
+                      >
+                        {t.testPressButton}
+                      </Button>
+                    </div>
+                  )
+                ) : (
+                  <>
+                    <div className="space-y-3">
+                      {selectedMode !== "8ball" && (
+                        <label className="text-base font-semibold text-foreground">
+                          {selectedMode === "demotivate" 
+                            ? t.demotivateLabel 
+                            : selectedMode === "excuses"
+                            ? t.excusesLabel
+                            : selectedMode === "timeMachine"
+                            ? t.timeMachineLabel
+                            : t.testLabel}
+                        </label>
+                      )}
+                      <Textarea
+                        value={thought}
+                        onChange={(e) => setThought(e.target.value)}
+                        placeholder={
+                          selectedMode === "demotivate" 
+                            ? t.demotivatePlaceholder 
+                            : selectedMode === "excuses"
+                            ? t.excusesPlaceholder
+                            : selectedMode === "timeMachine"
+                            ? t.timeMachinePlaceholder
+                            : selectedMode === "test"
+                            ? t.testPlaceholder
+                            : t.eightBallPlaceholder
+                        }
+                        className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
+                        disabled={isLoading}
+                      />
+                    </div>
 
-                <div className="flex gap-4">
-                  <Button
-                    onClick={handleBack}
-                    disabled={isLoading}
-                    variant="outline"
-                    className="font-bold h-12 text-base"
-                    size="lg"
-                  >
-                    {t.btnBack}
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      if (selectedMode === "demotivate") handleDemotivate();
-                      else if (selectedMode === "excuses") handleGenerateExcuses();
-                      else if (selectedMode === "8ball") handle8Ball();
-                      else if (selectedMode === "timeMachine") handleTimeMachine();
-                    }}
-                    disabled={isLoading || !thought.trim()}
-                    className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
-                      selectedMode === "demotivate"
-                        ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                        : selectedMode === "8ball"
-                        ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
-                        : "bg-primary hover:bg-primary/90 text-primary-foreground"
-                    }`}
-                    size="lg"
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        {mode === "quote" ? t.generating : t.thinking}
-                      </>
-                    ) : (
-                      selectedMode === "8ball" ? t.btnShakeBall : t.btnSubmit
-                    )}
-                  </Button>
-                </div>
+                    <div className="flex gap-4">
+                      <Button
+                        onClick={handleBack}
+                        disabled={isLoading}
+                        variant="outline"
+                        className="font-bold h-12 text-base"
+                        size="lg"
+                      >
+                        {t.btnBack}
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          if (selectedMode === "demotivate") handleDemotivate();
+                          else if (selectedMode === "excuses") handleGenerateExcuses();
+                          else if (selectedMode === "8ball") handle8Ball();
+                          else if (selectedMode === "timeMachine") handleTimeMachine();
+                          else if (selectedMode === "test") handleTest();
+                        }}
+                        disabled={isLoading || !thought.trim()}
+                        className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
+                          selectedMode === "demotivate"
+                            ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                            : selectedMode === "8ball"
+                            ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                            : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                        }`}
+                        size="lg"
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            {mode === "test" ? t.testProcessing : mode === "quote" ? t.generating : t.thinking}
+                          </>
+                        ) : (
+                          selectedMode === "8ball" ? t.btnShakeBall : t.btnSubmit
+                        )}
+                      </Button>
+                    </div>
+                  </>
+                )}
               </>
             )}
           </Card>
