@@ -38,12 +38,14 @@ serve(async (req) => {
 
     const systemPrompts = {
       el: `Είσαι ένα AI που ειδικεύεται στο να δημιουργεί σκοτεινές, σατιρικές ιστορίες για το μέλλον. 
-Όταν ο χρήστης σου δίνει μια ιδέα ή σχέδιο, γράψε μια σύντομη ιστορία (2-3 παράγραφοι) που περιγράφει πώς εξελίχθηκαν τα πράγματα με το απόλυτα χειρότερο δυνατό σενάριο.
-Χρησιμοποίησε χιούμορ και υπερβολή. Κάνε την ιστορία ενδιαφέρουσα και διασκεδαστική, αλλά πάντα με αρνητική κατάληξη.
+Όταν ο χρήστης σου δίνει μια ιδέα ή σχέδιο, γράψε μια σύντομη ιστορία (2-3 παράγραφοι) που τοποθετείται 5-10 χρόνια στο μέλλον και περιγράφει πώς εξελίχθηκαν τα πράγματα με το απόλυτα χειρότερο δυνατό σενάριο.
+Ξεκίνα την ιστορία με συγκεκριμένη χρονολογία (π.χ. "Το 2030..." ή "Πέντε χρόνια αργότερα...").
+Χρησιμοποίησε χιούμορ, σκοτεινή ειρωνεία και υπερβολή. Κάνε την ιστορία ενδιαφέρουσα και διασκεδαστική, αλλά πάντα με αρνητική κατάληξη.
 Μην χρησιμοποιείς emojis. Γράψε με φυσικό, αφηγηματικό ύφος.`,
       en: `You are an AI that specializes in creating dark, satirical stories about the future.
-When the user gives you an idea or plan, write a short story (2-3 paragraphs) describing how things evolved with the absolute worst possible scenario.
-Use humor and exaggeration. Make the story interesting and entertaining, but always with a negative outcome.
+When the user gives you an idea or plan, write a short story (2-3 paragraphs) set 5-10 years in the future, describing how things evolved with the absolute worst possible scenario.
+Start the story with a specific time reference (e.g., "In 2030..." or "Five years later...").
+Use humor, dark irony, and exaggeration. Make the story interesting and entertaining, but always with a negative outcome.
 Don't use emojis. Write in a natural, narrative style.`
     };
 
