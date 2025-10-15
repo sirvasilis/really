@@ -33,6 +33,10 @@ const Index = () => {
   const [testProcessed, setTestProcessed] = useState(false);
   const [testClickCount, setTestClickCount] = useState(0);
   const [showTestResult, setShowTestResult] = useState(false);
+  const [testGoal, setTestGoal] = useState("");
+  const [testStep, setTestStep] = useState<1 | 2 | 3>(1); // 1: goal input, 2: test, 3: result
+  const [testStartTime, setTestStartTime] = useState<number>(0);
+  const [showGoalDialog, setShowGoalDialog] = useState(false);
   const { toast } = useToast();
 
   const eightBallAnswers = {
@@ -82,12 +86,14 @@ const Index = () => {
       emptyTimeMachine: "Πώς να σε δείξω το μέλλον αν δεν μου πεις την ιδέα σου;",
       testTitle: "Δοκιμή",
       testDesc: "Υπολόγισε αν μπορώ να το κάνω",
-      testLabel: "Ποια είναι η ιδέα σου;",
-      testPlaceholder: "Γράψε εδώ την ιδέα σου για να δοκιμάσεις...",
-      testProcessing: "Το επεξεργάζομαι",
-      testPressButton: "Πάτα για να δεις τα αποτελέσματα",
-      testResult: "Πάτησες {count} φορές ένα κουμπί που δεν κάνει τίποτα, πιστεύεις ότι θα καταφέρεις να κάνεις πραγματικότητα την ιδέα σου;",
-      emptyTest: "Πώς να σε δοκιμάσω αν δεν μου πεις την ιδέα σου;",
+      testGoalDialogTitle: "Πες μου λίγα για τον στόχο σου",
+      testGoalDialogDesc: "Πες μου λίγα για τον στόχο σου, ώστε να δημιουργήσω το σωστό τεστ για εσένα",
+      testGoalPlaceholder: "Γράψε τον στόχο σου εδώ...",
+      testStartButton: "Έναρξη",
+      testExitButton: "Έξοδος",
+      testResult: "Χρειάστηκες {time} δευτερόλεπτα και πάτησες {count} φορές ένα κουμπί που δεν κάνει ΤΙΠΟΤΑ. Σοβαρά πιστεύεις ότι μπορείς να {goal}; Καλή τύχη με αυτό!",
+      emptyTestGoal: "Πρέπει να μου πεις τον στόχο σου πρώτα!",
+      testContinue: "Συνέχεια",
       petDialogTitle: "Διάλεξε το ζωάκι σου",
       petDialogDesc: "Τι θέλεις να δεις;",
       petCat: "Γάτα",
@@ -143,12 +149,14 @@ const Index = () => {
       emptyTimeMachine: "How can I show you the future if you don't tell me your idea?",
       testTitle: "Test",
       testDesc: "Calculate if I am able to do it",
-      testLabel: "What's your idea?",
-      testPlaceholder: "Write your idea here to test...",
-      testProcessing: "Processing",
-      testPressButton: "Press to see results",
-      testResult: "You pressed {count} times a button that does nothing, do you think you can make your idea a reality?",
-      emptyTest: "How can I test you if you don't tell me your idea?",
+      testGoalDialogTitle: "Tell me about your goal",
+      testGoalDialogDesc: "Tell me a little about your goal, so that I can generate the right test for you",
+      testGoalPlaceholder: "Write your goal here...",
+      testStartButton: "Start",
+      testExitButton: "Exit",
+      testResult: "It took you {time} seconds and you clicked {count} times on a button that does NOTHING. You seriously think you can {goal}? Good luck with that!",
+      emptyTestGoal: "You need to tell me your goal first!",
+      testContinue: "Continue",
       petDialogTitle: "Choose your pet",
       petDialogDesc: "What do you want to see?",
       petCat: "Cat",
@@ -205,10 +213,15 @@ const Index = () => {
     setTestProcessed(false);
     setTestClickCount(0);
     setShowTestResult(false);
+    setTestGoal("");
+    setTestStep(1);
+    setTestStartTime(0);
     setShowInput(true);
     
     if (newMode === "distraction") {
       setShowPetDialog(true);
+    } else if (newMode === "test") {
+      setShowGoalDialog(true);
     }
   };
 
@@ -225,6 +238,10 @@ const Index = () => {
     setTestProcessed(false);
     setTestClickCount(0);
     setShowTestResult(false);
+    setTestGoal("");
+    setTestStep(1);
+    setTestStartTime(0);
+    setShowGoalDialog(false);
   };
 
   const handleDemotivate = async () => {
@@ -544,37 +561,27 @@ const Index = () => {
     }
   };
 
-  const handleTest = async () => {
-    if (!thought.trim()) {
+  const handleGoalSubmit = () => {
+    if (!testGoal.trim()) {
       toast({
         title: t.emptyError,
-        description: t.emptyTest,
+        description: t.emptyTestGoal,
         variant: "destructive",
       });
       return;
     }
-
-    setIsLoading(true);
-    setMode("test");
-    
-    // Simulate processing for 2 seconds
-    setTimeout(() => {
-      setIsLoading(false);
-      setMode(null);
-      setTestProcessed(true);
-    }, 2000);
+    setShowGoalDialog(false);
+    setTestStep(2);
+    setTestStartTime(Date.now());
   };
 
-  const handleTestButtonClick = () => {
-    setTestClickCount(prev => {
-      const newCount = prev + 1;
-      if (newCount >= 5) {
-        setTimeout(() => {
-          setShowTestResult(true);
-        }, 500);
-      }
-      return newCount;
-    });
+  const handleTestStartClick = () => {
+    setTestClickCount(prev => prev + 1);
+  };
+
+  const handleTestExit = () => {
+    const timeSpent = Math.round((Date.now() - testStartTime) / 1000);
+    setTestStep(3);
   };
 
   return (
@@ -602,6 +609,29 @@ const Index = () => {
             >
               {language === "el" ? "Ακύρωση" : "Cancel"}
             </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showGoalDialog} onOpenChange={setShowGoalDialog}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t.testGoalDialogTitle}</AlertDialogTitle>
+            <AlertDialogDescription>{t.testGoalDialogDesc}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <Textarea
+            value={testGoal}
+            onChange={(e) => setTestGoal(e.target.value)}
+            placeholder={t.testGoalPlaceholder}
+            className="min-h-24"
+          />
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleBack}>
+              {t.btnBack}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleGoalSubmit}>
+              {t.testContinue}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -812,103 +842,113 @@ const Index = () => {
               </div>
             ) : (
               <>
-                {selectedMode === "test" && testProcessed ? (
-                  showTestResult ? (
-                    <div className="space-y-6">
-                      <div className="text-foreground/90 text-lg text-center leading-relaxed">
-                        {t.testResult.replace('{count}', testClickCount.toString())}
-                      </div>
+                {selectedMode === "test" && testStep === 2 ? (
+                  <div className="space-y-8 py-12">
+                    <div className="flex flex-col gap-6 items-center justify-center">
                       <Button
-                        onClick={handleBack}
-                        variant="outline"
-                        className="font-bold h-12 text-base w-full"
+                        onClick={handleTestStartClick}
+                        className="w-64 bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-20 text-2xl transition-all hover:scale-105"
                         size="lg"
                       >
-                        {t.btnBack}
+                        {t.testStartButton}
                       </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-6">
                       <Button
-                        onClick={handleTestButtonClick}
-                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-16 text-lg transition-all hover:scale-105"
+                        onClick={handleTestExit}
+                        variant="destructive"
+                        className="w-64 font-bold h-20 text-2xl transition-all hover:scale-105"
                         size="lg"
                       >
-                        {t.testPressButton}
+                        {t.testExitButton}
                       </Button>
                     </div>
-                  )
+                  </div>
+                ) : selectedMode === "test" && testStep === 3 ? (
+                  <div className="space-y-6">
+                    <div className="text-foreground/90 text-lg text-center leading-relaxed">
+                      {t.testResult
+                        .replace('{time}', Math.round((Date.now() - testStartTime) / 1000).toString())
+                        .replace('{count}', testClickCount.toString())
+                        .replace('{goal}', testGoal)}
+                    </div>
+                    <Button
+                      onClick={handleBack}
+                      variant="outline"
+                      className="font-bold h-12 text-base w-full"
+                      size="lg"
+                    >
+                      {t.btnBack}
+                    </Button>
+                  </div>
                 ) : (
                   <>
                     <div className="space-y-3">
-                      {selectedMode !== "8ball" && (
+                      {selectedMode !== "8ball" && selectedMode !== "test" && (
                         <label className="text-base font-semibold text-foreground">
                           {selectedMode === "demotivate" 
                             ? t.demotivateLabel 
                             : selectedMode === "excuses"
                             ? t.excusesLabel
-                            : selectedMode === "timeMachine"
-                            ? t.timeMachineLabel
-                            : t.testLabel}
+                            : t.timeMachineLabel}
                         </label>
                       )}
-                      <Textarea
-                        value={thought}
-                        onChange={(e) => setThought(e.target.value)}
-                        placeholder={
-                          selectedMode === "demotivate" 
-                            ? t.demotivatePlaceholder 
-                            : selectedMode === "excuses"
-                            ? t.excusesPlaceholder
-                            : selectedMode === "timeMachine"
-                            ? t.timeMachinePlaceholder
-                            : selectedMode === "test"
-                            ? t.testPlaceholder
-                            : t.eightBallPlaceholder
-                        }
-                        className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
-                        disabled={isLoading}
-                      />
+                      {selectedMode !== "test" && (
+                        <Textarea
+                          value={thought}
+                          onChange={(e) => setThought(e.target.value)}
+                          placeholder={
+                            selectedMode === "demotivate" 
+                              ? t.demotivatePlaceholder 
+                              : selectedMode === "excuses"
+                              ? t.excusesPlaceholder
+                              : selectedMode === "timeMachine"
+                              ? t.timeMachinePlaceholder
+                              : t.eightBallPlaceholder
+                          }
+                          className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
+                          disabled={isLoading}
+                        />
+                      )}
                     </div>
 
-                    <div className="flex gap-4">
-                      <Button
-                        onClick={handleBack}
-                        disabled={isLoading}
-                        variant="outline"
-                        className="font-bold h-12 text-base"
-                        size="lg"
-                      >
-                        {t.btnBack}
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          if (selectedMode === "demotivate") handleDemotivate();
-                          else if (selectedMode === "excuses") handleGenerateExcuses();
-                          else if (selectedMode === "8ball") handle8Ball();
-                          else if (selectedMode === "timeMachine") handleTimeMachine();
-                          else if (selectedMode === "test") handleTest();
-                        }}
-                        disabled={isLoading || !thought.trim()}
-                        className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
-                          selectedMode === "demotivate"
-                            ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                            : selectedMode === "8ball"
-                            ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
-                            : "bg-primary hover:bg-primary/90 text-primary-foreground"
-                        }`}
-                        size="lg"
-                      >
-                        {isLoading ? (
-                          <>
-                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                            {mode === "test" ? t.testProcessing : mode === "quote" ? t.generating : t.thinking}
-                          </>
-                        ) : (
-                          selectedMode === "8ball" ? t.btnShakeBall : t.btnSubmit
-                        )}
-                      </Button>
-                    </div>
+                    {selectedMode !== "test" && (
+                      <div className="flex gap-4">
+                        <Button
+                          onClick={handleBack}
+                          disabled={isLoading}
+                          variant="outline"
+                          className="font-bold h-12 text-base"
+                          size="lg"
+                        >
+                          {t.btnBack}
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            if (selectedMode === "demotivate") handleDemotivate();
+                            else if (selectedMode === "excuses") handleGenerateExcuses();
+                            else if (selectedMode === "8ball") handle8Ball();
+                            else if (selectedMode === "timeMachine") handleTimeMachine();
+                          }}
+                          disabled={isLoading || !thought.trim()}
+                          className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
+                            selectedMode === "demotivate"
+                              ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                              : selectedMode === "8ball"
+                              ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                              : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                          }`}
+                          size="lg"
+                        >
+                          {isLoading ? (
+                            <>
+                              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                              {mode === "quote" ? t.generating : t.thinking}
+                            </>
+                          ) : (
+                            selectedMode === "8ball" ? t.btnShakeBall : t.btnSubmit
+                          )}
+                        </Button>
+                      </div>
+                    )}
                   </>
                 )}
               </>
