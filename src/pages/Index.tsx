@@ -615,24 +615,33 @@ const Index = () => {
 
       <AlertDialog open={showGoalDialog} onOpenChange={setShowGoalDialog}>
         <AlertDialogContent className="max-w-md">
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t.testGoalDialogTitle}</AlertDialogTitle>
-            <AlertDialogDescription>{t.testGoalDialogDesc}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <Textarea
-            value={testGoal}
-            onChange={(e) => setTestGoal(e.target.value)}
-            placeholder={t.testGoalPlaceholder}
-            className="min-h-24"
-          />
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleBack}>
-              {t.btnBack}
-            </AlertDialogCancel>
-            <AlertDialogAction onClick={handleGoalSubmit}>
-              {t.testContinue}
-            </AlertDialogAction>
-          </AlertDialogFooter>
+          <div className="space-y-6 pt-6">
+            <div className="text-center space-y-2">
+              <h2 className="text-xl font-bold text-foreground">{t.testGoalDialogTitle}</h2>
+              <p className="text-sm text-muted-foreground">{t.testGoalDialogDesc}</p>
+            </div>
+            <Textarea
+              value={testGoal}
+              onChange={(e) => setTestGoal(e.target.value)}
+              placeholder={t.testGoalPlaceholder}
+              className="min-h-24 bg-background/50 border-2 border-border text-foreground resize-none"
+            />
+            <div className="flex gap-4">
+              <Button
+                onClick={handleBack}
+                variant="outline"
+                className="flex-1 font-bold"
+              >
+                {t.btnBack}
+              </Button>
+              <Button
+                onClick={handleGoalSubmit}
+                className="flex-1 font-bold bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+              >
+                {t.testContinue}
+              </Button>
+            </div>
+          </div>
         </AlertDialogContent>
       </AlertDialog>
 
