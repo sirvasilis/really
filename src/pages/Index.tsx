@@ -673,36 +673,6 @@ const Index = () => {
               </Card>
               
               <Card 
-                onClick={() => handleModeSelection("8ball")}
-                className="group p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-secondary hover:shadow-2xl"
-              >
-                <div className="flex items-start gap-3 md:gap-4">
-                  <div className="p-2 md:p-3 rounded-lg bg-secondary/10 group-hover:bg-secondary/20 transition-colors flex-shrink-0">
-                    <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-destructive" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1 md:mb-2">{t.eightBallTitle}</h3>
-                    <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.eightBallDesc}</p>
-                  </div>
-                </div>
-              </Card>
-              
-              <Card 
-                onClick={() => handleModeSelection("distraction")}
-                className="group p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-accent hover:shadow-2xl"
-              >
-                <div className="flex items-start gap-3 md:gap-4">
-                  <div className="p-2 md:p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors flex-shrink-0">
-                    <Cat className="w-6 h-6 md:w-8 md:h-8 text-destructive" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1 md:mb-2">{t.distractionTitle}</h3>
-                    <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.distractionDesc}</p>
-                  </div>
-                </div>
-              </Card>
-              
-              <Card 
                 onClick={() => handleModeSelection("timeMachine")}
                 className="group p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-primary hover:shadow-2xl"
               >
@@ -728,6 +698,36 @@ const Index = () => {
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1 md:mb-2">{t.testTitle}</h3>
                     <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.testDesc}</p>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card 
+                onClick={() => handleModeSelection("8ball")}
+                className="group p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-secondary hover:shadow-2xl"
+              >
+                <div className="flex items-start gap-3 md:gap-4">
+                  <div className="p-2 md:p-3 rounded-lg bg-secondary/10 group-hover:bg-secondary/20 transition-colors flex-shrink-0">
+                    <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-destructive" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1 md:mb-2">{t.eightBallTitle}</h3>
+                    <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.eightBallDesc}</p>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card 
+                onClick={() => handleModeSelection("distraction")}
+                className="group p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-accent hover:shadow-2xl"
+              >
+                <div className="flex items-start gap-3 md:gap-4">
+                  <div className="p-2 md:p-3 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors flex-shrink-0">
+                    <Cat className="w-6 h-6 md:w-8 md:h-8 text-destructive" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-1 md:mb-2">{t.distractionTitle}</h3>
+                    <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.distractionDesc}</p>
                   </div>
                 </div>
               </Card>
