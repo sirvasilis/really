@@ -220,8 +220,6 @@ const Index = () => {
     
     if (newMode === "distraction") {
       setShowPetDialog(true);
-    } else if (newMode === "test") {
-      setShowGoalDialog(true);
     }
   };
 
@@ -570,7 +568,6 @@ const Index = () => {
       });
       return;
     }
-    setShowGoalDialog(false);
     setTestStep(2);
     setTestStartTime(Date.now());
   };
@@ -613,37 +610,6 @@ const Index = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={showGoalDialog} onOpenChange={setShowGoalDialog}>
-        <AlertDialogContent className="max-w-md">
-          <div className="space-y-6 pt-6">
-            <div className="text-center space-y-2">
-              <h2 className="text-xl font-bold text-foreground">{t.testGoalDialogTitle}</h2>
-              <p className="text-sm text-muted-foreground">{t.testGoalDialogDesc}</p>
-            </div>
-            <Textarea
-              value={testGoal}
-              onChange={(e) => setTestGoal(e.target.value)}
-              placeholder={t.testGoalPlaceholder}
-              className="min-h-24 bg-background/50 border-2 border-border text-foreground resize-none"
-            />
-            <div className="flex gap-4">
-              <Button
-                onClick={handleBack}
-                variant="outline"
-                className="flex-1 font-bold"
-              >
-                {t.btnBack}
-              </Button>
-              <Button
-                onClick={handleGoalSubmit}
-                className="flex-1 font-bold bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-              >
-                {t.testContinue}
-              </Button>
-            </div>
-          </div>
-        </AlertDialogContent>
-      </AlertDialog>
 
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10 flex items-center justify-center p-4 relative">
       <div className="absolute top-4 right-4 flex gap-2 z-10">
@@ -890,73 +856,109 @@ const Index = () => {
                   </div>
                 ) : (
                   <>
-                    <div className="space-y-3">
-                      {selectedMode !== "8ball" && selectedMode !== "test" && (
-                        <label className="text-base font-semibold text-foreground">
-                          {selectedMode === "demotivate" 
-                            ? t.demotivateLabel 
-                            : selectedMode === "excuses"
-                            ? t.excusesLabel
-                            : t.timeMachineLabel}
-                        </label>
-                      )}
-                      {selectedMode !== "test" && (
-                        <Textarea
-                          value={thought}
-                          onChange={(e) => setThought(e.target.value)}
-                          placeholder={
-                            selectedMode === "demotivate" 
-                              ? t.demotivatePlaceholder 
-                              : selectedMode === "excuses"
-                              ? t.excusesPlaceholder
-                              : selectedMode === "timeMachine"
-                              ? t.timeMachinePlaceholder
-                              : t.eightBallPlaceholder
-                          }
-                          className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
-                          disabled={isLoading}
-                        />
-                      )}
-                    </div>
-
-                    {selectedMode !== "test" && (
-                      <div className="flex gap-4">
-                        <Button
-                          onClick={handleBack}
-                          disabled={isLoading}
-                          variant="outline"
-                          className="font-bold h-12 text-base"
-                          size="lg"
-                        >
-                          {t.btnBack}
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            if (selectedMode === "demotivate") handleDemotivate();
-                            else if (selectedMode === "excuses") handleGenerateExcuses();
-                            else if (selectedMode === "8ball") handle8Ball();
-                            else if (selectedMode === "timeMachine") handleTimeMachine();
-                          }}
-                          disabled={isLoading || !thought.trim()}
-                          className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
-                            selectedMode === "demotivate"
-                              ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                              : selectedMode === "8ball"
-                              ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
-                              : "bg-primary hover:bg-primary/90 text-primary-foreground"
-                          }`}
-                          size="lg"
-                        >
-                          {isLoading ? (
-                            <>
-                              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                              {mode === "quote" ? t.generating : t.thinking}
-                            </>
-                          ) : (
-                            selectedMode === "8ball" ? t.btnShakeBall : t.btnSubmit
+                    {selectedMode === "test" && testStep === 1 ? (
+                      <>
+                        <div className="space-y-3">
+                          <label className="text-base font-semibold text-foreground">
+                            {t.testGoalDialogDesc}
+                          </label>
+                          <Textarea
+                            value={testGoal}
+                            onChange={(e) => setTestGoal(e.target.value)}
+                            placeholder={t.testGoalPlaceholder}
+                            className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
+                          />
+                        </div>
+                        <div className="flex gap-4">
+                          <Button
+                            onClick={handleBack}
+                            variant="outline"
+                            className="font-bold h-12 text-base"
+                            size="lg"
+                          >
+                            {t.btnBack}
+                          </Button>
+                          <Button
+                            onClick={handleGoalSubmit}
+                            disabled={!testGoal.trim()}
+                            className="flex-1 bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold h-12 text-base transition-all hover:scale-105"
+                            size="lg"
+                          >
+                            {t.testContinue}
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="space-y-3">
+                          {selectedMode !== "8ball" && selectedMode !== "test" && (
+                            <label className="text-base font-semibold text-foreground">
+                              {selectedMode === "demotivate" 
+                                ? t.demotivateLabel 
+                                : selectedMode === "excuses"
+                                ? t.excusesLabel
+                                : t.timeMachineLabel}
+                            </label>
                           )}
-                        </Button>
-                      </div>
+                          {selectedMode !== "test" && (
+                            <Textarea
+                              value={thought}
+                              onChange={(e) => setThought(e.target.value)}
+                              placeholder={
+                                selectedMode === "demotivate" 
+                                  ? t.demotivatePlaceholder 
+                                  : selectedMode === "excuses"
+                                  ? t.excusesPlaceholder
+                                  : selectedMode === "timeMachine"
+                                  ? t.timeMachinePlaceholder
+                                  : t.eightBallPlaceholder
+                              }
+                              className="min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-base focus:border-primary transition-colors"
+                              disabled={isLoading}
+                            />
+                          )}
+                        </div>
+
+                        {selectedMode !== "test" && (
+                          <div className="flex gap-4">
+                            <Button
+                              onClick={handleBack}
+                              disabled={isLoading}
+                              variant="outline"
+                              className="font-bold h-12 text-base"
+                              size="lg"
+                            >
+                              {t.btnBack}
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                if (selectedMode === "demotivate") handleDemotivate();
+                                else if (selectedMode === "excuses") handleGenerateExcuses();
+                                else if (selectedMode === "8ball") handle8Ball();
+                                else if (selectedMode === "timeMachine") handleTimeMachine();
+                              }}
+                              disabled={isLoading || !thought.trim()}
+                              className={`flex-1 font-bold h-12 text-base transition-all hover:scale-105 ${
+                                selectedMode === "demotivate"
+                                  ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                                  : selectedMode === "8ball"
+                                  ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                                  : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                              }`}
+                              size="lg"
+                            >
+                              {isLoading ? (
+                                <>
+                                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                  {mode === "quote" ? t.generating : t.thinking}
+                                </>
+                              ) : (
+                                selectedMode === "8ball" ? t.btnShakeBall : t.btnSubmit
+                              )}
+                            </Button>
+                          </div>
+                        )}
+                      </>
                     )}
                   </>
                 )}
