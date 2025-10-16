@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { AlertCircle, Skull, Loader2, ThumbsDown, MessageSquare, Sparkles, Cat, Clock } from "lucide-react";
+import { AlertCircle, Loader2, ThumbsDown, MessageSquare, Sparkles, Cat, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -640,11 +640,9 @@ const Index = () => {
       <div className="w-full max-w-2xl space-y-6 md:space-y-8 animate-fade-in pt-20 md:pt-0">
         <header className="text-center space-y-3 md:space-y-6 px-2">
           <div className="flex items-center justify-center gap-2 md:gap-4">
-            <Skull className="w-7 h-7 md:w-14 md:h-14 text-destructive animate-pulse flex-shrink-0" />
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-foreground tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
               {t.title}
             </h1>
-            <Skull className="w-7 h-7 md:w-14 md:h-14 text-destructive animate-pulse flex-shrink-0" />
           </div>
           <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto leading-relaxed px-4">
             {t.subtitle}
@@ -1075,21 +1073,13 @@ const Index = () => {
                   </p>
                 </>
               ) : quote ? (
-                <>
-                  <Skull className="w-7 h-7 md:w-10 md:h-10 text-secondary flex-shrink-0 animate-pulse" />
-                  <p className="text-base md:text-2xl font-bold text-center text-foreground italic px-2">
-                    "{quote}"
-                  </p>
-                  <Skull className="w-7 h-7 md:w-10 md:h-10 text-secondary flex-shrink-0 animate-pulse" />
-                </>
+                <p className="text-base md:text-2xl font-bold text-center text-foreground italic px-2">
+                  "{quote}"
+                </p>
               ) : (
-                <>
-                  <Skull className="w-7 h-7 md:w-10 md:h-10 text-secondary flex-shrink-0 animate-pulse opacity-50" />
-                  <p className="text-lg md:text-2xl font-bold text-center text-muted-foreground/50 italic">
-                    ...
-                  </p>
-                  <Skull className="w-7 h-7 md:w-10 md:h-10 text-secondary flex-shrink-0 animate-pulse opacity-50" />
-                </>
+                <p className="text-lg md:text-2xl font-bold text-center text-muted-foreground/50 italic">
+                  ...
+                </p>
               )}
             </div>
           </Card>
