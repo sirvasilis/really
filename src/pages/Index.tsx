@@ -30,6 +30,7 @@ const Index = () => {
   const [showInput, setShowInput] = useState(false);
   const [language, setLanguage] = useState<"el" | "en">("en");
   const [showPetDialog, setShowPetDialog] = useState(false);
+  const [selectedPet, setSelectedPet] = useState<"cat" | "dog" | null>(null);
   const [testProcessed, setTestProcessed] = useState(false);
   const [testClickCount, setTestClickCount] = useState(0);
   const [showTestResult, setShowTestResult] = useState(false);
@@ -219,7 +220,11 @@ const Index = () => {
     setShowInput(true);
     
     if (newMode === "distraction") {
-      setShowPetDialog(true);
+      if (selectedPet) {
+        handleDistraction(selectedPet);
+      } else {
+        setShowPetDialog(true);
+      }
     }
   };
 
@@ -240,6 +245,7 @@ const Index = () => {
     setTestStep(1);
     setTestStartTime(0);
     setShowGoalDialog(false);
+    setSelectedPet(null);
   };
 
   const handleDemotivate = async () => {
@@ -432,6 +438,7 @@ const Index = () => {
 
   const handleDistraction = async (petType: "cat" | "dog") => {
     setShowPetDialog(false);
+    setSelectedPet(petType);
     setIsLoading(true);
     setMode("distraction");
     
@@ -799,7 +806,7 @@ const Index = () => {
                     {t.btnBack}
                   </Button>
                   <Button
-                    onClick={() => setShowPetDialog(true)}
+                    onClick={() => selectedPet && handleDistraction(selectedPet)}
                     disabled={isLoading}
                     className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
                     size="lg"
