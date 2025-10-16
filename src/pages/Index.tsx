@@ -796,19 +796,11 @@ const Index = () => {
                     className="max-w-full h-auto rounded-lg shadow-lg max-h-[400px] md:max-h-[500px] object-cover"
                   />
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
-                  <Button
-                    onClick={handleBack}
-                    variant="outline"
-                    className="font-bold h-11 md:h-12 text-sm md:text-base"
-                    size="lg"
-                  >
-                    {t.btnBack}
-                  </Button>
+                <div className="flex flex-col gap-3 md:gap-4">
                   <Button
                     onClick={() => selectedPet && handleDistraction(selectedPet)}
                     disabled={isLoading}
-                    className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
+                    className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold transition-all hover:scale-105 h-14 md:h-16 text-base md:text-lg"
                     size="lg"
                   >
                     {isLoading && mode === "distraction" ? (
@@ -819,6 +811,14 @@ const Index = () => {
                     ) : (
                       t.btnNewDistraction
                     )}
+                  </Button>
+                  <Button
+                    onClick={handleBack}
+                    variant="outline"
+                    className="font-bold h-9 md:h-10 text-xs md:text-sm"
+                    size="sm"
+                  >
+                    {t.btnBack}
                   </Button>
                 </div>
               </div>
@@ -876,22 +876,22 @@ const Index = () => {
                             className="min-h-32 md:min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-sm md:text-base focus:border-primary transition-colors"
                           />
                         </div>
-                        <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
-                          <Button
-                            onClick={handleBack}
-                            variant="outline"
-                            className="font-bold h-11 md:h-12 text-sm md:text-base"
-                            size="lg"
-                          >
-                            {t.btnBack}
-                          </Button>
+                        <div className="flex flex-col gap-3 md:gap-4">
                           <Button
                             onClick={handleGoalSubmit}
                             disabled={!testGoal.trim()}
-                            className="flex-1 bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold h-11 md:h-12 text-sm md:text-base transition-all hover:scale-105"
+                            className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold h-14 md:h-16 text-base md:text-lg transition-all hover:scale-105"
                             size="lg"
                           >
                             {t.testContinue}
+                          </Button>
+                          <Button
+                            onClick={handleBack}
+                            variant="outline"
+                            className="font-bold h-9 md:h-10 text-xs md:text-sm"
+                            size="sm"
+                          >
+                            {t.btnBack}
                           </Button>
                         </div>
                       </>
@@ -927,16 +927,7 @@ const Index = () => {
                         </div>
 
                         {selectedMode !== "test" && (
-                          <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
-                            <Button
-                              onClick={handleBack}
-                              disabled={isLoading}
-                              variant="outline"
-                              className="font-bold h-11 md:h-12 text-sm md:text-base"
-                              size="lg"
-                            >
-                              {t.btnBack}
-                            </Button>
+                          <div className="flex flex-col gap-3 md:gap-4">
                             <Button
                               onClick={() => {
                                 if (selectedMode === "demotivate") handleDemotivate();
@@ -945,7 +936,7 @@ const Index = () => {
                                 else if (selectedMode === "timeMachine") handleTimeMachine();
                               }}
                               disabled={isLoading || !thought.trim()}
-                              className={`flex-1 font-bold h-11 md:h-12 text-sm md:text-base transition-all hover:scale-105 ${
+                              className={`w-full font-bold h-14 md:h-16 text-base md:text-lg transition-all hover:scale-105 ${
                                 selectedMode === "demotivate"
                                   ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                                   : selectedMode === "8ball"
@@ -962,6 +953,15 @@ const Index = () => {
                               ) : (
                                 selectedMode === "8ball" ? t.btnShakeBall : t.btnSubmit
                               )}
+                            </Button>
+                            <Button
+                              onClick={handleBack}
+                              disabled={isLoading}
+                              variant="outline"
+                              className="font-bold h-9 md:h-10 text-xs md:text-sm"
+                              size="sm"
+                            >
+                              {t.btnBack}
                             </Button>
                           </div>
                         )}
