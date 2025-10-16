@@ -78,13 +78,40 @@ Just write the demotivational text. The estimates will be calculated automatical
             type: "function",
             function: {
               name: "calculate_savings",
-              description: "Calculate realistic estimates of money, time and stress that would be wasted on this idea",
+              description: "Calculate realistic estimates of money, time and stress that would be wasted on this idea. Break down the money into specific categories based on the user's input.",
               parameters: {
                 type: "object",
                 properties: {
                   money: {
                     type: "number",
-                    description: "Amount of money in euros that would be lost (500-50000)"
+                    description: "Total amount of money in euros that would be lost (500-50000)"
+                  },
+                  breakdown: {
+                    type: "object",
+                    description: "Breakdown of money into specific expense categories",
+                    properties: {
+                      equipment: {
+                        type: "number",
+                        description: "Cost for equipment/hardware"
+                      },
+                      travel: {
+                        type: "number",
+                        description: "Cost for travel and transportation"
+                      },
+                      software: {
+                        type: "number",
+                        description: "Cost for software/subscriptions"
+                      },
+                      marketing: {
+                        type: "number",
+                        description: "Cost for marketing and advertising"
+                      },
+                      other: {
+                        type: "number",
+                        description: "Other miscellaneous costs"
+                      }
+                    },
+                    required: ["equipment", "travel", "software", "marketing", "other"]
                   },
                   time: {
                     type: "number",
@@ -95,7 +122,7 @@ Just write the demotivational text. The estimates will be calculated automatical
                     description: "Percentage of additional stress (30-95)"
                   }
                 },
-                required: ["money", "time", "stress"],
+                required: ["money", "breakdown", "time", "stress"],
                 additionalProperties: false
               }
             }
@@ -105,7 +132,18 @@ Just write the demotivational text. The estimates will be calculated automatical
       }),
     });
 
-    let savings = { money: 5000, time: 12, stress: 60 }; // fallback values
+    let savings = { 
+      money: 5000, 
+      breakdown: { 
+        equipment: 1500, 
+        travel: 1000, 
+        software: 800, 
+        marketing: 1200, 
+        other: 500 
+      }, 
+      time: 12, 
+      stress: 60 
+    }; // fallback values
     
     if (savingsResponse.ok) {
       const savingsData = await savingsResponse.json();
@@ -115,6 +153,13 @@ Just write the demotivational text. The estimates will be calculated automatical
           const args = JSON.parse(toolCall.function.arguments);
           savings = {
             money: Math.round(args.money),
+            breakdown: {
+              equipment: Math.round(args.breakdown?.equipment || 0),
+              travel: Math.round(args.breakdown?.travel || 0),
+              software: Math.round(args.breakdown?.software || 0),
+              marketing: Math.round(args.breakdown?.marketing || 0),
+              other: Math.round(args.breakdown?.other || 0)
+            },
             time: Math.round(args.time),
             stress: Math.round(args.stress)
           };

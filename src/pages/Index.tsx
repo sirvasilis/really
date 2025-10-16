@@ -23,7 +23,18 @@ const Index = () => {
   const [eightBallAnswer, setEightBallAnswer] = useState("");
   const [timeMachineStory, setTimeMachineStory] = useState("");
   const [catImage, setCatImage] = useState("");
-  const [savings, setSavings] = useState<{ money: number; time: number; stress: number } | null>(null);
+  const [savings, setSavings] = useState<{ 
+    money: number; 
+    time: number; 
+    stress: number;
+    breakdown?: {
+      equipment: number;
+      travel: number;
+      software: number;
+      marketing: number;
+      other: number;
+    };
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | "quote" | "timeMachine" | "test" | null>(null);
   const [selectedMode, setSelectedMode] = useState<"demotivate" | "excuses" | "8ball" | "distraction" | "timeMachine" | "test" | null>(null);
@@ -1099,6 +1110,40 @@ const Index = () => {
                   <div className="text-sm md:text-base text-muted-foreground font-medium">
                     {t.savingsMoney}
                   </div>
+                  {savings.breakdown && (
+                    <div className="mt-3 pt-3 border-t border-destructive/20 space-y-1">
+                      {savings.breakdown.equipment > 0 && (
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>{language === "el" ? "Εξοπλισμός" : "Equipment"}</span>
+                          <span>€{savings.breakdown.equipment.toLocaleString()}</span>
+                        </div>
+                      )}
+                      {savings.breakdown.travel > 0 && (
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>{language === "el" ? "Ταξίδια" : "Travel"}</span>
+                          <span>€{savings.breakdown.travel.toLocaleString()}</span>
+                        </div>
+                      )}
+                      {savings.breakdown.software > 0 && (
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>{language === "el" ? "Λογισμικό" : "Software"}</span>
+                          <span>€{savings.breakdown.software.toLocaleString()}</span>
+                        </div>
+                      )}
+                      {savings.breakdown.marketing > 0 && (
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>{language === "el" ? "Μάρκετινγκ" : "Marketing"}</span>
+                          <span>€{savings.breakdown.marketing.toLocaleString()}</span>
+                        </div>
+                      )}
+                      {savings.breakdown.other > 0 && (
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>{language === "el" ? "Άλλα" : "Other"}</span>
+                          <span>€{savings.breakdown.other.toLocaleString()}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-2 md:space-y-3 p-3 md:p-4 rounded-lg bg-destructive/10 border border-destructive/20">
                   <div className="text-3xl md:text-4xl font-black text-destructive">
