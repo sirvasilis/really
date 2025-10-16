@@ -69,7 +69,7 @@ const Index = () => {
 
   const translations = {
     el: {
-      title: "DEMOTIVATOR",
+      title: "Really?",
       subtitle: "Έχεις όνειρα; Τέλεια! Ας τα θεραπεύσουμε πριν εξαπλωθούν!",
       demotivateTitle: "Αποθάρρυνε με",
       demotivateDesc: "Πείσε με γιατί δεν πρέπει να το κάνω",
@@ -132,7 +132,7 @@ const Index = () => {
       shouldI: "Να",
     },
     en: {
-      title: "DEMOTIVATOR",
+      title: "Really?",
       subtitle: "Got dreams? Great! Let's treat them before they spread!",
       demotivateTitle: "Demotivate me",
       demotivateDesc: "Convince me why I shouldn't do it",
