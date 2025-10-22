@@ -4,6 +4,11 @@ import { useNavigate } from "react-router-dom";
 const Landing = () => {
   const navigate = useNavigate();
 
+  const handleContinue = () => {
+    sessionStorage.setItem("hasVisitedFromLanding", "true");
+    navigate("/app");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4 md:p-8">
       <div className="max-w-4xl w-full space-y-12 md:space-y-16">
@@ -21,7 +26,7 @@ const Landing = () => {
         
         <div className="flex justify-center pt-4 md:pt-8 animate-scale-in" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
           <Button
-            onClick={() => navigate("/app")}
+            onClick={handleContinue}
             size="lg"
             className="text-4xl md:text-6xl lg:text-7xl font-light px-16 md:px-24 py-6 md:py-10 h-auto hover:scale-110 transition-all duration-300 hover:shadow-lg tracking-tight"
           >

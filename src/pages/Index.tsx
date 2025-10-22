@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [thought, setThought] = useState("");
   const [demotivation, setDemotivation] = useState("");
   const [excuses, setExcuses] = useState("");
@@ -50,6 +52,14 @@ const Index = () => {
   const [testStartTime, setTestStartTime] = useState<number>(0);
   const [showGoalDialog, setShowGoalDialog] = useState(false);
   const { toast } = useToast();
+
+  // Check if user came from landing page
+  useEffect(() => {
+    const hasVisited = sessionStorage.getItem("hasVisitedFromLanding");
+    if (!hasVisited) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const eightBallAnswers = {
     el: [
