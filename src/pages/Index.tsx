@@ -1023,21 +1023,6 @@ const Index = () => {
               <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-sm md:text-lg">
                 {excuses}
               </div>
-              <Button
-                onClick={handleGenerateExcuses}
-                disabled={isLoading}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
-                size="lg"
-              >
-                {isLoading && mode === "excuses" ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
-                    {t.generating}
-                  </>
-                ) : (
-                  t.btnAlternative
-                )}
-              </Button>
             </div>
           </Card>
         )}
@@ -1053,21 +1038,6 @@ const Index = () => {
                 <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-sm md:text-lg">
                   {timeMachineStory}
                 </div>
-                <Button
-                  onClick={handleTimeMachine}
-                  disabled={isLoading}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
-                  size="lg"
-                >
-                  {isLoading && mode === "timeMachine" ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
-                      {t.generating}
-                    </>
-                  ) : (
-                    t.btnAlternative
-                  )}
-                </Button>
               </div>
             </div>
           </Card>
