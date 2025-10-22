@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { AlertCircle, Loader2, ThumbsDown, MessageSquare, Sparkles, Cat, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Motion } from "@capacitor/motion";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,6 +52,7 @@ const Index = () => {
   const [testStep, setTestStep] = useState<1 | 2 | 3>(1); // 1: goal input, 2: test, 3: result
   const [testStartTime, setTestStartTime] = useState<number>(0);
   const [showGoalDialog, setShowGoalDialog] = useState(false);
+  const [isWaitingForShake, setIsWaitingForShake] = useState(false);
   const { toast } = useToast();
 
   // Check if user came from landing page
@@ -60,6 +62,40 @@ const Index = () => {
       navigate("/");
     }
   }, [navigate]);
+
+  // Shake detection for 8ball
+  useEffect(() => {
+    let accelHandler: any = null;
+
+    const setupShakeDetection = async () => {
+      if (selectedMode === "8ball" && isWaitingForShake && thought.trim()) {
+        try {
+          accelHandler = await Motion.addListener("accel", (event) => {
+            const { x, y, z } = event.acceleration;
+            const magnitude = Math.sqrt(x * x + y * y + z * z);
+            
+            // Detect shake with a threshold
+            if (magnitude > 20) {
+              setIsWaitingForShake(false);
+              handle8Ball();
+            }
+          });
+        } catch (error) {
+          console.error("Motion detection error:", error);
+          // Fallback: if motion not available, show button instead
+          setIsWaitingForShake(false);
+        }
+      }
+    };
+
+    setupShakeDetection();
+
+    return () => {
+      if (accelHandler) {
+        accelHandler.remove();
+      }
+    };
+  }, [selectedMode, isWaitingForShake, thought]);
 
   const eightBallAnswers = {
     el: [
@@ -151,6 +187,7 @@ const Index = () => {
       savingsTime: "Χαμένος χρόνος",
       savingsStress: "Επιπλέον άγχος",
       shouldI: "Να",
+      shakeToReveal: "Κούνησε το κινητό για να πάρεις την απάντησή σου",
     },
     en: {
       title: "Really?",
@@ -214,6 +251,7 @@ const Index = () => {
       shouldI: "Should I",
       savingsTime: "Wasted time",
       savingsStress: "Extra stress",
+      shakeToReveal: "Shake your phone to get your answer",
     }
   };
 
@@ -238,6 +276,7 @@ const Index = () => {
     setTestGoal("");
     setTestStep(1);
     setTestStartTime(0);
+    setIsWaitingForShake(false);
     setShowInput(true);
     
     if (newMode === "distraction") {
@@ -267,6 +306,7 @@ const Index = () => {
     setTestStartTime(0);
     setShowGoalDialog(false);
     setSelectedPet(null);
+    setIsWaitingForShake(false);
   };
 
   const handleDemotivate = async () => {
@@ -450,6 +490,15 @@ const Index = () => {
   };
 
   const handle8Ball = () => {
+    if (!thought.trim()) {
+      toast({
+        title: t.emptyError,
+        description: t.emptyExcuses,
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setMode("8ball");
     const answers = eightBallAnswers[language];
     const randomAnswer = answers[Math.floor(Math.random() * answers.length)];
@@ -916,73 +965,99 @@ const Index = () => {
                       </>
                     ) : (
                       <>
-                        <div className="space-y-3">
-                          {selectedMode !== "8ball" && selectedMode !== "test" && (
-                            <label className="text-sm md:text-base font-semibold text-foreground">
-                              {selectedMode === "demotivate" 
-                                ? t.demotivateLabel 
-                                : selectedMode === "excuses"
-                                ? t.excusesLabel
-                                : t.timeMachineLabel}
-                            </label>
-                          )}
-                          {selectedMode !== "test" && (
-                            <Textarea
-                              value={thought}
-                              onChange={(e) => setThought(e.target.value)}
-                              placeholder={
-                                selectedMode === "demotivate" 
-                                  ? t.demotivatePlaceholder 
-                                  : selectedMode === "excuses"
-                                  ? t.excusesPlaceholder
-                                  : selectedMode === "timeMachine"
-                                  ? t.timeMachinePlaceholder
-                                  : t.eightBallPlaceholder
-                              }
-                              className="min-h-32 md:min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-sm md:text-base focus:border-primary transition-colors"
-                              disabled={isLoading}
-                            />
-                          )}
-                        </div>
-
-                        {selectedMode !== "test" && (
-                          <div className="flex flex-col gap-3 md:gap-4">
-                            <Button
-                              onClick={() => {
-                                if (selectedMode === "demotivate") handleDemotivate();
-                                else if (selectedMode === "excuses") handleGenerateExcuses();
-                                else if (selectedMode === "8ball") handle8Ball();
-                                else if (selectedMode === "timeMachine") handleTimeMachine();
-                              }}
-                              disabled={isLoading || !thought.trim()}
-                              className={`w-full font-bold h-14 md:h-16 text-base md:text-lg transition-all hover:scale-105 ${
-                                selectedMode === "demotivate"
-                                  ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                                  : selectedMode === "8ball"
-                                  ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
-                                  : "bg-primary hover:bg-primary/90 text-primary-foreground"
-                              }`}
-                              size="lg"
-                            >
-                              {isLoading ? (
-                                <>
-                                  <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
-                                  {mode === "quote" ? t.generating : t.thinking}
-                                </>
-                              ) : (
-                                selectedMode === "8ball" ? t.btnShakeBall : t.btnSubmit
-                              )}
-                            </Button>
+                        {selectedMode === "8ball" && isWaitingForShake ? (
+                          <div className="space-y-6 md:space-y-8">
+                            <div className="flex flex-col items-center justify-center py-8 md:py-12">
+                              <div className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-br from-secondary to-secondary/50 flex items-center justify-center shadow-2xl border-4 border-secondary/30 animate-pulse">
+                                <p className="text-base md:text-xl font-bold text-center text-secondary-foreground px-6 md:px-8">
+                                  {t.shakeToReveal}
+                                </p>
+                              </div>
+                            </div>
                             <Button
                               onClick={handleBack}
-                              disabled={isLoading}
                               variant="outline"
-                              className="font-bold h-9 md:h-10 text-xs md:text-sm"
+                              className="font-bold h-9 md:h-10 text-xs md:text-sm w-full"
                               size="sm"
                             >
                               {t.btnBack}
                             </Button>
                           </div>
+                        ) : (
+                          <>
+                            <div className="space-y-3">
+                              {selectedMode !== "8ball" && selectedMode !== "test" && (
+                                <label className="text-sm md:text-base font-semibold text-foreground">
+                                  {selectedMode === "demotivate" 
+                                    ? t.demotivateLabel 
+                                    : selectedMode === "excuses"
+                                    ? t.excusesLabel
+                                    : t.timeMachineLabel}
+                                </label>
+                              )}
+                              {selectedMode !== "test" && (
+                                <Textarea
+                                  value={thought}
+                                  onChange={(e) => setThought(e.target.value)}
+                                  placeholder={
+                                    selectedMode === "demotivate" 
+                                      ? t.demotivatePlaceholder 
+                                      : selectedMode === "excuses"
+                                      ? t.excusesPlaceholder
+                                      : selectedMode === "timeMachine"
+                                      ? t.timeMachinePlaceholder
+                                      : t.eightBallPlaceholder
+                                  }
+                                  className="min-h-32 md:min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-sm md:text-base focus:border-primary transition-colors"
+                                  disabled={isLoading}
+                                />
+                              )}
+                            </div>
+
+                            {selectedMode !== "test" && (
+                              <div className="flex flex-col gap-3 md:gap-4">
+                                <Button
+                                  onClick={() => {
+                                    if (selectedMode === "demotivate") handleDemotivate();
+                                    else if (selectedMode === "excuses") handleGenerateExcuses();
+                                    else if (selectedMode === "8ball") {
+                                      if (thought.trim()) {
+                                        setIsWaitingForShake(true);
+                                      }
+                                    }
+                                    else if (selectedMode === "timeMachine") handleTimeMachine();
+                                  }}
+                                  disabled={isLoading || !thought.trim()}
+                                  className={`w-full font-bold h-14 md:h-16 text-base md:text-lg transition-all hover:scale-105 ${
+                                    selectedMode === "demotivate"
+                                      ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                                      : selectedMode === "8ball"
+                                      ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                                      : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                                  }`}
+                                  size="lg"
+                                >
+                                  {isLoading ? (
+                                    <>
+                                      <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
+                                      {mode === "quote" ? t.generating : t.thinking}
+                                    </>
+                                  ) : (
+                                    selectedMode === "8ball" ? t.btnSubmit : t.btnSubmit
+                                  )}
+                                </Button>
+                                <Button
+                                  onClick={handleBack}
+                                  disabled={isLoading}
+                                  variant="outline"
+                                  className="font-bold h-9 md:h-10 text-xs md:text-sm"
+                                  size="sm"
+                                >
+                                  {t.btnBack}
+                                </Button>
+                              </div>
+                            )}
+                          </>
                         )}
                       </>
                     )}
