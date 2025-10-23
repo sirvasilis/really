@@ -856,7 +856,20 @@ const Index = () => {
             </h1>
           </div>
           <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto leading-relaxed px-4">
-            {t.subtitle}
+            {selectedMode 
+              ? selectedMode === "demotivate" 
+                ? t.demotivateDesc
+                : selectedMode === "excuses"
+                ? t.excusesDesc
+                : selectedMode === "8ball"
+                ? t.eightBallDesc
+                : selectedMode === "distraction"
+                ? t.distractionDesc
+                : selectedMode === "timeMachine"
+                ? t.timeMachineDesc
+                : t.testDesc
+              : t.subtitle
+            }
           </p>
         </header>
 
