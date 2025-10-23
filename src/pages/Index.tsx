@@ -318,6 +318,19 @@ const Index = () => {
 
   const t = translations[language];
 
+  // Dynamically scale answer text to fit inside triangle
+  const getTriangleFontSize = (text: string) => {
+    const len = text.trim().length;
+    if (len <= 12) return 18; // large answers fit nicely
+    if (len <= 20) return 16;
+    if (len <= 32) return 14;
+    if (len <= 50) return 12;
+    if (len <= 70) return 11;
+    if (len <= 90) return 10;
+    return 9; // very long answers
+  };
+  const triangleFontSize = getTriangleFontSize(eightBallAnswer);
+
   useEffect(() => {
     handleGenerateQuote();
   }, [language]);
@@ -929,7 +942,7 @@ const Index = () => {
                           
                           {/* Answer text - clipped inside triangle */}
                           <div className="absolute inset-0 flex items-center justify-center pb-1 px-3" style={{clipPath: 'polygon(50% 12%, 15% 88%, 85% 88%)'}}>
-                            <p className="text-[11px] md:text-xs font-semibold text-center text-white leading-snug break-words">
+                            <p className="font-semibold text-center text-white leading-snug break-words" style={{ fontSize: `${triangleFontSize}px`, hyphens: 'auto' }}>
                               {eightBallAnswer}
                             </p>
                           </div>
