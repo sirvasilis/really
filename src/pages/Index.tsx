@@ -329,41 +329,60 @@ const Index = () => {
     const container = triangleRef.current;
     if (!textEl || !container) return;
 
-    // Start large then shrink to fit
-    let size = Math.round(Math.min(container.clientWidth, container.clientHeight) / 3.2);
-    size = Math.min(size, 15); // cap max smaller to avoid hitting the 8
-    size = Math.max(size, 9); // ensure readable
+    const fit = () => {
+      if (!textEl || !container) return;
 
-    // Apply base typography for better packing
-    textEl.style.whiteSpace = "normal";
-    textEl.style.wordBreak = "break-word";
-    textEl.style.hyphens = "auto";
+      // Base typography for dense packing
+      textEl.style.whiteSpace = "normal";
+      textEl.style.wordBreak = "break-word";
+      textEl.style.hyphens = "auto";
+      textEl.style.width = "80%"; // keep away from triangle sides
+      textEl.style.maxWidth = "80%";
 
-    const applySize = (s: number) => {
-      textEl.style.fontSize = `${s}px`;
-      // slightly tighter as it gets smaller
-      const lh = s >= 16 ? 1.15 : s >= 13 ? 1.12 : 1.08;
-      textEl.style.lineHeight = String(lh);
-      // slight negative letter spacing via tailwind class is added in JSX (tracking-tight)
+      // Start large then shrink to fit
+      let size = Math.round(Math.min(container.clientWidth, container.clientHeight) / 3.2);
+      size = Math.min(size, 15); // cap max to avoid hitting the 8
+      size = Math.max(size, 9);
+
+      const applySize = (s: number) => {
+        textEl.style.fontSize = `${s}px`;
+        const lh = s >= 16 ? 1.15 : s >= 13 ? 1.12 : 1.08;
+        textEl.style.lineHeight = String(lh);
+        textEl.style.letterSpacing = "-0.01em";
+      };
+
+      applySize(size);
+
+      // Use only the lower, wider portion of the triangle
+      const availH = container.clientHeight * 0.62;
+      const availW = container.clientWidth * 0.76;
+
+      for (let i = 0; i < 100; i++) {
+        const fitsH = textEl.scrollHeight <= availH;
+        const fitsW = textEl.scrollWidth <= availW;
+        if (fitsH && fitsW) break;
+        size -= 1;
+        if (size <= 8) break;
+        applySize(size);
+      }
+
+      setTriangleFontSize(size);
     };
 
-    applySize(size);
+    // initial fit (after next paint)
+    requestAnimationFrame(fit);
 
-    // Keep text in the lower, wider part of the triangle
-    const availH = container.clientHeight * 0.62; // use bottom 62%
-    const availW = container.clientWidth * 0.76; // keep away from slanted edges
+    // Re-fit on container resize/orientation changes (mobile)
+    const ro = new ResizeObserver(() => fit());
+    ro.observe(container);
+    window.addEventListener("resize", fit);
+    window.addEventListener("orientationchange", fit);
 
-    // Shrink iteratively until both dimensions fit
-    for (let i = 0; i < 80; i++) {
-      const fitsH = textEl.scrollHeight <= availH;
-      const fitsW = textEl.scrollWidth <= availW;
-      if (fitsH && fitsW) break;
-      size -= 1;
-      if (size <= 8) break;
-      applySize(size);
-    }
-
-    setTriangleFontSize(size);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", fit);
+      window.removeEventListener("orientationchange", fit);
+    };
   }, [eightBallAnswer, selectedMode]);
 
   useEffect(() => {
@@ -977,8 +996,8 @@ const Index = () => {
                           </svg>
                           
                           {/* Answer text - clipped inside triangle */}
-                          <div className="absolute inset-0 flex items-end justify-center px-3 pb-5 md:pb-6" style={{clipPath: 'polygon(50% 20%, 12% 89%, 88% 89%)'}}>
-                            <p ref={textRef} className="w-[72%] md:w-[78%] whitespace-normal font-semibold tracking-tight text-center text-white break-words" style={{ fontSize: `${triangleFontSize}px`, lineHeight: '1.08', hyphens: 'auto', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                          <div className="absolute inset-0 flex items-end justify-center px-3 pb-6 md:pb-7" style={{clipPath: 'polygon(50% 20%, 12% 89%, 88% 89%)'}}>
+                            <p ref={textRef} className="w-[80%] md:w-[78%] whitespace-normal font-semibold tracking-tight text-center text-white break-words" style={{ fontSize: `${triangleFontSize}px`, lineHeight: '1.08', hyphens: 'auto', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
                               {eightBallAnswer}
                             </p>
                           </div>
