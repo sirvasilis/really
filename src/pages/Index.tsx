@@ -67,39 +67,94 @@ const Index = () => {
   // Shake detection for 8ball
   useEffect(() => {
     let accelHandler: any = null;
+    let webHandler: ((ev: DeviceMotionEvent) => void) | null = null;
 
-    const setupShakeDetection = async () => {
-      if (selectedMode === "8ball" && thought.trim()) {
+    const handleShakeMagnitude = (magnitude: number) => {
+      if (magnitude > 20) {
+        const now = Date.now();
+        if (now - lastShakeRef.current < 1200) return; // throttle repeated triggers
+        lastShakeRef.current = now;
+        setIsWaitingForShake(false);
+        handle8Ball();
+      }
+    };
+
+    const setupCapacitor = async () => {
+      try {
+        accelHandler = await Motion.addListener("accel", (event) => {
+          const { x, y, z } = event.acceleration;
+          const magnitude = Math.sqrt(x * x + y * y + z * z);
+          handleShakeMagnitude(magnitude);
+        });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    const setupWeb = async () => {
+      // iOS Safari needs explicit permission
+      const DM: any = (window as any).DeviceMotionEvent;
+      const needsPermission = DM && typeof DM.requestPermission === "function";
+      if (needsPermission) {
         try {
-          accelHandler = await Motion.addListener("accel", (event) => {
-            const { x, y, z } = event.acceleration;
-            const magnitude = Math.sqrt(x * x + y * y + z * z);
+          const status = await DM.requestPermission();
+          if (status !== "granted") {
+            toast({
+              title: "Απαιτείται άδεια κίνησης",
+              description: "Επίτρεψε πρόσβαση στους αισθητήρες για να λειτουργήσει το κούνημα",
+              variant: "destructive",
+            });
+            return false;
+          }
+        } catch (err) {
+          console.error("DeviceMotion permission error:", err);
+          return false;
+        }
+      }
 
-            if (magnitude > 20) {
-              const now = Date.now();
-              if (now - lastShakeRef.current < 1200) return; // throttle repeated triggers
-              lastShakeRef.current = now;
-              setIsWaitingForShake(false);
-              handle8Ball();
-            }
-          });
-        } catch (error) {
-          console.error("Motion detection error:", error);
+      webHandler = (ev: DeviceMotionEvent) => {
+        const acc = ev.accelerationIncludingGravity || ev.acceleration;
+        if (!acc) return;
+        const x = acc.x || 0;
+        const y = acc.y || 0;
+        const z = acc.z || 0;
+        const magnitude = Math.sqrt(x * x + y * y + z * z);
+        handleShakeMagnitude(magnitude);
+      };
+      window.addEventListener("devicemotion", webHandler, true);
+      return true;
+    };
+
+    const init = async () => {
+      if (!(selectedMode === "8ball" && thought.trim())) return;
+
+      const capOk = await setupCapacitor();
+      if (!capOk) {
+        if ("DeviceMotionEvent" in window) {
+          const webOk = await setupWeb();
+          if (!webOk) {
+            toast({
+              title: "Motion not available",
+              description: "Η συσκευή/περιηγητής δεν υποστηρίζει κίνηση",
+              variant: "destructive",
+            });
+          }
+        } else {
           toast({
             title: "Motion not available",
-            description: "Please use a device with motion sensors",
+            description: "Η συσκευή/περιηγητής δεν υποστηρίζει κίνηση",
             variant: "destructive",
           });
         }
       }
     };
 
-    setupShakeDetection();
+    init();
 
     return () => {
-      if (accelHandler) {
-        accelHandler.remove();
-      }
+      if (accelHandler) accelHandler.remove();
+      if (webHandler) window.removeEventListener("devicemotion", webHandler, true);
     };
   }, [selectedMode, thought]);
 
