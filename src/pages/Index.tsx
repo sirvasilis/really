@@ -852,7 +852,7 @@ const Index = () => {
                       {/* Answer window container - centered in bottom half */}
                       <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 w-36 h-32 md:w-44 md:h-36 flex items-center justify-center">
                         {/* Blue triangular window */}
-                        <div className="relative w-28 h-24 md:w-32 md:h-28">
+                        <div className="relative w-24 h-20 md:w-28 md:h-24">
                           <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl">
                             <defs>
                               <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -869,9 +869,9 @@ const Index = () => {
                             />
                           </svg>
                           
-                          {/* Answer text - properly centered */}
-                          <div className="absolute inset-0 flex items-center justify-center pt-3 md:pt-4">
-                            <p className="text-[10px] md:text-xs font-bold text-center text-white leading-tight px-4 max-w-[90%]">
+                          {/* Answer text - properly centered and sized */}
+                          <div className="absolute inset-0 flex items-center justify-center pb-2">
+                            <p className="text-[9px] md:text-[10px] font-semibold text-center text-white leading-tight px-3 break-words" style={{maxWidth: '85%'}}>
                               {eightBallAnswer}
                             </p>
                           </div>
@@ -901,7 +901,10 @@ const Index = () => {
                       {t.btnBack}
                     </Button>
                     <Button
-                      onClick={() => setIsWaitingForShake(true)}
+                      onClick={() => {
+                        setEightBallAnswer("");
+                        setIsWaitingForShake(true);
+                      }}
                       className="flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
                       size="lg"
                     >
