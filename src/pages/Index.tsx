@@ -926,7 +926,7 @@ const Index = () => {
                   {t.shouldI} {thought}
                 </h2>
                 <div className="flex items-center justify-center py-6 md:py-8">
-                  <div className="relative w-72 h-72 md:w-96 md:h-96">
+                  <div className="relative w-[75vw] h-[75vw] max-w-[22rem] max-h-[22rem] md:w-96 md:h-96">
                     {/* Main 8ball sphere with 3D effect */}
                     <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gray-700 via-black to-black shadow-[0_25px_80px_rgba(0,0,0,0.9),inset_0_-20px_40px_rgba(0,0,0,0.6)] border-4 border-black/50">
                       {/* Glossy highlight - top left */}
@@ -939,9 +939,9 @@ const Index = () => {
                       </div>
                       
                       {/* Answer window container - centered in bottom half */}
-                      <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 w-40 h-36 md:w-48 md:h-40 flex items-center justify-center">
+                      <div className="absolute bottom-14 md:bottom-20 left-1/2 -translate-x-1/2 w-[70%] h-[56%] md:w-48 md:h-40 flex items-center justify-center">
                         {/* Blue triangular window */}
-                        <div className="relative w-36 h-32 md:w-40 md:h-36" ref={triangleRef}>
+                        <div className="relative w-full h-full overflow-hidden" ref={triangleRef}>
                           <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl">
                             <defs>
                               <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -959,7 +959,7 @@ const Index = () => {
                           </svg>
                           
                           {/* Answer text - clipped inside triangle */}
-                          <div className="absolute inset-0 flex items-center justify-center pb-1 px-3" style={{clipPath: 'polygon(50% 12%, 15% 88%, 85% 88%)'}}>
+                          <div className="absolute inset-0 flex items-center justify-center px-3" style={{clipPath: 'polygon(50% 12%, 15% 88%, 85% 88%)'}}>
                             <p ref={textRef} className="font-semibold text-center text-white leading-snug break-words" style={{ fontSize: `${triangleFontSize}px`, hyphens: 'auto' }}>
                               {eightBallAnswer}
                             </p>
