@@ -934,12 +934,12 @@ const Index = () => {
                       <div className="absolute top-8 left-12 md:top-12 md:left-16 w-12 h-12 md:w-16 md:h-16 bg-white/60 rounded-full blur-lg"></div>
                       
                       {/* Number 8 badge - clean and prominent */}
-                      <div className="absolute top-12 md:top-16 left-1/2 -translate-x-1/2 w-16 h-16 md:w-20 md:h-20 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex items-center justify-center border-2 border-gray-200">
+                      <div className="absolute z-20 top-12 md:top-16 left-1/2 -translate-x-1/2 w-16 h-16 md:w-20 md:h-20 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex items-center justify-center border-2 border-gray-200">
                         <span className="text-4xl md:text-5xl font-black text-black">8</span>
                       </div>
                       
                       {/* Answer window container - centered in bottom half */}
-                      <div className="absolute bottom-14 md:bottom-20 left-1/2 -translate-x-1/2 w-[70%] h-[56%] md:w-48 md:h-40 flex items-center justify-center">
+                      <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 w-[70%] h-[50%] md:w-48 md:h-40 flex items-center justify-center z-10">
                         {/* Blue triangular window */}
                         <div className="relative w-full h-full overflow-hidden" ref={triangleRef}>
                           <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl">
@@ -951,15 +951,16 @@ const Index = () => {
                               </linearGradient>
                             </defs>
                             <polygon 
-                              points="50,10 10,90 90,90" 
+                              points="50,16 12,90 88,90" 
                               fill="url(#triangleGradient)"
                               stroke="#1e293b"
-                              strokeWidth="1"
+                              strokeWidth="3"
+                              strokeLinejoin="round"
                             />
                           </svg>
                           
                           {/* Answer text - clipped inside triangle */}
-                          <div className="absolute inset-0 flex items-center justify-center px-3" style={{clipPath: 'polygon(50% 12%, 15% 88%, 85% 88%)'}}>
+                          <div className="absolute inset-0 flex items-end justify-center px-3 pb-2 md:pb-3" style={{clipPath: 'polygon(50% 16%, 15% 90%, 85% 90%)'}}>
                             <p ref={textRef} className="font-semibold text-center text-white leading-snug break-words" style={{ fontSize: `${triangleFontSize}px`, hyphens: 'auto' }}>
                               {eightBallAnswer}
                             </p>
