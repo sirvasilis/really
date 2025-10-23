@@ -978,7 +978,7 @@ const Index = () => {
                           
                           {/* Answer text - clipped inside triangle */}
                           <div className="absolute inset-0 flex items-end justify-center px-3 pb-3 md:pb-4" style={{clipPath: 'polygon(50% 16%, 15% 90%, 85% 90%)'}}>
-                            <p ref={textRef} className="font-semibold tracking-tight text-center text-white leading-snug break-words" style={{ fontSize: `${triangleFontSize}px`, hyphens: 'auto', wordBreak: 'break-word' }}>
+                            <p ref={textRef} className="w-[84%] sm:w-[80%] whitespace-normal font-semibold tracking-tight text-center text-white break-words" style={{ fontSize: `${triangleFontSize}px`, lineHeight: '1.1', hyphens: 'auto', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
                               {eightBallAnswer}
                             </p>
                           </div>
