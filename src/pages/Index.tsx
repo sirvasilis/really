@@ -861,7 +861,7 @@ const Index = () => {
                           </div>
                           
                           {/* Answer text */}
-                          <div className="absolute inset-0 flex items-center justify-center transform rotate-180 px-3">
+                          <div className="absolute inset-0 flex items-center justify-center px-3">
                             <p className="text-xs md:text-sm font-bold text-center text-white leading-tight drop-shadow-lg">
                               {eightBallAnswer}
                             </p>
