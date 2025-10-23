@@ -837,38 +837,53 @@ const Index = () => {
                   {t.shouldI} {thought}
                 </h2>
                 <div className="flex items-center justify-center py-6 md:py-8">
-                  <div className="relative w-64 h-64 md:w-80 md:h-80">
-                    {/* Main 8ball sphere */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-slate-900 via-black to-slate-950 shadow-[0_20px_60px_rgba(0,0,0,0.8)] animate-fade-in">
-                      {/* Glossy shine effect */}
-                      <div className="absolute top-8 left-12 md:top-12 md:left-16 w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-white/30 to-transparent rounded-full blur-2xl"></div>
+                  <div className="relative w-72 h-72 md:w-96 md:h-96">
+                    {/* Main 8ball sphere with 3D effect */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gray-700 via-black to-black shadow-[0_25px_80px_rgba(0,0,0,0.9),inset_0_-20px_40px_rgba(0,0,0,0.6)] border-4 border-black/50">
+                      {/* Glossy highlight - top left */}
+                      <div className="absolute top-12 left-16 md:top-16 md:left-20 w-16 h-16 md:w-24 md:h-24 bg-white/40 rounded-full blur-xl"></div>
+                      <div className="absolute top-8 left-12 md:top-12 md:left-16 w-12 h-12 md:w-16 md:h-16 bg-white/60 rounded-full blur-lg"></div>
                       
-                      {/* Number 8 circle - positioned at top */}
-                      <div className="absolute top-8 md:top-12 left-1/2 -translate-x-1/2 w-14 h-14 md:w-16 md:h-16 rounded-full bg-white shadow-lg flex items-center justify-center">
-                        <span className="text-3xl md:text-4xl font-black text-black">8</span>
+                      {/* Number 8 badge - clean and prominent */}
+                      <div className="absolute top-12 md:top-16 left-1/2 -translate-x-1/2 w-16 h-16 md:w-20 md:h-20 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex items-center justify-center border-2 border-gray-200">
+                        <span className="text-4xl md:text-5xl font-black text-black">8</span>
                       </div>
                       
-                      {/* Answer window - mystical triangle */}
-                      <div className="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 w-32 h-24 md:w-36 md:h-28">
-                        <div className="relative w-full h-full">
-                          {/* Triangle shape with gradient */}
-                          <div 
-                            className="absolute inset-0 bg-gradient-to-b from-indigo-900 via-blue-900 to-blue-950 shadow-inner transform rotate-180" 
-                            style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'}}
-                          >
-                            {/* Inner glow effect */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/20 to-transparent"></div>
-                          </div>
+                      {/* Answer window container - centered in bottom half */}
+                      <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 w-36 h-32 md:w-44 md:h-36 flex items-center justify-center">
+                        {/* Blue triangular window */}
+                        <div className="relative w-28 h-24 md:w-32 md:h-28">
+                          <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl">
+                            <defs>
+                              <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style={{stopColor: '#1e3a8a', stopOpacity: 1}} />
+                                <stop offset="50%" style={{stopColor: '#1e40af', stopOpacity: 1}} />
+                                <stop offset="100%" style={{stopColor: '#1e3a8a', stopOpacity: 1}} />
+                              </linearGradient>
+                            </defs>
+                            <polygon 
+                              points="50,10 10,90 90,90" 
+                              fill="url(#triangleGradient)"
+                              stroke="#1e293b"
+                              strokeWidth="1"
+                            />
+                          </svg>
                           
-                          {/* Answer text */}
-                          <div className="absolute inset-0 flex items-center justify-center px-3">
-                            <p className="text-xs md:text-sm font-bold text-center text-white leading-tight drop-shadow-lg">
+                          {/* Answer text - properly centered */}
+                          <div className="absolute inset-0 flex items-center justify-center pt-3 md:pt-4">
+                            <p className="text-[10px] md:text-xs font-bold text-center text-white leading-tight px-4 max-w-[90%]">
                               {eightBallAnswer}
                             </p>
                           </div>
                         </div>
                       </div>
+                      
+                      {/* Bottom shadow for depth */}
+                      <div className="absolute bottom-0 inset-x-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent rounded-full"></div>
                     </div>
+                    
+                    {/* Shadow beneath the ball */}
+                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-56 h-8 md:w-72 md:h-10 bg-black/40 rounded-full blur-2xl"></div>
                   </div>
                 </div>
                 {isWaitingForShake ? (
