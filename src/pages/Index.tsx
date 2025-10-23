@@ -830,14 +830,23 @@ const Index = () => {
           <Card className="p-4 md:p-8 space-y-4 md:space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
             {selectedMode === "8ball" && eightBallAnswer ? (
               <div className="space-y-4 md:space-y-6">
-                <h2 className="text-lg md:text-2xl font-bold text-secondary text-center px-2">
+                <h2 className="text-lg md:text-2xl font-bold text-foreground text-center px-2">
                   {t.shouldI} {thought}
                 </h2>
                 <div className="flex items-center justify-center py-6 md:py-8">
-                  <div className="w-40 h-40 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-secondary to-secondary/50 flex items-center justify-center shadow-2xl border-4 border-secondary/30">
-                    <p className="text-lg md:text-2xl font-bold text-center text-secondary-foreground px-4 md:px-6">
-                      {eightBallAnswer}
-                    </p>
+                  <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-full bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center shadow-2xl">
+                    {/* Shine effect */}
+                    <div className="absolute top-8 left-12 w-16 h-16 bg-white/20 rounded-full blur-xl"></div>
+                    {/* Number 8 circle */}
+                    <div className="absolute top-1/4 w-16 h-16 md:w-20 md:h-20 rounded-full bg-white flex items-center justify-center shadow-lg">
+                      <span className="text-3xl md:text-4xl font-black text-black">8</span>
+                    </div>
+                    {/* Answer window - triangle shape */}
+                    <div className="absolute bottom-1/4 w-32 h-28 md:w-40 md:h-32 bg-blue-900 rounded-lg flex items-center justify-center shadow-inner transform rotate-180" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'}}>
+                      <p className="text-sm md:text-base font-bold text-center text-white px-4 transform rotate-180 leading-tight">
+                        {eightBallAnswer}
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
@@ -981,10 +990,19 @@ const Index = () => {
                         {selectedMode === "8ball" && isWaitingForShake ? (
                           <div className="space-y-6 md:space-y-8">
                             <div className="flex flex-col items-center justify-center py-8 md:py-12">
-                              <div className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-br from-secondary to-secondary/50 flex items-center justify-center shadow-2xl border-4 border-secondary/30 animate-pulse">
-                                <p className="text-base md:text-xl font-bold text-center text-secondary-foreground px-6 md:px-8">
-                                  {t.shakeToReveal}
-                                </p>
+                              <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-full bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center shadow-2xl animate-pulse">
+                                {/* Shine effect */}
+                                <div className="absolute top-8 left-12 w-16 h-16 bg-white/20 rounded-full blur-xl"></div>
+                                {/* Number 8 circle */}
+                                <div className="absolute top-1/4 w-16 h-16 md:w-20 md:h-20 rounded-full bg-white flex items-center justify-center shadow-lg">
+                                  <span className="text-3xl md:text-4xl font-black text-black">8</span>
+                                </div>
+                                {/* Answer window - empty/mystery */}
+                                <div className="absolute bottom-1/4 w-32 h-28 md:w-40 md:h-32 bg-blue-950 rounded-lg flex items-center justify-center shadow-inner transform rotate-180" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'}}>
+                                  <p className="text-xs md:text-sm font-bold text-center text-blue-400/50 px-4 transform rotate-180 leading-tight">
+                                    {t.shakeToReveal}
+                                  </p>
+                                </div>
                               </div>
                             </div>
                             <Button
