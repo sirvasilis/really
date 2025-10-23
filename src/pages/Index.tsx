@@ -330,8 +330,8 @@ const Index = () => {
     if (!textEl || !container) return;
 
     // Start large then shrink to fit
-    let size = Math.round(Math.min(container.clientWidth, container.clientHeight) / 2.8);
-    size = Math.min(size, 16); // cap max smaller to avoid hitting the 8
+    let size = Math.round(Math.min(container.clientWidth, container.clientHeight) / 3.2);
+    size = Math.min(size, 15); // cap max smaller to avoid hitting the 8
     size = Math.max(size, 9); // ensure readable
 
     // Apply base typography for better packing
@@ -956,7 +956,7 @@ const Index = () => {
                       </div>
                       
                       {/* Answer window container - centered in bottom half */}
-                      <div className="absolute bottom-2 md:bottom-6 left-1/2 -translate-x-1/2 w-[78%] h-[60%] md:w-56 md:h-48 flex items-center justify-center z-10">
+                      <div className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 w-[82%] h-[62%] md:w-56 md:h-48 flex items-center justify-center z-10">
                         {/* Blue triangular window */}
                         <div className="relative w-full h-full overflow-hidden" ref={triangleRef}>
                           <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl">
@@ -977,8 +977,8 @@ const Index = () => {
                           </svg>
                           
                           {/* Answer text - clipped inside triangle */}
-                          <div className="absolute inset-0 flex items-end justify-center px-3 pb-3 md:pb-4" style={{clipPath: 'polygon(50% 20%, 12% 92%, 88% 92%)'}}>
-                            <p ref={textRef} className="w-[84%] sm:w-[80%] whitespace-normal font-semibold tracking-tight text-center text-white break-words" style={{ fontSize: `${triangleFontSize}px`, lineHeight: '1.1', hyphens: 'auto', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                          <div className="absolute inset-0 flex items-end justify-center px-3 pb-5 md:pb-6" style={{clipPath: 'polygon(50% 20%, 12% 89%, 88% 89%)'}}>
+                            <p ref={textRef} className="w-[72%] md:w-[78%] whitespace-normal font-semibold tracking-tight text-center text-white break-words" style={{ fontSize: `${triangleFontSize}px`, lineHeight: '1.08', hyphens: 'auto', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
                               {eightBallAnswer}
                             </p>
                           </div>
