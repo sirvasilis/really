@@ -68,7 +68,7 @@ const Index = () => {
     let accelHandler: any = null;
 
     const setupShakeDetection = async () => {
-      if (selectedMode === "8ball" && isWaitingForShake && thought.trim() && !eightBallAnswer) {
+      if (selectedMode === "8ball" && isWaitingForShake && thought.trim()) {
         try {
           accelHandler = await Motion.addListener("accel", (event) => {
             const { x, y, z } = event.acceleration;
@@ -98,7 +98,7 @@ const Index = () => {
         accelHandler.remove();
       }
     };
-  }, [selectedMode, isWaitingForShake, thought, eightBallAnswer]);
+  }, [selectedMode, isWaitingForShake, thought]);
 
   const eightBallAnswers = {
     el: [
@@ -852,23 +852,29 @@ const Index = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
-                  <Button
-                    onClick={handleBack}
-                    variant="outline"
-                    className="font-bold h-11 md:h-12 text-sm md:text-base"
-                    size="lg"
-                  >
-                    {t.btnBack}
-                  </Button>
-                  <Button
-                    onClick={handle8Ball}
-                    className="flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
-                    size="lg"
-                  >
-                    {t.btnShakeBallAgain}
-                  </Button>
-                </div>
+                {isWaitingForShake ? (
+                  <p className="text-center text-base md:text-lg font-semibold text-muted-foreground animate-pulse">
+                    {t.shakeToReveal}
+                  </p>
+                ) : (
+                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+                    <Button
+                      onClick={handleBack}
+                      variant="outline"
+                      className="font-bold h-11 md:h-12 text-sm md:text-base"
+                      size="lg"
+                    >
+                      {t.btnBack}
+                    </Button>
+                    <Button
+                      onClick={() => setIsWaitingForShake(true)}
+                      className="flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
+                      size="lg"
+                    >
+                      {t.btnShakeBallAgain}
+                    </Button>
+                  </div>
+                )}
               </div>
             ) : selectedMode === "distraction" && isLoading ? (
               <div className="flex flex-col items-center justify-center gap-6 py-12">
