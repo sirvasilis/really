@@ -837,18 +837,37 @@ const Index = () => {
                   {t.shouldI} {thought}
                 </h2>
                 <div className="flex items-center justify-center py-6 md:py-8">
-                  <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-full bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center shadow-2xl">
-                    {/* Shine effect */}
-                    <div className="absolute top-8 left-12 w-16 h-16 bg-white/20 rounded-full blur-xl"></div>
-                    {/* Number 8 circle */}
-                    <div className="absolute top-1/4 w-16 h-16 md:w-20 md:h-20 rounded-full bg-white flex items-center justify-center shadow-lg">
-                      <span className="text-3xl md:text-4xl font-black text-black">8</span>
-                    </div>
-                    {/* Answer window - triangle shape */}
-                    <div className="absolute bottom-1/4 w-32 h-28 md:w-40 md:h-32 bg-blue-900 rounded-lg flex items-center justify-center shadow-inner transform rotate-180" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'}}>
-                      <p className="text-sm md:text-base font-bold text-center text-white px-4 transform rotate-180 leading-tight">
-                        {eightBallAnswer}
-                      </p>
+                  <div className="relative w-64 h-64 md:w-80 md:h-80">
+                    {/* Main 8ball sphere */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-slate-900 via-black to-slate-950 shadow-[0_20px_60px_rgba(0,0,0,0.8)] animate-fade-in">
+                      {/* Glossy shine effect */}
+                      <div className="absolute top-8 left-12 md:top-12 md:left-16 w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-white/30 to-transparent rounded-full blur-2xl"></div>
+                      
+                      {/* Number 8 circle - positioned at top */}
+                      <div className="absolute top-8 md:top-12 left-1/2 -translate-x-1/2 w-14 h-14 md:w-16 md:h-16 rounded-full bg-white shadow-lg flex items-center justify-center">
+                        <span className="text-3xl md:text-4xl font-black text-black">8</span>
+                      </div>
+                      
+                      {/* Answer window - mystical triangle */}
+                      <div className="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 w-32 h-24 md:w-36 md:h-28">
+                        <div className="relative w-full h-full">
+                          {/* Triangle shape with gradient */}
+                          <div 
+                            className="absolute inset-0 bg-gradient-to-b from-indigo-900 via-blue-900 to-blue-950 shadow-inner transform rotate-180" 
+                            style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'}}
+                          >
+                            {/* Inner glow effect */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/20 to-transparent"></div>
+                          </div>
+                          
+                          {/* Answer text */}
+                          <div className="absolute inset-0 flex items-center justify-center transform rotate-180 px-3">
+                            <p className="text-xs md:text-sm font-bold text-center text-white leading-tight drop-shadow-lg">
+                              {eightBallAnswer}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
