@@ -853,9 +853,9 @@ const Index = () => {
                       </div>
                       
                       {/* Answer window container - centered in bottom half */}
-                      <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 w-36 h-32 md:w-44 md:h-36 flex items-center justify-center">
+                      <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 w-40 h-36 md:w-48 md:h-40 flex items-center justify-center">
                         {/* Blue triangular window */}
-                        <div className="relative w-24 h-20 md:w-28 md:h-24">
+                        <div className="relative w-32 h-28 md:w-36 md:h-32">
                           <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl">
                             <defs>
                               <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -873,8 +873,8 @@ const Index = () => {
                           </svg>
                           
                           {/* Answer text - clipped inside triangle */}
-                          <div className="absolute inset-0 flex items-center justify-center pb-2 px-2" style={{clipPath: 'polygon(50% 12%, 18% 88%, 82% 88%)'}}>
-                            <p className="text-[9px] md:text-[10px] font-semibold text-center text-white leading-tight break-words">
+                          <div className="absolute inset-0 flex items-center justify-center pb-1 px-3" style={{clipPath: 'polygon(50% 12%, 15% 88%, 85% 88%)'}}>
+                            <p className="text-[11px] md:text-xs font-semibold text-center text-white leading-snug break-words">
                               {eightBallAnswer}
                             </p>
                           </div>
