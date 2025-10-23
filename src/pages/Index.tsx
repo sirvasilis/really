@@ -330,9 +330,9 @@ const Index = () => {
     if (!textEl || !container) return;
 
     // Start large then shrink to fit
-    let size = Math.round(Math.min(container.clientWidth, container.clientHeight) / 2.3);
-    size = Math.min(size, 20); // cap max
-    size = Math.max(size, 10); // ensure readable
+    let size = Math.round(Math.min(container.clientWidth, container.clientHeight) / 2.8);
+    size = Math.min(size, 16); // cap max smaller to avoid hitting the 8
+    size = Math.max(size, 9); // ensure readable
 
     // Apply base typography for better packing
     textEl.style.whiteSpace = "normal";
@@ -350,8 +350,8 @@ const Index = () => {
     applySize(size);
 
     // Keep text in the lower, wider part of the triangle
-    const availH = container.clientHeight * 0.6; // only use bottom 60%
-    const availW = container.clientWidth * 0.78; // stay away from slanted edges
+    const availH = container.clientHeight * 0.62; // use bottom 62%
+    const availW = container.clientWidth * 0.76; // keep away from slanted edges
 
     // Shrink iteratively until both dimensions fit
     for (let i = 0; i < 80; i++) {
@@ -956,7 +956,7 @@ const Index = () => {
                       </div>
                       
                       {/* Answer window container - centered in bottom half */}
-                      <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 w-[70%] h-[50%] md:w-48 md:h-40 flex items-center justify-center z-10">
+                      <div className="absolute bottom-2 md:bottom-6 left-1/2 -translate-x-1/2 w-[78%] h-[60%] md:w-56 md:h-48 flex items-center justify-center z-10">
                         {/* Blue triangular window */}
                         <div className="relative w-full h-full overflow-hidden" ref={triangleRef}>
                           <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl">
@@ -968,7 +968,7 @@ const Index = () => {
                               </linearGradient>
                             </defs>
                             <polygon 
-                              points="50,16 12,90 88,90" 
+                              points="50,20 8,92 92,92" 
                               fill="url(#triangleGradient)"
                               stroke="#1e293b"
                               strokeWidth="3"
@@ -977,7 +977,7 @@ const Index = () => {
                           </svg>
                           
                           {/* Answer text - clipped inside triangle */}
-                          <div className="absolute inset-0 flex items-end justify-center px-3 pb-3 md:pb-4" style={{clipPath: 'polygon(50% 16%, 15% 90%, 85% 90%)'}}>
+                          <div className="absolute inset-0 flex items-end justify-center px-3 pb-3 md:pb-4" style={{clipPath: 'polygon(50% 20%, 12% 92%, 88% 92%)'}}>
                             <p ref={textRef} className="w-[84%] sm:w-[80%] whitespace-normal font-semibold tracking-tight text-center text-white break-words" style={{ fontSize: `${triangleFontSize}px`, lineHeight: '1.1', hyphens: 'auto', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
                               {eightBallAnswer}
                             </p>
