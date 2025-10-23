@@ -1027,43 +1027,50 @@ const Index = () => {
                                 </label>
                               )}
                               {selectedMode !== "test" && (
-                                <Textarea
-                                  value={thought}
-                                  onChange={(e) => setThought(e.target.value)}
-                                  placeholder={
-                                    selectedMode === "demotivate" 
-                                      ? t.demotivatePlaceholder 
-                                      : selectedMode === "excuses"
-                                      ? t.excusesPlaceholder
-                                      : selectedMode === "timeMachine"
-                                      ? t.timeMachinePlaceholder
-                                      : t.eightBallPlaceholder
-                                  }
-                                  className="min-h-32 md:min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-sm md:text-base focus:border-primary transition-colors"
-                                  disabled={isLoading}
-                                />
+                                <>
+                                  <Textarea
+                                    value={thought}
+                                    onChange={(e) => {
+                                      setThought(e.target.value);
+                                      if (selectedMode === "8ball" && e.target.value.trim()) {
+                                        setIsWaitingForShake(true);
+                                      } else if (selectedMode === "8ball" && !e.target.value.trim()) {
+                                        setIsWaitingForShake(false);
+                                      }
+                                    }}
+                                    placeholder={
+                                      selectedMode === "demotivate" 
+                                        ? t.demotivatePlaceholder 
+                                        : selectedMode === "excuses"
+                                        ? t.excusesPlaceholder
+                                        : selectedMode === "timeMachine"
+                                        ? t.timeMachinePlaceholder
+                                        : t.eightBallPlaceholder
+                                    }
+                                    className="min-h-32 md:min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-sm md:text-base focus:border-primary transition-colors"
+                                    disabled={isLoading}
+                                  />
+                                  {selectedMode === "8ball" && thought.trim() && (
+                                    <p className="text-center text-base md:text-lg font-semibold text-muted-foreground animate-pulse">
+                                      {t.shakeToReveal}
+                                    </p>
+                                  )}
+                                </>
                               )}
                             </div>
 
-                            {selectedMode !== "test" && (
+                            {selectedMode !== "test" && selectedMode !== "8ball" && (
                               <div className="flex flex-col gap-3 md:gap-4">
                                 <Button
                                   onClick={() => {
                                     if (selectedMode === "demotivate") handleDemotivate();
                                     else if (selectedMode === "excuses") handleGenerateExcuses();
-                                    else if (selectedMode === "8ball") {
-                                      if (thought.trim()) {
-                                        setIsWaitingForShake(true);
-                                      }
-                                    }
                                     else if (selectedMode === "timeMachine") handleTimeMachine();
                                   }}
                                   disabled={isLoading || !thought.trim()}
                                   className={`w-full font-bold h-14 md:h-16 text-base md:text-lg transition-all hover:scale-105 ${
                                     selectedMode === "demotivate"
                                       ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                                      : selectedMode === "8ball"
-                                      ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
                                       : "bg-primary hover:bg-primary/90 text-primary-foreground"
                                   }`}
                                   size="lg"
@@ -1074,7 +1081,7 @@ const Index = () => {
                                       {mode === "quote" ? t.generating : t.thinking}
                                     </>
                                   ) : (
-                                    selectedMode === "8ball" ? t.btnSubmit : t.btnSubmit
+                                    t.btnSubmit
                                   )}
                                 </Button>
                                 <Button
@@ -1087,6 +1094,18 @@ const Index = () => {
                                   {t.btnBack}
                                 </Button>
                               </div>
+                            )}
+                            
+                            {selectedMode === "8ball" && (
+                              <Button
+                                onClick={handleBack}
+                                disabled={isLoading}
+                                variant="outline"
+                                className="font-bold h-9 md:h-10 text-xs md:text-sm w-full"
+                                size="sm"
+                              >
+                                {t.btnBack}
+                              </Button>
                             )}
                           </>
                         )}
