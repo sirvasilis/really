@@ -330,22 +330,39 @@ const Index = () => {
     if (!textEl || !container) return;
 
     // Start large then shrink to fit
-    let size = Math.round(Math.min(container.clientWidth, container.clientHeight) / 2.6);
-    size = Math.min(size, 18); // cap max
-    size = Math.max(size, 10); // ensure readable start
+    let size = Math.round(Math.min(container.clientWidth, container.clientHeight) / 2.3);
+    size = Math.min(size, 20); // cap max
+    size = Math.max(size, 10); // ensure readable
 
-    textEl.style.fontSize = `${size}px`;
-    textEl.style.lineHeight = "1.1";
+    // Apply base typography for better packing
+    textEl.style.whiteSpace = "normal";
+    textEl.style.wordBreak = "break-word";
+    textEl.style.hyphens = "auto";
 
-    // Shrink until it fits rect bounds (clipPath ensures inside triangle visually)
-    for (let i = 0; i < 30; i++) {
-      const fitsH = textEl.scrollHeight <= container.clientHeight - 4;
-      const fitsW = textEl.scrollWidth <= container.clientWidth * 0.9;
+    const applySize = (s: number) => {
+      textEl.style.fontSize = `${s}px`;
+      // slightly tighter as it gets smaller
+      const lh = s >= 16 ? 1.15 : s >= 13 ? 1.12 : 1.08;
+      textEl.style.lineHeight = String(lh);
+      // slight negative letter spacing via tailwind class is added in JSX (tracking-tight)
+    };
+
+    applySize(size);
+
+    // Keep text in the lower, wider part of the triangle
+    const availH = container.clientHeight * 0.6; // only use bottom 60%
+    const availW = container.clientWidth * 0.78; // stay away from slanted edges
+
+    // Shrink iteratively until both dimensions fit
+    for (let i = 0; i < 80; i++) {
+      const fitsH = textEl.scrollHeight <= availH;
+      const fitsW = textEl.scrollWidth <= availW;
       if (fitsH && fitsW) break;
       size -= 1;
       if (size <= 8) break;
-      textEl.style.fontSize = `${size}px`;
+      applySize(size);
     }
+
     setTriangleFontSize(size);
   }, [eightBallAnswer, selectedMode]);
 
@@ -960,8 +977,8 @@ const Index = () => {
                           </svg>
                           
                           {/* Answer text - clipped inside triangle */}
-                          <div className="absolute inset-0 flex items-end justify-center px-3 pb-2 md:pb-3" style={{clipPath: 'polygon(50% 16%, 15% 90%, 85% 90%)'}}>
-                            <p ref={textRef} className="font-semibold text-center text-white leading-snug break-words" style={{ fontSize: `${triangleFontSize}px`, hyphens: 'auto' }}>
+                          <div className="absolute inset-0 flex items-end justify-center px-3 pb-3 md:pb-4" style={{clipPath: 'polygon(50% 16%, 15% 90%, 85% 90%)'}}>
+                            <p ref={textRef} className="font-semibold tracking-tight text-center text-white leading-snug break-words" style={{ fontSize: `${triangleFontSize}px`, hyphens: 'auto', wordBreak: 'break-word' }}>
                               {eightBallAnswer}
                             </p>
                           </div>
