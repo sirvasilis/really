@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -54,6 +54,7 @@ const Index = () => {
   const [showGoalDialog, setShowGoalDialog] = useState(false);
   const [isWaitingForShake, setIsWaitingForShake] = useState(false);
   const { toast } = useToast();
+  const lastShakeRef = useRef<number>(0);
 
   // Check if user came from landing page
   useEffect(() => {
@@ -68,14 +69,16 @@ const Index = () => {
     let accelHandler: any = null;
 
     const setupShakeDetection = async () => {
-      if (selectedMode === "8ball" && isWaitingForShake && thought.trim()) {
+      if (selectedMode === "8ball" && thought.trim()) {
         try {
           accelHandler = await Motion.addListener("accel", (event) => {
             const { x, y, z } = event.acceleration;
             const magnitude = Math.sqrt(x * x + y * y + z * z);
-            
-            // Detect shake with a threshold
+
             if (magnitude > 20) {
+              const now = Date.now();
+              if (now - lastShakeRef.current < 1200) return; // throttle repeated triggers
+              lastShakeRef.current = now;
               setIsWaitingForShake(false);
               handle8Ball();
             }
@@ -98,7 +101,7 @@ const Index = () => {
         accelHandler.remove();
       }
     };
-  }, [selectedMode, isWaitingForShake, thought]);
+  }, [selectedMode, thought]);
 
   const eightBallAnswers = {
     el: [
@@ -869,9 +872,9 @@ const Index = () => {
                             />
                           </svg>
                           
-                          {/* Answer text - properly centered and sized */}
-                          <div className="absolute inset-0 flex items-center justify-center pb-2">
-                            <p className="text-[9px] md:text-[10px] font-semibold text-center text-white leading-tight px-3 break-words" style={{maxWidth: '85%'}}>
+                          {/* Answer text - clipped inside triangle */}
+                          <div className="absolute inset-0 flex items-center justify-center pb-2 px-2" style={{clipPath: 'polygon(50% 12%, 18% 88%, 82% 88%)'}}>
+                            <p className="text-[9px] md:text-[10px] font-semibold text-center text-white leading-tight break-words">
                               {eightBallAnswer}
                             </p>
                           </div>
