@@ -977,7 +977,7 @@ const Index = () => {
                           </svg>
                           
                           {/* Answer text - clipped inside triangle */}
-                          <div className="absolute inset-0 flex items-end justify-center px-3 pb-1.5 md:pb-2" style={{clipPath: 'polygon(50% 16%, 15% 90%, 85% 90%)'}}>
+                          <div className="absolute inset-0 flex items-end justify-center px-3 pb-3 md:pb-4" style={{clipPath: 'polygon(50% 16%, 15% 90%, 85% 90%)'}}>
                             <p ref={textRef} className="font-semibold tracking-tight text-center text-white leading-snug break-words" style={{ fontSize: `${triangleFontSize}px`, hyphens: 'auto', wordBreak: 'break-word' }}>
                               {eightBallAnswer}
                             </p>
