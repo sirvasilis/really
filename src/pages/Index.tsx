@@ -318,18 +318,36 @@ const Index = () => {
 
   const t = translations[language];
 
-  // Dynamically scale answer text to fit inside triangle
-  const getTriangleFontSize = (text: string) => {
-    const len = text.trim().length;
-    if (len <= 12) return 18; // large answers fit nicely
-    if (len <= 20) return 16;
-    if (len <= 32) return 14;
-    if (len <= 50) return 12;
-    if (len <= 70) return 11;
-    if (len <= 90) return 10;
-    return 9; // very long answers
-  };
-  const triangleFontSize = getTriangleFontSize(eightBallAnswer);
+  // Refs and dynamic fitting for 8ball triangle text
+  const textRef = useRef<HTMLParagraphElement>(null);
+  const triangleRef = useRef<HTMLDivElement>(null);
+  const [triangleFontSize, setTriangleFontSize] = useState<number>(14);
+
+  useEffect(() => {
+    if (selectedMode !== "8ball") return;
+    const textEl = textRef.current;
+    const container = triangleRef.current;
+    if (!textEl || !container) return;
+
+    // Start large then shrink to fit
+    let size = Math.round(Math.min(container.clientWidth, container.clientHeight) / 2.6);
+    size = Math.min(size, 18); // cap max
+    size = Math.max(size, 10); // ensure readable start
+
+    textEl.style.fontSize = `${size}px`;
+    textEl.style.lineHeight = "1.1";
+
+    // Shrink until it fits rect bounds (clipPath ensures inside triangle visually)
+    for (let i = 0; i < 30; i++) {
+      const fitsH = textEl.scrollHeight <= container.clientHeight - 4;
+      const fitsW = textEl.scrollWidth <= container.clientWidth * 0.9;
+      if (fitsH && fitsW) break;
+      size -= 1;
+      if (size <= 8) break;
+      textEl.style.fontSize = `${size}px`;
+    }
+    setTriangleFontSize(size);
+  }, [eightBallAnswer, selectedMode]);
 
   useEffect(() => {
     handleGenerateQuote();
@@ -923,7 +941,7 @@ const Index = () => {
                       {/* Answer window container - centered in bottom half */}
                       <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 w-40 h-36 md:w-48 md:h-40 flex items-center justify-center">
                         {/* Blue triangular window */}
-                        <div className="relative w-32 h-28 md:w-36 md:h-32">
+                        <div className="relative w-36 h-32 md:w-40 md:h-36" ref={triangleRef}>
                           <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl">
                             <defs>
                               <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -942,7 +960,7 @@ const Index = () => {
                           
                           {/* Answer text - clipped inside triangle */}
                           <div className="absolute inset-0 flex items-center justify-center pb-1 px-3" style={{clipPath: 'polygon(50% 12%, 15% 88%, 85% 88%)'}}>
-                            <p className="font-semibold text-center text-white leading-snug break-words" style={{ fontSize: `${triangleFontSize}px`, hyphens: 'auto' }}>
+                            <p ref={textRef} className="font-semibold text-center text-white leading-snug break-words" style={{ fontSize: `${triangleFontSize}px`, hyphens: 'auto' }}>
                               {eightBallAnswer}
                             </p>
                           </div>
