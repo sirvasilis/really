@@ -711,7 +711,20 @@ const Index = () => {
         <header className="text-center space-y-3 md:space-y-6 px-2">
           <div className="flex items-center justify-center gap-2 md:gap-4">
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-foreground tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-              {t.title}
+              {selectedMode 
+                ? selectedMode === "demotivate" 
+                  ? t.demotivateTitle
+                  : selectedMode === "excuses"
+                  ? t.excusesTitle
+                  : selectedMode === "8ball"
+                  ? t.eightBallTitle
+                  : selectedMode === "distraction"
+                  ? t.distractionTitle
+                  : selectedMode === "timeMachine"
+                  ? t.timeMachineTitle
+                  : t.testTitle
+                : t.title
+              }
             </h1>
           </div>
           <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto leading-relaxed px-4">
