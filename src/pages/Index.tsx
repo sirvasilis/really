@@ -68,7 +68,7 @@ const Index = () => {
     let accelHandler: any = null;
 
     const setupShakeDetection = async () => {
-      if (selectedMode === "8ball" && isWaitingForShake && thought.trim()) {
+      if (selectedMode === "8ball" && isWaitingForShake && thought.trim() && !eightBallAnswer) {
         try {
           accelHandler = await Motion.addListener("accel", (event) => {
             const { x, y, z } = event.acceleration;
@@ -82,8 +82,11 @@ const Index = () => {
           });
         } catch (error) {
           console.error("Motion detection error:", error);
-          // Fallback: if motion not available, show button instead
-          setIsWaitingForShake(false);
+          toast({
+            title: "Motion not available",
+            description: "Please use a device with motion sensors",
+            variant: "destructive",
+          });
         }
       }
     };
@@ -95,7 +98,7 @@ const Index = () => {
         accelHandler.remove();
       }
     };
-  }, [selectedMode, isWaitingForShake, thought]);
+  }, [selectedMode, isWaitingForShake, thought, eightBallAnswer]);
 
   const eightBallAnswers = {
     el: [
@@ -985,37 +988,8 @@ const Index = () => {
                           </Button>
                         </div>
                       </>
-                    ) : (
-                      <>
-                        {selectedMode === "8ball" && isWaitingForShake ? (
-                          <div className="space-y-6 md:space-y-8">
-                            <div className="flex flex-col items-center justify-center py-8 md:py-12">
-                              <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-full bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center shadow-2xl animate-pulse">
-                                {/* Shine effect */}
-                                <div className="absolute top-8 left-12 w-16 h-16 bg-white/20 rounded-full blur-xl"></div>
-                                {/* Number 8 circle */}
-                                <div className="absolute top-1/4 w-16 h-16 md:w-20 md:h-20 rounded-full bg-white flex items-center justify-center shadow-lg">
-                                  <span className="text-3xl md:text-4xl font-black text-black">8</span>
-                                </div>
-                                {/* Answer window - empty/mystery */}
-                                <div className="absolute bottom-1/4 w-32 h-28 md:w-40 md:h-32 bg-blue-950 rounded-lg flex items-center justify-center shadow-inner transform rotate-180" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'}}>
-                                  <p className="text-xs md:text-sm font-bold text-center text-blue-400/50 px-4 transform rotate-180 leading-tight">
-                                    {t.shakeToReveal}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                            <Button
-                              onClick={handleBack}
-                              variant="outline"
-                              className="font-bold h-9 md:h-10 text-xs md:text-sm w-full"
-                              size="sm"
-                            >
-                              {t.btnBack}
-                            </Button>
-                          </div>
                         ) : (
-                          <>
+                              <>
                             <div className="space-y-3">
                               {selectedMode !== "8ball" && selectedMode !== "test" && (
                                 <label className="text-sm md:text-base font-semibold text-foreground">
@@ -1096,7 +1070,7 @@ const Index = () => {
                               </div>
                             )}
                             
-                            {selectedMode === "8ball" && (
+                            {selectedMode === "8ball" && !eightBallAnswer && (
                               <Button
                                 onClick={handleBack}
                                 disabled={isLoading}
@@ -1107,8 +1081,6 @@ const Index = () => {
                                 {t.btnBack}
                               </Button>
                             )}
-                          </>
-                        )}
                       </>
                     )}
                   </>
