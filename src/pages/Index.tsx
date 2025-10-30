@@ -901,7 +901,7 @@ const Index = () => {
               
               <Card 
                 onClick={() => handleModeSelection("excuses")}
-                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-primary hover:shadow-2xl overflow-hidden"
+                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden"
               >
                 <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
                   <MessageSquare className="w-20 h-20 md:w-28 md:h-28 text-primary" />
@@ -914,7 +914,7 @@ const Index = () => {
               
               <Card 
                 onClick={() => handleModeSelection("timeMachine")}
-                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-primary hover:shadow-2xl overflow-hidden"
+                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden"
               >
                 <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
                   <Clock className="w-20 h-20 md:w-28 md:h-28 text-primary" />
@@ -940,10 +940,10 @@ const Index = () => {
               
               <Card 
                 onClick={() => handleModeSelection("8ball")}
-                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-secondary shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-secondary hover:shadow-2xl overflow-hidden"
+                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden"
               >
                 <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
-                  <span className="text-[80px] md:text-[100px] font-light text-destructive">8</span>
+                  <span className="text-[80px] md:text-[100px] font-semibold text-destructive">8</span>
                 </div>
                 <div className="relative z-10 space-y-2">
                   <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.eightBallTitle}</h3>
@@ -953,7 +953,7 @@ const Index = () => {
               
               <Card 
                 onClick={() => handleModeSelection("distraction")}
-                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-accent shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-accent hover:shadow-2xl overflow-hidden"
+                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden"
               >
                 <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
                   <Cat className="w-20 h-20 md:w-28 md:h-28 text-accent" />
