@@ -880,8 +880,8 @@ const Index = () => {
                 onClick={() => handleModeSelection("demotivate")}
                 className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden"
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-15 transition-opacity">
-                  <ThumbsDown className="w-32 h-32 md:w-40 md:h-40 text-destructive" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
+                  <ThumbsDown className="w-20 h-20 md:w-28 md:h-28 text-destructive" />
                 </div>
                 <div className="relative z-10 space-y-2">
                   <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.demotivateTitle}</h3>
@@ -893,8 +893,8 @@ const Index = () => {
                 onClick={() => handleModeSelection("excuses")}
                 className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-primary hover:shadow-2xl overflow-hidden"
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-15 transition-opacity">
-                  <MessageSquare className="w-32 h-32 md:w-40 md:h-40 text-primary" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
+                  <MessageSquare className="w-20 h-20 md:w-28 md:h-28 text-primary" />
                 </div>
                 <div className="relative z-10 space-y-2">
                   <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.excusesTitle}</h3>
@@ -906,8 +906,8 @@ const Index = () => {
                 onClick={() => handleModeSelection("timeMachine")}
                 className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-primary hover:shadow-2xl overflow-hidden"
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-15 transition-opacity">
-                  <Clock className="w-32 h-32 md:w-40 md:h-40 text-primary" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
+                  <Clock className="w-20 h-20 md:w-28 md:h-28 text-primary" />
                 </div>
                 <div className="relative z-10 space-y-2">
                   <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.timeMachineTitle}</h3>
@@ -919,8 +919,8 @@ const Index = () => {
                 onClick={() => handleModeSelection("test")}
                 className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden"
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-15 transition-opacity">
-                  <AlertCircle className="w-32 h-32 md:w-40 md:h-40 text-destructive" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
+                  <AlertCircle className="w-20 h-20 md:w-28 md:h-28 text-destructive" />
                 </div>
                 <div className="relative z-10 space-y-2">
                   <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.testTitle}</h3>
@@ -932,8 +932,8 @@ const Index = () => {
                 onClick={() => handleModeSelection("8ball")}
                 className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-secondary hover:shadow-2xl overflow-hidden"
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-15 transition-opacity">
-                  <Sparkles className="w-32 h-32 md:w-40 md:h-40 text-secondary" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
+                  <Sparkles className="w-20 h-20 md:w-28 md:h-28 text-secondary" />
                 </div>
                 <div className="relative z-10 space-y-2">
                   <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.eightBallTitle}</h3>
@@ -945,8 +945,8 @@ const Index = () => {
                 onClick={() => handleModeSelection("distraction")}
                 className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-accent hover:shadow-2xl overflow-hidden"
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-15 transition-opacity">
-                  <Cat className="w-32 h-32 md:w-40 md:h-40 text-accent" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
+                  <Cat className="w-20 h-20 md:w-28 md:h-28 text-accent" />
                 </div>
                 <div className="relative z-10 space-y-2">
                   <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.distractionTitle}</h3>
