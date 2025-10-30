@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { AlertCircle, Loader2, ThumbsDown, MessageSquare, Sparkles, Cat, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Motion } from "@capacitor/motion";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -69,12 +70,21 @@ const Index = () => {
     let accelHandler: any = null;
     let webHandler: ((ev: DeviceMotionEvent) => void) | null = null;
 
-    const handleShakeMagnitude = (magnitude: number) => {
+    const handleShakeMagnitude = async (magnitude: number) => {
       if (magnitude > 20) {
         const now = Date.now();
         if (now - lastShakeRef.current < 1200) return; // throttle repeated triggers
         lastShakeRef.current = now;
         setIsWaitingForShake(false);
+        
+        // Trigger haptic feedback
+        try {
+          await Haptics.impact({ style: ImpactStyle.Heavy });
+        } catch (e) {
+          // Haptics not available on this device
+          console.log("Haptics not supported");
+        }
+        
         handle8Ball();
       }
     };
