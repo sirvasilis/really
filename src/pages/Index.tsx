@@ -774,7 +774,7 @@ const Index = () => {
     }
   };
 
-  const handleGoalSubmit = () => {
+  const handleGoalSubmit = async () => {
     if (!testGoal.trim()) {
       toast({
         title: t.emptyError,
@@ -783,8 +783,36 @@ const Index = () => {
       });
       return;
     }
-    setTestStep(2);
-    setTestStartTime(Date.now());
+    
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/process-goal`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ goal: testGoal, language }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to process goal");
+      }
+
+      const data = await response.json();
+      setTestGoal(data.processedGoal);
+      setTestStep(2);
+      setTestStartTime(Date.now());
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: t.errorTitle,
+        description: error instanceof Error ? error.message : t.errorDesc,
+        variant: "destructive",
+      });
+    }
   };
 
   const handleTestStartClick = () => {
