@@ -28,7 +28,7 @@ const Landing = () => {
           <Button
             onClick={handleContinue}
             size="lg"
-            className="text-4xl md:text-6xl lg:text-7xl font-light px-16 md:px-24 py-6 md:py-10 h-auto hover:scale-110 transition-all duration-300 hover:shadow-lg tracking-tight"
+            className="text-3xl md:text-5xl lg:text-6xl font-light px-12 md:px-20 py-5 md:py-8 h-auto hover:scale-110 transition-all duration-300 hover:shadow-lg tracking-tight"
           >
             Really?
           </Button>
