@@ -913,19 +913,19 @@ const Index = () => {
 
         {!showInput ? (
           <>
-            <div className="grid grid-cols-2 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 gap-3 md:gap-4">
               <Card 
                 onClick={() => handleModeSelection("demotivate")}
                 className="group relative p-0 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="bg-destructive p-3 md:p-4">
-                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-destructive-foreground text-center">{t.demotivateTitle}</h3>
+                <div className="bg-destructive p-2 md:p-3">
+                  <h3 className="text-sm md:text-base lg:text-lg font-bold text-destructive-foreground text-center">{t.demotivateTitle}</h3>
                 </div>
-                <div className="flex-1 flex items-center justify-center p-4 md:p-6">
-                  <ThumbsDown className="w-16 h-16 md:w-20 md:h-20 text-primary" />
+                <div className="flex-1 flex items-center justify-center p-3 md:p-4">
+                  <ThumbsDown className="w-12 h-12 md:w-16 md:h-16 text-primary" />
                 </div>
-                <div className="p-3 md:p-4">
-                  <p className="text-xs md:text-sm text-muted-foreground text-center">{t.demotivateDesc}</p>
+                <div className="p-2 md:p-3">
+                  <p className="text-[10px] md:text-xs text-muted-foreground text-center">{t.demotivateDesc}</p>
                 </div>
               </Card>
               
@@ -933,14 +933,14 @@ const Index = () => {
                 onClick={() => handleModeSelection("excuses")}
                 className="group relative p-0 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="bg-destructive p-3 md:p-4">
-                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-destructive-foreground text-center">{t.excusesTitle}</h3>
+                <div className="bg-destructive p-2 md:p-3">
+                  <h3 className="text-sm md:text-base lg:text-lg font-bold text-destructive-foreground text-center">{t.excusesTitle}</h3>
                 </div>
-                <div className="flex-1 flex items-center justify-center p-4 md:p-6">
-                  <MessageSquare className="w-16 h-16 md:w-20 md:h-20 text-primary" />
+                <div className="flex-1 flex items-center justify-center p-3 md:p-4">
+                  <MessageSquare className="w-12 h-12 md:w-16 md:h-16 text-primary" />
                 </div>
-                <div className="p-3 md:p-4">
-                  <p className="text-xs md:text-sm text-muted-foreground text-center">{t.excusesDesc}</p>
+                <div className="p-2 md:p-3">
+                  <p className="text-[10px] md:text-xs text-muted-foreground text-center">{t.excusesDesc}</p>
                 </div>
               </Card>
               
@@ -948,14 +948,14 @@ const Index = () => {
                 onClick={() => handleModeSelection("timeMachine")}
                 className="group relative p-0 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="bg-destructive p-3 md:p-4">
-                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-destructive-foreground text-center">{t.timeMachineTitle}</h3>
+                <div className="bg-destructive p-2 md:p-3">
+                  <h3 className="text-sm md:text-base lg:text-lg font-bold text-destructive-foreground text-center">{t.timeMachineTitle}</h3>
                 </div>
-                <div className="flex-1 flex items-center justify-center p-4 md:p-6">
-                  <Clock className="w-16 h-16 md:w-20 md:h-20 text-primary" />
+                <div className="flex-1 flex items-center justify-center p-3 md:p-4">
+                  <Clock className="w-12 h-12 md:w-16 md:h-16 text-primary" />
                 </div>
-                <div className="p-3 md:p-4">
-                  <p className="text-xs md:text-sm text-muted-foreground text-center">{t.timeMachineDesc}</p>
+                <div className="p-2 md:p-3">
+                  <p className="text-[10px] md:text-xs text-muted-foreground text-center">{t.timeMachineDesc}</p>
                 </div>
               </Card>
               
@@ -963,14 +963,14 @@ const Index = () => {
                 onClick={() => handleModeSelection("test")}
                 className="group relative p-0 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="bg-destructive p-3 md:p-4">
-                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-destructive-foreground text-center">{t.testTitle}</h3>
+                <div className="bg-destructive p-2 md:p-3">
+                  <h3 className="text-sm md:text-base lg:text-lg font-bold text-destructive-foreground text-center">{t.testTitle}</h3>
                 </div>
-                <div className="flex-1 flex items-center justify-center p-4 md:p-6">
-                  <AlertCircle className="w-16 h-16 md:w-20 md:h-20 text-primary" />
+                <div className="flex-1 flex items-center justify-center p-3 md:p-4">
+                  <AlertCircle className="w-12 h-12 md:w-16 md:h-16 text-primary" />
                 </div>
-                <div className="p-3 md:p-4">
-                  <p className="text-xs md:text-sm text-muted-foreground text-center">{t.testDesc}</p>
+                <div className="p-2 md:p-3">
+                  <p className="text-[10px] md:text-xs text-muted-foreground text-center">{t.testDesc}</p>
                 </div>
               </Card>
               
@@ -978,14 +978,14 @@ const Index = () => {
                 onClick={() => handleModeSelection("8ball")}
                 className="group relative p-0 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="bg-destructive p-3 md:p-4">
-                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-destructive-foreground text-center">{t.eightBallTitle}</h3>
+                <div className="bg-destructive p-2 md:p-3">
+                  <h3 className="text-sm md:text-base lg:text-lg font-bold text-destructive-foreground text-center">{t.eightBallTitle}</h3>
                 </div>
-                <div className="flex-1 flex items-center justify-center p-4 md:p-6">
-                  <span className="text-[60px] md:text-[80px] font-semibold text-primary">8</span>
+                <div className="flex-1 flex items-center justify-center p-3 md:p-4">
+                  <span className="text-[48px] md:text-[64px] font-semibold text-primary">8</span>
                 </div>
-                <div className="p-3 md:p-4">
-                  <p className="text-xs md:text-sm text-muted-foreground text-center">{t.eightBallDesc}</p>
+                <div className="p-2 md:p-3">
+                  <p className="text-[10px] md:text-xs text-muted-foreground text-center">{t.eightBallDesc}</p>
                 </div>
               </Card>
               
@@ -993,14 +993,14 @@ const Index = () => {
                 onClick={() => handleModeSelection("distraction")}
                 className="group relative p-0 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="bg-destructive p-3 md:p-4">
-                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-destructive-foreground text-center">{t.distractionTitle}</h3>
+                <div className="bg-destructive p-2 md:p-3">
+                  <h3 className="text-sm md:text-base lg:text-lg font-bold text-destructive-foreground text-center">{t.distractionTitle}</h3>
                 </div>
-                <div className="flex-1 flex items-center justify-center p-4 md:p-6">
-                  <Cat className="w-16 h-16 md:w-20 md:h-20 text-primary" />
+                <div className="flex-1 flex items-center justify-center p-3 md:p-4">
+                  <Cat className="w-12 h-12 md:w-16 md:h-16 text-primary" />
                 </div>
-                <div className="p-3 md:p-4">
-                  <p className="text-xs md:text-sm text-muted-foreground text-center">{t.distractionDesc}</p>
+                <div className="p-2 md:p-3">
+                  <p className="text-[10px] md:text-xs text-muted-foreground text-center">{t.distractionDesc}</p>
                 </div>
               </Card>
             </div>
