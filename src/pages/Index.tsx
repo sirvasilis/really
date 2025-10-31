@@ -916,79 +916,91 @@ const Index = () => {
             <div className="grid grid-cols-2 gap-4 md:gap-6">
               <Card 
                 onClick={() => handleModeSelection("demotivate")}
-                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden"
+                className="group relative p-0 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
-                  <ThumbsDown className="w-20 h-20 md:w-28 md:h-28 text-primary" />
+                <div className="bg-destructive p-3 md:p-4">
+                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-destructive-foreground text-center">{t.demotivateTitle}</h3>
                 </div>
-                <div className="relative z-10 space-y-2">
-                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.demotivateTitle}</h3>
-                  <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.demotivateDesc}</p>
+                <div className="flex-1 flex items-center justify-center p-4 md:p-6">
+                  <ThumbsDown className="w-16 h-16 md:w-20 md:h-20 text-primary" />
+                </div>
+                <div className="p-3 md:p-4">
+                  <p className="text-xs md:text-sm text-muted-foreground text-center">{t.demotivateDesc}</p>
                 </div>
               </Card>
               
               <Card 
                 onClick={() => handleModeSelection("excuses")}
-                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden"
+                className="group relative p-0 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
-                  <MessageSquare className="w-20 h-20 md:w-28 md:h-28 text-primary" />
+                <div className="bg-destructive p-3 md:p-4">
+                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-destructive-foreground text-center">{t.excusesTitle}</h3>
                 </div>
-                <div className="relative z-10 space-y-2">
-                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.excusesTitle}</h3>
-                  <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.excusesDesc}</p>
+                <div className="flex-1 flex items-center justify-center p-4 md:p-6">
+                  <MessageSquare className="w-16 h-16 md:w-20 md:h-20 text-primary" />
+                </div>
+                <div className="p-3 md:p-4">
+                  <p className="text-xs md:text-sm text-muted-foreground text-center">{t.excusesDesc}</p>
                 </div>
               </Card>
               
               <Card 
                 onClick={() => handleModeSelection("timeMachine")}
-                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden"
+                className="group relative p-0 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
-                  <Clock className="w-20 h-20 md:w-28 md:h-28 text-primary" />
+                <div className="bg-destructive p-3 md:p-4">
+                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-destructive-foreground text-center">{t.timeMachineTitle}</h3>
                 </div>
-                <div className="relative z-10 space-y-2">
-                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.timeMachineTitle}</h3>
-                  <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.timeMachineDesc}</p>
+                <div className="flex-1 flex items-center justify-center p-4 md:p-6">
+                  <Clock className="w-16 h-16 md:w-20 md:h-20 text-primary" />
+                </div>
+                <div className="p-3 md:p-4">
+                  <p className="text-xs md:text-sm text-muted-foreground text-center">{t.timeMachineDesc}</p>
                 </div>
               </Card>
               
               <Card 
                 onClick={() => handleModeSelection("test")}
-                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden"
+                className="group relative p-0 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
-                  <AlertCircle className="w-20 h-20 md:w-28 md:h-28 text-primary" />
+                <div className="bg-destructive p-3 md:p-4">
+                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-destructive-foreground text-center">{t.testTitle}</h3>
                 </div>
-                <div className="relative z-10 space-y-2">
-                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.testTitle}</h3>
-                  <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.testDesc}</p>
+                <div className="flex-1 flex items-center justify-center p-4 md:p-6">
+                  <AlertCircle className="w-16 h-16 md:w-20 md:h-20 text-primary" />
+                </div>
+                <div className="p-3 md:p-4">
+                  <p className="text-xs md:text-sm text-muted-foreground text-center">{t.testDesc}</p>
                 </div>
               </Card>
               
               <Card 
                 onClick={() => handleModeSelection("8ball")}
-                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden"
+                className="group relative p-0 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
-                  <span className="text-[80px] md:text-[100px] font-semibold text-destructive">8</span>
+                <div className="bg-destructive p-3 md:p-4">
+                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-destructive-foreground text-center">{t.eightBallTitle}</h3>
                 </div>
-                <div className="relative z-10 space-y-2">
-                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.eightBallTitle}</h3>
-                  <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.eightBallDesc}</p>
+                <div className="flex-1 flex items-center justify-center p-4 md:p-6">
+                  <span className="text-[60px] md:text-[80px] font-semibold text-primary">8</span>
+                </div>
+                <div className="p-3 md:p-4">
+                  <p className="text-xs md:text-sm text-muted-foreground text-center">{t.eightBallDesc}</p>
                 </div>
               </Card>
               
               <Card 
                 onClick={() => handleModeSelection("distraction")}
-                className="group relative p-4 md:p-6 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden"
+                className="group relative p-0 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl cursor-pointer transition-all hover:scale-105 hover:border-destructive hover:shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
-                  <Cat className="w-20 h-20 md:w-28 md:h-28 text-primary" />
+                <div className="bg-destructive p-3 md:p-4">
+                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-destructive-foreground text-center">{t.distractionTitle}</h3>
                 </div>
-                <div className="relative z-10 space-y-2">
-                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">{t.distractionTitle}</h3>
-                  <p className="text-xs md:text-sm lg:text-base text-muted-foreground">{t.distractionDesc}</p>
+                <div className="flex-1 flex items-center justify-center p-4 md:p-6">
+                  <Cat className="w-16 h-16 md:w-20 md:h-20 text-primary" />
+                </div>
+                <div className="p-3 md:p-4">
+                  <p className="text-xs md:text-sm text-muted-foreground text-center">{t.distractionDesc}</p>
                 </div>
               </Card>
             </div>
