@@ -7,6 +7,7 @@ import { AlertCircle, Loader2, ThumbsDown, MessageSquare, Sparkles, Cat, Clock }
 import { useToast } from "@/hooks/use-toast";
 import { Motion } from "@capacitor/motion";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import { App as CapacitorApp } from "@capacitor/app";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -64,6 +65,23 @@ const Index = () => {
       navigate("/");
     }
   }, [navigate]);
+
+  // Handle hardware back button
+  useEffect(() => {
+    const handleBackButton = CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+      // If user is in a specific mode (showInput is true), go back to main menu
+      if (showInput) {
+        handleBack();
+      } else {
+        // If on main menu, minimize the app instead of closing it
+        CapacitorApp.minimizeApp();
+      }
+    });
+
+    return () => {
+      handleBackButton.then(listener => listener.remove());
+    };
+  }, [showInput]);
 
   // Shake detection for 8ball
   useEffect(() => {
