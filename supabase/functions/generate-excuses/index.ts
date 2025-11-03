@@ -23,6 +23,61 @@ serve(async (req) => {
       );
     }
 
+    // Check if user wants to quit
+    const quitKeywords = {
+      el: ['παρατάω', 'παρατω', 'quit', 'τα παρατάω', 'τα παρατω', 'εγκαταλείπω', 'εγκαταλειπω', 'παραιτούμαι', 'παραιτουμαι'],
+      en: ['quit', 'give up', 'giving up', 'i quit', 'im quitting', 'surrender', 'stop trying']
+    };
+    
+    const proposalLower = proposal.toLowerCase();
+    const keywords = [...quitKeywords.el, ...quitKeywords.en];
+    const isQuitting = keywords.some(keyword => proposalLower.includes(keyword));
+
+    if (isQuitting) {
+      const encourageQuitMessages = {
+        el: `Σωστά! Η καλύτερη δικαιολογία είναι να παραδεχτείς ότι δεν έχεις ούτε το κουράγιο ούτε την επιμονή!
+
+1. "Δεν είμαι φτιαγμένος για την επιτυχία - προτιμώ την ασφάλεια της αποτυχίας"
+2. "Το να προσπαθώ με κουράζει - η μετριότητα είναι πολύ πιο χαλαρή"
+3. "Άλλοι είναι καλύτεροι από εμένα anyway, γιατί να προσπαθήσω;"
+4. "Δεν αξίζει τον κόπο - το Netflix με περιμένει"
+5. "Είναι πολύ δύσκολο και δεν θέλω να νιώσω άβολα"`,
+        en: `Exactly! The best excuse is to admit you don't have the courage or persistence!
+
+1. "I'm not made for success - I prefer the safety of failure"
+2. "Trying tires me out - mediocrity is so much more relaxing"
+3. "Others are better than me anyway, why bother trying?"
+4. "It's not worth the effort - Netflix is waiting for me"
+5. "It's too hard and I don't want to feel uncomfortable"`
+      };
+
+      const message = encourageQuitMessages[language as keyof typeof encourageQuitMessages] || encourageQuitMessages.el;
+
+      // Return as SSE stream to match expected format
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        start(controller) {
+          const lines = message.split('\n');
+          lines.forEach(line => {
+            const chunk = encoder.encode(`data: ${JSON.stringify({ choices: [{ delta: { content: line + '\n' } }] })}\n\n`);
+            controller.enqueue(chunk);
+          });
+          
+          controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+          controller.close();
+        }
+      });
+
+      return new Response(stream, {
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          "Connection": "keep-alive",
+        },
+      });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       console.error("LOVABLE_API_KEY is not configured");

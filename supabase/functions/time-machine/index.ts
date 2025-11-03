@@ -24,6 +24,40 @@ serve(async (req) => {
       );
     }
 
+    // Check if user wants to quit
+    const quitKeywords = {
+      el: ['παρατάω', 'παρατω', 'quit', 'τα παρατάω', 'τα παρατω', 'εγκαταλείπω', 'εγκαταλειπω', 'παραιτούμαι', 'παραιτουμαι'],
+      en: ['quit', 'give up', 'giving up', 'i quit', 'im quitting', 'surrender', 'stop trying']
+    };
+    
+    const ideaLower = idea.toLowerCase();
+    const keywords = [...quitKeywords.el, ...quitKeywords.en];
+    const isQuitting = keywords.some(keyword => ideaLower.includes(keyword));
+
+    if (isQuitting) {
+      const encourageQuitStories = {
+        el: `Το 2035...
+
+Καθισμένος στον ίδιο καναπέ που κάθισες όταν αποφάσισες να τα παρατήσεις, κοιτάς το νέο σου hιgh score στο mobile game που παίζεις εδώ και 10 χρόνια. Η οθόνη της τηλεόρασης δείχνει ένα ντοκιμαντέρ για κάποιον που είχε την ίδια ιδέα με σένα, αλλά εκείνος δεν την παράτησε. Τώρα είναι πλούσιος και επιτυχημένος.
+
+Κοιτάς το τηλέφωνό σου και βλέπεις ένα παλιό σημείωμα: "Σήμερα αποφάσισα να τα παρατήσω". Η καλύτερη απόφαση της ζωής σου, σκέφτεσαι, ενώ παραγγέλνεις την 5η delivery της εβδομάδας. Τουλάχιστον δεν έχεις το στρες της επιτυχίας!`,
+        en: `In 2035...
+
+Sitting on the same couch where you decided to quit, you look at your new high score in the mobile game you've been playing for 10 years. The TV screen shows a documentary about someone who had the same idea as you, but they didn't give up. Now they're rich and successful.
+
+You look at your phone and see an old note: "Today I decided to quit". The best decision of your life, you think, while ordering your 5th delivery of the week. At least you don't have the stress of success!`
+      };
+
+      const story = encourageQuitStories[language as keyof typeof encourageQuitStories] || encourageQuitStories.el;
+
+      return new Response(
+        JSON.stringify({ story }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       console.error('LOVABLE_API_KEY is not configured');

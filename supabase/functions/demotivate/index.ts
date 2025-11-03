@@ -23,6 +23,74 @@ serve(async (req) => {
       );
     }
 
+    // Check if user wants to quit
+    const quitKeywords = {
+      el: ['παρατάω', 'παρατω', 'quit', 'τα παρατάω', 'τα παρατω', 'εγκαταλείπω', 'εγκαταλειπω', 'παραιτούμαι', 'παραιτουμαι'],
+      en: ['quit', 'give up', 'giving up', 'i quit', 'im quitting', 'surrender', 'stop trying']
+    };
+    
+    const thoughtLower = thought.toLowerCase();
+    const keywords = [...quitKeywords.el, ...quitKeywords.en];
+    const isQuitting = keywords.some(keyword => thoughtLower.includes(keyword));
+
+    if (isQuitting) {
+      const encourageQuitMessages = {
+        el: `Ωραία! Επιτέλους! Αυτή είναι η πιο έξυπνη απόφαση που έχεις πάρει! 
+
+Να τα παρατήσεις είναι η καλύτερη στρατηγική. Σκέψου μόνο πόσο χρόνο και ενέργεια θα γλιτώσεις! Θα μπορείς να κάθεσαι στον καναπέ και να βλέπεις άλλους να πετυχαίνουν στο Instagram. Πολύ πιο ασφαλές!
+
+Μην αγχώνεσαι για την επιτυχία - είναι υπερεκτιμημένη. Η μετριότητα είναι πολύ πιο άνετη και δεν έχει deadline!`,
+        en: `Great! Finally! This is the smartest decision you've ever made!
+
+Giving up is the best strategy. Just think about how much time and energy you'll save! You can sit on the couch and watch others succeed on Instagram. Much safer!
+
+Don't worry about success - it's overrated. Mediocrity is so much more comfortable and has no deadlines!`
+      };
+
+      const message = encourageQuitMessages[language as keyof typeof encourageQuitMessages] || encourageQuitMessages.el;
+      const savings = {
+        money: 0,
+        breakdown: {
+          equipment: 0,
+          travel: 0,
+          software: 0,
+          marketing: 0,
+          other: 0
+        },
+        time: 0,
+        stress: 0
+      };
+
+      // Return as SSE stream to match expected format
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        start(controller) {
+          // Send the message as streaming chunks
+          const lines = message.split('\n');
+          lines.forEach(line => {
+            const chunk = encoder.encode(`data: ${JSON.stringify({ choices: [{ delta: { content: line + '\n' } }] })}\n\n`);
+            controller.enqueue(chunk);
+          });
+          
+          // Send savings
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ savings })}\n\n`));
+          
+          // Send [DONE]
+          controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+          controller.close();
+        }
+      });
+
+      return new Response(stream, {
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          "Connection": "keep-alive",
+        },
+      });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       console.error("LOVABLE_API_KEY is not configured");
