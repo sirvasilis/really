@@ -73,8 +73,8 @@ const Index = () => {
       if (showInput) {
         handleBack();
       } else {
-        // If on main menu, minimize the app instead of closing it
-        CapacitorApp.minimizeApp();
+        // If on main menu, exit the app
+        CapacitorApp.exitApp();
       }
     });
 
