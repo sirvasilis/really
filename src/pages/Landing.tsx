@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { App as CapacitorApp } from "@capacitor/app";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -8,6 +10,17 @@ const Landing = () => {
     sessionStorage.setItem("hasVisitedFromLanding", "true");
     navigate("/app");
   };
+
+  // Handle hardware back button - navigate to app
+  useEffect(() => {
+    const handleBackButton = CapacitorApp.addListener('backButton', () => {
+      handleContinue();
+    });
+
+    return () => {
+      handleBackButton.then(listener => listener.remove());
+    };
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4 md:p-8">
