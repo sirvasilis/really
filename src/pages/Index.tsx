@@ -1024,22 +1024,49 @@ const Index = () => {
             </div>
           </>
         ) : (
-          <Card className="p-4 md:p-8 space-y-4 md:space-y-6 bg-card/50 backdrop-blur-sm border-2 border-border shadow-xl">
-            {selectedMode === "8ball" && eightBallAnswer ? (
+          <Card className={`p-4 md:p-8 space-y-4 md:space-y-6 backdrop-blur-sm border-2 shadow-xl ${
+            selectedMode === "8ball" 
+              ? "bg-gradient-to-br from-red-950/90 via-red-900/80 to-red-950/90 border-red-800/50" 
+              : "bg-card/50 border-border"
+          }`}>
+            {selectedMode === "8ball" ? (
               <div className="space-y-4 md:space-y-6">
-                <h2 className="text-lg md:text-2xl font-bold text-foreground text-center px-2">
-                  {t.shouldI} {thought}
-                </h2>
+                <div className="space-y-3">
+                  <label className="text-sm md:text-base font-semibold text-red-100">
+                    {t.eightBallLabel}
+                  </label>
+                  <Textarea
+                    value={thought}
+                    onChange={(e) => {
+                      setThought(e.target.value);
+                      if (e.target.value.trim()) {
+                        setIsWaitingForShake(true);
+                      } else {
+                        setIsWaitingForShake(false);
+                        setEightBallAnswer("");
+                      }
+                    }}
+                    placeholder={t.eightBallPlaceholder}
+                    className="min-h-32 md:min-h-36 bg-black/40 border-2 border-red-800/50 text-red-50 placeholder:text-red-300/50 resize-none text-sm md:text-base focus:border-red-600 transition-colors"
+                    disabled={isLoading}
+                  />
+                  {thought.trim() && !eightBallAnswer && (
+                    <p className="text-center text-base md:text-lg font-semibold text-red-200 animate-pulse">
+                      {t.shakeToReveal}
+                    </p>
+                  )}
+                </div>
+                
                 <div className="flex items-center justify-center py-6 md:py-8">
                   <div className="relative w-[75vw] h-[75vw] max-w-[22rem] max-h-[22rem] md:w-96 md:h-96">
-                    {/* Main 8ball sphere with 3D effect */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gray-700 via-black to-black shadow-[0_25px_80px_rgba(0,0,0,0.9),inset_0_-20px_40px_rgba(0,0,0,0.6)] border-4 border-black/50">
-                      {/* Glossy highlight - top left */}
-                      <div className="absolute top-12 left-16 md:top-16 md:left-20 w-16 h-16 md:w-24 md:h-24 bg-white/40 rounded-full blur-xl"></div>
-                      <div className="absolute top-8 left-12 md:top-12 md:left-16 w-12 h-12 md:w-16 md:h-16 bg-white/60 rounded-full blur-lg"></div>
+                    {/* Main 8ball sphere with 3D effect - enhanced shadow */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gray-600 via-black to-black shadow-[0_30px_100px_rgba(0,0,0,0.95),0_0_60px_rgba(220,38,38,0.4),inset_0_-20px_40px_rgba(0,0,0,0.7)] border-4 border-black/70">
+                      {/* Glossy highlight - top left - more prominent */}
+                      <div className="absolute top-12 left-16 md:top-16 md:left-20 w-20 h-20 md:w-28 md:h-28 bg-white/50 rounded-full blur-xl"></div>
+                      <div className="absolute top-8 left-12 md:top-12 md:left-16 w-14 h-14 md:w-20 md:h-20 bg-white/70 rounded-full blur-lg"></div>
                       
                       {/* Number 8 badge - clean and prominent */}
-                      <div className="absolute z-20 top-12 md:top-16 left-1/2 -translate-x-1/2 w-16 h-16 md:w-20 md:h-20 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex items-center justify-center border-2 border-gray-200">
+                      <div className="absolute z-20 top-12 md:top-16 left-1/2 -translate-x-1/2 w-16 h-16 md:w-20 md:h-20 rounded-full bg-white shadow-[0_6px_25px_rgba(0,0,0,0.6)] flex items-center justify-center border-2 border-gray-200">
                         <span className="text-4xl md:text-5xl font-black text-black">8</span>
                       </div>
                       
@@ -1065,32 +1092,31 @@ const Index = () => {
                           </svg>
                           
                           {/* Answer text - clipped inside triangle */}
-                          <div className="absolute inset-0 flex items-end justify-center px-3 pb-6 md:pb-7" style={{clipPath: 'polygon(50% 20%, 12% 89%, 88% 89%)'}}>
-                            <p ref={textRef} className="w-[80%] md:w-[78%] whitespace-normal font-semibold tracking-tight text-center text-white break-words" style={{ fontSize: `${triangleFontSize}px`, lineHeight: '1.08', hyphens: 'auto', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                              {eightBallAnswer}
-                            </p>
-                          </div>
+                          {eightBallAnswer && (
+                            <div className="absolute inset-0 flex items-end justify-center px-3 pb-6 md:pb-7" style={{clipPath: 'polygon(50% 20%, 12% 89%, 88% 89%)'}}>
+                              <p ref={textRef} className="w-[80%] md:w-[78%] whitespace-normal font-semibold tracking-tight text-center text-white break-words" style={{ fontSize: `${triangleFontSize}px`, lineHeight: '1.08', hyphens: 'auto', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                                {eightBallAnswer}
+                              </p>
+                            </div>
+                          )}
                         </div>
                       </div>
                       
                       {/* Bottom shadow for depth */}
-                      <div className="absolute bottom-0 inset-x-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent rounded-full"></div>
+                      <div className="absolute bottom-0 inset-x-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent rounded-full"></div>
                     </div>
                     
-                    {/* Shadow beneath the ball */}
-                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-56 h-8 md:w-72 md:h-10 bg-black/40 rounded-full blur-2xl"></div>
+                    {/* Shadow beneath the ball - more red tint */}
+                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-56 h-8 md:w-72 md:h-10 bg-black/50 rounded-full blur-2xl"></div>
                   </div>
                 </div>
-                {isWaitingForShake ? (
-                  <p className="text-center text-base md:text-lg font-semibold text-muted-foreground animate-pulse">
-                    {t.shakeToReveal}
-                  </p>
-                ) : (
+                
+                {eightBallAnswer && !isWaitingForShake ? (
                   <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                     <Button
                       onClick={handleBack}
                       variant="outline"
-                      className="font-bold h-11 md:h-12 text-sm md:text-base"
+                      className="font-bold h-11 md:h-12 text-sm md:text-base border-red-800/50 bg-black/30 text-red-100 hover:bg-black/50 hover:text-red-50"
                       size="lg"
                     >
                       {t.btnBack}
@@ -1100,12 +1126,21 @@ const Index = () => {
                         setEightBallAnswer("");
                         setIsWaitingForShake(true);
                       }}
-                      className="flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
+                      className="flex-1 bg-red-800 hover:bg-red-700 text-red-50 font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
                       size="lg"
                     >
                       {t.btnShakeBallAgain}
                     </Button>
                   </div>
+                ) : (
+                  <Button
+                    onClick={handleBack}
+                    variant="outline"
+                    className="w-full font-bold h-11 md:h-12 text-sm md:text-base border-red-800/50 bg-black/30 text-red-100 hover:bg-black/50 hover:text-red-50"
+                    size="lg"
+                  >
+                    {t.btnBack}
+                  </Button>
                 )}
               </div>
             ) : selectedMode === "distraction" && isLoading ? (
@@ -1229,7 +1264,7 @@ const Index = () => {
                         ) : (
                               <>
                             <div className="space-y-3">
-                              {selectedMode !== "8ball" && selectedMode !== "test" && (
+                              {selectedMode !== "test" && (
                                 <label className="text-sm md:text-base font-semibold text-foreground">
                                   {selectedMode === "demotivate" 
                                     ? t.demotivateLabel 
@@ -1237,41 +1272,25 @@ const Index = () => {
                                     ? t.excusesLabel
                                     : t.timeMachineLabel}
                                 </label>
-                              )}
-                              {selectedMode !== "test" && (
-                                <>
-                                  <Textarea
-                                    value={thought}
-                                    onChange={(e) => {
-                                      setThought(e.target.value);
-                                      if (selectedMode === "8ball" && e.target.value.trim()) {
-                                        setIsWaitingForShake(true);
-                                      } else if (selectedMode === "8ball" && !e.target.value.trim()) {
-                                        setIsWaitingForShake(false);
-                                      }
-                                    }}
-                                    placeholder={
-                                      selectedMode === "demotivate" 
-                                        ? t.demotivatePlaceholder 
-                                        : selectedMode === "excuses"
-                                        ? t.excusesPlaceholder
-                                        : selectedMode === "timeMachine"
-                                        ? t.timeMachinePlaceholder
-                                        : t.eightBallPlaceholder
-                                    }
-                                    className="min-h-32 md:min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-sm md:text-base focus:border-primary transition-colors"
-                                    disabled={isLoading}
-                                  />
-                                  {selectedMode === "8ball" && thought.trim() && (
-                                    <p className="text-center text-base md:text-lg font-semibold text-muted-foreground animate-pulse">
-                                      {t.shakeToReveal}
-                                    </p>
-                                  )}
-                                </>
-                              )}
-                            </div>
+                               )}
+                               {selectedMode !== "test" && (
+                                 <Textarea
+                                   value={thought}
+                                   onChange={(e) => setThought(e.target.value)}
+                                   placeholder={
+                                     selectedMode === "demotivate" 
+                                       ? t.demotivatePlaceholder 
+                                       : selectedMode === "excuses"
+                                       ? t.excusesPlaceholder
+                                       : t.timeMachinePlaceholder
+                                   }
+                                   className="min-h-32 md:min-h-36 bg-background/50 border-2 border-border text-foreground resize-none text-sm md:text-base focus:border-primary transition-colors"
+                                   disabled={isLoading}
+                                 />
+                               )}
+                             </div>
 
-                            {selectedMode !== "test" && selectedMode !== "8ball" && (
+                            {selectedMode !== "test" && (
                               <div className="flex flex-col gap-3 md:gap-4">
                                 <Button
                                   onClick={() => {
@@ -1306,19 +1325,7 @@ const Index = () => {
                                   {t.btnBack}
                                 </Button>
                               </div>
-                            )}
-                            
-                            {selectedMode === "8ball" && !eightBallAnswer && (
-                              <Button
-                                onClick={handleBack}
-                                disabled={isLoading}
-                                variant="outline"
-                                className="font-bold h-9 md:h-10 text-xs md:text-sm w-full"
-                                size="sm"
-                              >
-                                {t.btnBack}
-                              </Button>
-                            )}
+                             )}
                       </>
                     )}
                   </>
