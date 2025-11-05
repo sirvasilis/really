@@ -876,20 +876,38 @@ const Index = () => {
       const response = await fetch(dataUrl);
       const blob = await response.blob();
       
-      // Create a File object from the blob
-      const file = new File([blob], 'screenshot.png', { type: 'image/png' });
+      // Create blob URL for sharing
+      const blobUrl = URL.createObjectURL(blob);
       
       // Check if native share is available
       const canShare = await Share.canShare();
       
       if (canShare.value) {
-        // Use native share
-        await Share.share({
-          title: title,
-          text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
-          files: [dataUrl],
-          dialogTitle: title,
-        });
+        // For web, use Web Share API with files
+        if (navigator.share && navigator.canShare) {
+          const file = new File([blob], 'screenshot.png', { type: 'image/png' });
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: title,
+              text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
+              files: [file],
+            });
+          } else {
+            // Fallback to text only share
+            await navigator.share({
+              title: title,
+              text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
+            });
+          }
+        } else {
+          // Use Capacitor Share for mobile
+          await Share.share({
+            title: title,
+            text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
+            url: blobUrl,
+            dialogTitle: title,
+          });
+        }
       } else {
         // Fallback: download the image
         const link = document.createElement('a');
@@ -897,6 +915,9 @@ const Index = () => {
         link.href = dataUrl;
         link.click();
       }
+      
+      // Cleanup blob URL
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
       
       await Haptics.impact({ style: ImpactStyle.Light });
     } catch (error) {
