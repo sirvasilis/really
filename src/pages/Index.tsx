@@ -69,8 +69,12 @@ const Index = () => {
   // Handle hardware back button
   useEffect(() => {
     const handleBackButton = CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+      // If user is in test mode step 2, show result
+      if (showInput && selectedMode === "test" && testStep === 2) {
+        handleTestExit();
+      }
       // If user is in a specific mode (showInput is true), go back to main menu
-      if (showInput) {
+      else if (showInput) {
         handleBack();
       } else {
         // If on main menu, exit the app
@@ -81,7 +85,7 @@ const Index = () => {
     return () => {
       handleBackButton.then(listener => listener.remove());
     };
-  }, [showInput]);
+  }, [showInput, selectedMode, testStep]);
 
   // Shake detection for 8ball
   useEffect(() => {
@@ -833,8 +837,15 @@ const Index = () => {
     }
   };
 
-  const handleTestStartClick = () => {
+  const handleTestStartClick = async () => {
     setTestClickCount(prev => prev + 1);
+    // Trigger haptic feedback for tactile response
+    try {
+      await Haptics.impact({ style: ImpactStyle.Medium });
+    } catch (error) {
+      // Haptics might not be available on all devices
+      console.log("Haptics not available");
+    }
   };
 
   const handleTestExit = () => {
@@ -1195,7 +1206,7 @@ const Index = () => {
                     <div className="flex flex-col gap-4 md:gap-6 items-center justify-center">
                       <Button
                         onClick={handleTestStartClick}
-                        className="w-full max-w-xs md:w-64 bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-16 md:h-20 text-xl md:text-2xl transition-all hover:scale-105"
+                        className="w-full max-w-xs md:w-64 bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-16 md:h-20 text-xl md:text-2xl transition-all active:scale-95 hover:scale-105 active:shadow-inner"
                         size="lg"
                       >
                         {t.testStartButton}
