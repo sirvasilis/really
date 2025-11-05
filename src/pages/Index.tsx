@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { AlertCircle, Loader2, ThumbsDown, MessageSquare, Sparkles, Cat, Clock } from "lucide-react";
+import { AlertCircle, Loader2, ThumbsDown, MessageSquare, Sparkles, Cat, Clock, Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Motion } from "@capacitor/motion";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { App as CapacitorApp } from "@capacitor/app";
+import { Share } from "@capacitor/share";
+import { toPng } from "html-to-image";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -57,6 +59,13 @@ const Index = () => {
   const [isWaitingForShake, setIsWaitingForShake] = useState(false);
   const { toast } = useToast();
   const lastShakeRef = useRef<number>(0);
+  
+  // Refs for share screenshots
+  const demotivationRef = useRef<HTMLDivElement>(null);
+  const excusesRef = useRef<HTMLDivElement>(null);
+  const timeMachineRef = useRef<HTMLDivElement>(null);
+  const eightBallRef = useRef<HTMLDivElement>(null);
+  const distractionRef = useRef<HTMLDivElement>(null);
 
   // Check if user came from landing page
   useEffect(() => {
@@ -853,6 +862,53 @@ const Index = () => {
     setTestStep(3);
   };
 
+  const handleShare = async (elementRef: React.RefObject<HTMLDivElement>, title: string) => {
+    if (!elementRef.current) return;
+    
+    try {
+      // Generate screenshot as PNG
+      const dataUrl = await toPng(elementRef.current, {
+        quality: 0.95,
+        pixelRatio: 2,
+      });
+      
+      // Convert data URL to blob
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+      
+      // Create a File object from the blob
+      const file = new File([blob], 'screenshot.png', { type: 'image/png' });
+      
+      // Check if native share is available
+      const canShare = await Share.canShare();
+      
+      if (canShare.value) {
+        // Use native share
+        await Share.share({
+          title: title,
+          text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
+          files: [dataUrl],
+          dialogTitle: title,
+        });
+      } else {
+        // Fallback: download the image
+        const link = document.createElement('a');
+        link.download = 'screenshot.png';
+        link.href = dataUrl;
+        link.click();
+      }
+      
+      await Haptics.impact({ style: ImpactStyle.Light });
+    } catch (error) {
+      console.error("Error sharing:", error);
+      toast({
+        title: t.errorTitle,
+        description: language === "el" ? "Αποτυχία κοινοποίησης" : "Failed to share",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <>
       <AlertDialog open={showPetDialog} onOpenChange={setShowPetDialog}>
@@ -1041,7 +1097,7 @@ const Index = () => {
               : "bg-card/50 border-border"
           }`}>
             {selectedMode === "8ball" ? (
-              <div className="space-y-4 md:space-y-6">
+              <div ref={eightBallRef} className="space-y-4 md:space-y-6">
                 <div className="space-y-3">
                   <label className="text-sm md:text-base font-semibold text-red-100">
                     {t.eightBallLabel}
@@ -1123,24 +1179,35 @@ const Index = () => {
                 </div>
                 
                 {eightBallAnswer && !isWaitingForShake ? (
-                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+                  <div className="flex flex-col gap-3 md:gap-4">
+                    <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+                      <Button
+                        onClick={handleBack}
+                        variant="outline"
+                        className="font-bold h-11 md:h-12 text-sm md:text-base border-red-800/50 bg-black/30 text-red-100 hover:bg-black/50 hover:text-red-50"
+                        size="lg"
+                      >
+                        {t.btnBack}
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setEightBallAnswer("");
+                          setIsWaitingForShake(true);
+                        }}
+                        className="flex-1 bg-red-800 hover:bg-red-700 text-red-50 font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
+                        size="lg"
+                      >
+                        {t.btnShakeBallAgain}
+                      </Button>
+                    </div>
                     <Button
-                      onClick={handleBack}
+                      onClick={() => handleShare(eightBallRef, t.eightBallResultTitle)}
                       variant="outline"
-                      className="font-bold h-11 md:h-12 text-sm md:text-base border-red-800/50 bg-black/30 text-red-100 hover:bg-black/50 hover:text-red-50"
+                      className="font-bold transition-all hover:scale-105 border-red-800/50 bg-black/30 text-red-100 hover:bg-black/50 hover:text-red-50"
                       size="lg"
                     >
-                      {t.btnBack}
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setEightBallAnswer("");
-                        setIsWaitingForShake(true);
-                      }}
-                      className="flex-1 bg-red-800 hover:bg-red-700 text-red-50 font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
-                      size="lg"
-                    >
-                      {t.btnShakeBallAgain}
+                      <Share2 className="mr-2 h-4 w-4" />
+                      {language === "el" ? "Κοινοποίηση" : "Share"}
                     </Button>
                   </div>
                 ) : (
@@ -1162,7 +1229,7 @@ const Index = () => {
                 </p>
               </div>
             ) : selectedMode === "distraction" && catImage ? (
-              <div className="space-y-4 md:space-y-6">
+              <div ref={distractionRef} className="space-y-4 md:space-y-6">
                 <h2 className="text-xl md:text-2xl font-bold text-accent text-center">
                   {t.distractionResultTitle}
                 </h2>
@@ -1188,6 +1255,15 @@ const Index = () => {
                     ) : (
                       t.btnNewDistraction
                     )}
+                  </Button>
+                  <Button
+                    onClick={() => handleShare(distractionRef, t.distractionResultTitle)}
+                    variant="outline"
+                    className="font-bold transition-all hover:scale-105"
+                    size="lg"
+                  >
+                    <Share2 className="mr-2 h-4 w-4" />
+                    {language === "el" ? "Κοινοποίηση" : "Share"}
                   </Button>
                   <Button
                     onClick={handleBack}
@@ -1347,7 +1423,7 @@ const Index = () => {
         )}
 
         {demotivation && (
-          <Card className="p-4 md:p-8 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl animate-fade-in">
+          <Card ref={demotivationRef} className="p-4 md:p-8 bg-card/50 backdrop-blur-sm border-2 border-destructive shadow-xl animate-fade-in">
             <div className="flex items-start gap-3 md:gap-4">
               <AlertCircle className="w-6 h-6 md:w-8 md:h-8 text-destructive flex-shrink-0 mt-1" />
               <div className="space-y-3 md:space-y-4 flex-1">
@@ -1357,28 +1433,39 @@ const Index = () => {
                 <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-sm md:text-lg">
                   {demotivation}
                 </div>
-                <Button
-                  onClick={handleDemotivate}
-                  disabled={isLoading}
-                  className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
-                  size="lg"
-                >
-                  {isLoading && mode === "demotivate" ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
-                      {t.thinking}
-                    </>
-                  ) : (
-                    t.btnAlternative
-                  )}
-                </Button>
+                <div className="flex flex-col gap-3">
+                  <Button
+                    onClick={handleDemotivate}
+                    disabled={isLoading}
+                    className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold transition-all hover:scale-105 h-11 md:h-12 text-sm md:text-base"
+                    size="lg"
+                  >
+                    {isLoading && mode === "demotivate" ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
+                        {t.thinking}
+                      </>
+                    ) : (
+                      t.btnAlternative
+                    )}
+                  </Button>
+                  <Button
+                    onClick={() => handleShare(demotivationRef, t.truthTitle)}
+                    variant="outline"
+                    className="font-bold transition-all hover:scale-105"
+                    size="lg"
+                  >
+                    <Share2 className="mr-2 h-4 w-4" />
+                    {language === "el" ? "Κοινοποίηση" : "Share"}
+                  </Button>
+                </div>
               </div>
             </div>
           </Card>
         )}
 
         {excuses && (
-          <Card className="p-4 md:p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
+          <Card ref={excusesRef} className="p-4 md:p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
             <div className="space-y-3 md:space-y-4">
               <h2 className="text-xl md:text-2xl font-bold text-primary">
                 {t.excusesResultTitle}
@@ -1386,12 +1473,21 @@ const Index = () => {
               <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-sm md:text-lg">
                 {excuses}
               </div>
+              <Button
+                onClick={() => handleShare(excusesRef, t.excusesResultTitle)}
+                variant="outline"
+                className="font-bold transition-all hover:scale-105 w-full"
+                size="lg"
+              >
+                <Share2 className="mr-2 h-4 w-4" />
+                {language === "el" ? "Κοινοποίηση" : "Share"}
+              </Button>
             </div>
           </Card>
         )}
 
         {timeMachineStory && (
-          <Card className="p-4 md:p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
+          <Card ref={timeMachineRef} className="p-4 md:p-8 bg-card/50 backdrop-blur-sm border-2 border-primary shadow-xl animate-fade-in">
             <div className="flex items-start gap-3 md:gap-4">
               <Clock className="w-6 h-6 md:w-8 md:h-8 text-primary flex-shrink-0 mt-1" />
               <div className="space-y-3 md:space-y-4 flex-1">
@@ -1401,6 +1497,15 @@ const Index = () => {
                 <div className="text-foreground/90 whitespace-pre-wrap leading-relaxed text-sm md:text-lg">
                   {timeMachineStory}
                 </div>
+                <Button
+                  onClick={() => handleShare(timeMachineRef, t.timeMachineResultTitle)}
+                  variant="outline"
+                  className="font-bold transition-all hover:scale-105 w-full"
+                  size="lg"
+                >
+                  <Share2 className="mr-2 h-4 w-4" />
+                  {language === "el" ? "Κοινοποίηση" : "Share"}
+                </Button>
               </div>
             </div>
           </Card>
