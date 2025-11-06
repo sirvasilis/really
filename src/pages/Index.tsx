@@ -9,6 +9,7 @@ import { Motion } from "@capacitor/motion";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { App as CapacitorApp } from "@capacitor/app";
 import { Share } from "@capacitor/share";
+import { Filesystem, Directory } from "@capacitor/filesystem";
 import { toPng } from "html-to-image";
 import {
   AlertDialog,
@@ -866,60 +867,44 @@ const Index = () => {
     if (!elementRef.current) return;
     
     try {
-      // Generate screenshot as PNG
+      // Generate screenshot
       const dataUrl = await toPng(elementRef.current, {
-        quality: 0.95,
+        quality: 1.0,
         pixelRatio: 2,
       });
       
-      // Convert data URL to blob
-      const response = await fetch(dataUrl);
-      const blob = await response.blob();
+      // Convert data URL to base64
+      const base64Data = dataUrl.split(',')[1];
       
-      // Create blob URL for sharing
-      const blobUrl = URL.createObjectURL(blob);
+      // Save to temporary file
+      const fileName = `really-screenshot-${Date.now()}.png`;
+      const savedFile = await Filesystem.writeFile({
+        path: fileName,
+        data: base64Data,
+        directory: Directory.Cache,
+      });
       
-      // Check if native share is available
-      const canShare = await Share.canShare();
-      
-      if (canShare.value) {
-        // For web, use Web Share API with files
-        if (navigator.share && navigator.canShare) {
-          const file = new File([blob], 'screenshot.png', { type: 'image/png' });
-          if (navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              title: title,
-              text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
-              files: [file],
-            });
-          } else {
-            // Fallback to text only share
-            await navigator.share({
-              title: title,
-              text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
-            });
-          }
-        } else {
-          // Use Capacitor Share for mobile
-          await Share.share({
-            title: title,
-            text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
-            url: blobUrl,
-            dialogTitle: title,
-          });
-        }
-      } else {
-        // Fallback: download the image
-        const link = document.createElement('a');
-        link.download = 'screenshot.png';
-        link.href = dataUrl;
-        link.click();
-      }
-      
-      // Cleanup blob URL
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+      // Share the file
+      await Share.share({
+        title: title,
+        text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
+        url: savedFile.uri,
+        dialogTitle: title,
+      });
       
       await Haptics.impact({ style: ImpactStyle.Light });
+      
+      // Clean up the file after sharing
+      setTimeout(async () => {
+        try {
+          await Filesystem.deleteFile({
+            path: fileName,
+            directory: Directory.Cache,
+          });
+        } catch (e) {
+          console.log('Could not delete temp file:', e);
+        }
+      }, 1000);
     } catch (error) {
       console.error("Error sharing:", error);
       toast({
