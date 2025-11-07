@@ -1320,17 +1320,17 @@ const Index = () => {
                   </div>
                 ) : selectedMode === "test" && testStep === 3 ? (
                   <div className="space-y-6 md:space-y-8 animate-fade-in">
-                    <h2 className="text-3xl md:text-4xl font-bold text-destructive text-center">
+                    <h2 className="text-3xl md:text-4xl font-bold text-red-600 text-center">
                       {language === "el" ? "Αποτελέσματα" : "Results"}
                     </h2>
                     <div className="text-foreground/90 text-xl md:text-2xl text-center leading-relaxed px-2 font-semibold">
                       {language === "el" ? (
                         <>
-                          Χρειάστηκες <span className="text-destructive font-bold">{Math.round((Date.now() - testStartTime) / 1000)}</span> δευτερόλεπτα και πάτησες <span className="text-destructive font-bold">{testClickCount}</span> φορές ένα κουμπί που δεν κάνει ΤΙΠΟΤΑ. Σοβαρά πιστεύεις ότι μπορείς να {testGoal}; Καλή τύχη με αυτό!
+                          Χρειάστηκες <span className="text-red-600 font-bold">{Math.round((Date.now() - testStartTime) / 1000)}</span> <span className="text-red-600 font-bold">δευτερόλεπτα</span> και πάτησες <span className="text-red-600 font-bold">{testClickCount}</span> <span className="text-red-600 font-bold">φορές</span> ένα κουμπί που δεν κάνει ΤΙΠΟΤΑ. Σοβαρά πιστεύεις ότι μπορείς να {testGoal}; Καλή τύχη με αυτό!
                         </>
                       ) : (
                         <>
-                          It took you <span className="text-destructive font-bold">{Math.round((Date.now() - testStartTime) / 1000)}</span> seconds and you clicked <span className="text-destructive font-bold">{testClickCount}</span> times on a button that does NOTHING. You seriously think you can {testGoal}? Good luck with that!
+                          It took you <span className="text-red-600 font-bold">{Math.round((Date.now() - testStartTime) / 1000)}</span> <span className="text-red-600 font-bold">seconds</span> and you clicked <span className="text-red-600 font-bold">{testClickCount}</span> <span className="text-red-600 font-bold">times</span> on a button that does NOTHING. You seriously think you can {testGoal}? Good luck with that!
                         </>
                       )}
                     </div>
