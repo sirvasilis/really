@@ -899,11 +899,11 @@ const Index = () => {
         directory: Directory.Cache,
       });
       
-      // Share the file
+      // Share the file using files array for Android compatibility
       await Share.share({
         title: title,
         text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
-        url: savedFile.uri,
+        files: [savedFile.uri],
         dialogTitle: title,
       });
       
