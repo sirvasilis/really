@@ -58,6 +58,7 @@ const Index = () => {
   const [testStartTime, setTestStartTime] = useState<number>(0);
   const [showGoalDialog, setShowGoalDialog] = useState(false);
   const [isWaitingForShake, setIsWaitingForShake] = useState(false);
+  const [showBackButton, setShowBackButton] = useState(false);
   const { toast } = useToast();
   const lastShakeRef = useRef<number>(0);
   
@@ -431,6 +432,18 @@ const Index = () => {
     handleGenerateQuote();
   }, [language]);
 
+  // Show back button after 5 seconds when test result is shown
+  useEffect(() => {
+    if (selectedMode === "test" && testStep === 3) {
+      setShowBackButton(false);
+      const timer = setTimeout(() => {
+        setShowBackButton(true);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [selectedMode, testStep]);
+
   const handleModeSelection = (newMode: "demotivate" | "excuses" | "8ball" | "distraction" | "timeMachine" | "test") => {
     setSelectedMode(newMode);
     setThought("");
@@ -447,6 +460,7 @@ const Index = () => {
     setTestStep(1);
     setTestStartTime(0);
     setIsWaitingForShake(false);
+    setShowBackButton(false);
     setShowInput(true);
     
     if (newMode === "distraction") {
@@ -477,6 +491,7 @@ const Index = () => {
     setShowGoalDialog(false);
     setSelectedPet(null);
     setIsWaitingForShake(false);
+    setShowBackButton(false);
   };
 
   const handleDemotivate = async () => {
@@ -1304,21 +1319,26 @@ const Index = () => {
                     </div>
                   </div>
                 ) : selectedMode === "test" && testStep === 3 ? (
-                  <div className="space-y-4 md:space-y-6">
-                    <div className="text-foreground/90 text-base md:text-lg text-center leading-relaxed px-2">
+                  <div className="space-y-6 md:space-y-8 animate-fade-in">
+                    <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
+                      {language === "el" ? "Αποτελέσματα" : "Results"}
+                    </h2>
+                    <div className="text-foreground/90 text-xl md:text-2xl text-center leading-relaxed px-2 font-semibold">
                       {t.testResult
                         .replace('{time}', Math.round((Date.now() - testStartTime) / 1000).toString())
                         .replace('{count}', testClickCount.toString())
                         .replace('{goal}', testGoal)}
                     </div>
-                    <Button
-                      onClick={handleBack}
-                      variant="outline"
-                      className="font-bold h-11 md:h-12 text-sm md:text-base w-full"
-                      size="lg"
-                    >
-                      {t.btnBack}
-                    </Button>
+                    {showBackButton && (
+                      <Button
+                        onClick={handleBack}
+                        variant="outline"
+                        className="font-bold h-11 md:h-12 text-sm md:text-base w-full animate-fade-in"
+                        size="lg"
+                      >
+                        {t.btnBack}
+                      </Button>
+                    )}
                   </div>
                 ) : (
                   <>
