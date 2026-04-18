@@ -9,6 +9,7 @@ import { Motion } from "@capacitor/motion";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { App as CapacitorApp } from "@capacitor/app";
 import { Share } from "@capacitor/share";
+import { Capacitor } from "@capacitor/core";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { toPng } from "html-to-image";
 import {
@@ -880,51 +881,111 @@ const Index = () => {
 
   const handleShare = async (elementRef: React.RefObject<HTMLDivElement>, title: string) => {
     if (!elementRef.current) return;
-    
+
     try {
-      // Generate screenshot
+      // Generate screenshot as data URL
       const dataUrl = await toPng(elementRef.current, {
         quality: 1.0,
         pixelRatio: 2,
       });
-      
-      // Convert data URL to base64
-      const base64Data = dataUrl.split(',')[1];
-      
-      // Save to temporary file
-      const fileName = `really-screenshot-${Date.now()}.png`;
-      const savedFile = await Filesystem.writeFile({
-        path: fileName,
-        data: base64Data,
-        directory: Directory.Cache,
-      });
-      
-      // Share the file using files array for Android compatibility
-      await Share.share({
-        title: title,
-        text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
-        files: [savedFile.uri],
-        dialogTitle: title,
-      });
-      
-      await Haptics.impact({ style: ImpactStyle.Light });
-      
-      // Clean up the file after sharing
-      setTimeout(async () => {
-        try {
-          await Filesystem.deleteFile({
-            path: fileName,
-            directory: Directory.Cache,
+
+      // Native (Capacitor) share
+      if (Capacitor.getPlatform && Capacitor.getPlatform() !== "web") {
+        const base64Data = dataUrl.split(",")[1];
+        const fileName = `really-screenshot-${Date.now()}.png`;
+
+        const savedFile = await Filesystem.writeFile({
+          path: fileName,
+          data: base64Data,
+          directory: Directory.Cache,
+        });
+
+        await Share.share({
+          title: title,
+          text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
+          files: [savedFile.uri],
+          dialogTitle: title,
+        });
+
+        await Haptics.impact({ style: ImpactStyle.Light });
+
+        setTimeout(async () => {
+          try {
+            await Filesystem.deleteFile({
+              path: fileName,
+              directory: Directory.Cache,
+            });
+          } catch (e) {
+            // Ignore
+          }
+        }, 1000);
+        return;
+      }
+
+      // Web: Try Web Share API with file support
+      let shared = false;
+      try {
+        const blob = await (await fetch(dataUrl)).blob();
+        const file = new File([blob], `really-screenshot-${Date.now()}.png`, { type: blob.type });
+
+        // Try sharing file (mobile browsers)
+        if (
+          navigator.canShare &&
+          (navigator as any).canShare({ files: [file] })
+        ) {
+          await (navigator as any).share({
+            title,
+            text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
+            files: [file],
           });
-        } catch (e) {
-          console.log('Could not delete temp file:', e);
+          shared = true;
+        } else if (navigator.share) {
+          // Try sharing just text
+          await navigator.share({
+            title,
+            text: language === "el" ? "Μοιράσου από το Really app!" : "Shared from Really app!",
+          });
+          shared = true;
         }
-      }, 1000);
+      } catch (err) {
+        // Ignore and fallback
+        shared = false;
+      }
+
+      // Fallback: open image in new tab
+      if (!shared) {
+        const win = window.open();
+        if (win) {
+          win.document.write(`<title>${title}</title>`);
+          win.document.body.style.margin = "0";
+          win.document.body.style.background = "#111";
+          win.document.body.innerHTML = `<img src="${dataUrl}" alt="${title}" style="max-width:100vw;max-height:100vh;display:block;margin:auto;" />`;
+          toast({
+            title: language === "el" ? "Άνοιξε νέα καρτέλα" : "Opened new tab",
+            description:
+              language === "el"
+                ? "Η εικόνα άνοιξε σε νέα καρτέλα. Κάνε δεξί κλικ για αποθήκευση ή κοινοποίηση."
+                : "Image opened in a new tab. Right-click to save or share.",
+          });
+        } else {
+          toast({
+            title: language === "el" ? "Σφάλμα" : "Error",
+            description:
+              language === "el"
+                ? "Δεν μπόρεσα να ανοίξω νέα καρτέλα. Επίτρεψε τα αναδυόμενα παράθυρα."
+                : "Could not open a new tab. Please allow pop-ups.",
+            variant: "destructive",
+          });
+        }
+      }
     } catch (error) {
       console.error("Error sharing:", error);
       toast({
-        title: t.errorTitle,
-        description: language === "el" ? "Αποτυχία κοινοποίησης" : "Failed to share",
+        title: language === "el" ? "Σφάλμα" : "Error",
+        description:
+          language === "el"
+            ? "Αποτυχία κοινοποίησης. Δοκίμασε να επιτρέψεις τα αναδυόμενα ή να χρησιμοποιήσεις άλλο πρόγραμμα περιήγησης."
+            : "Failed to share. Try allowing pop-ups or use a different browser.",
         variant: "destructive",
       });
     }
